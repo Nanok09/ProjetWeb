@@ -21,18 +21,17 @@ include_once "modele.php";	// Car on utilise la fonction connecterUtilisateur()
  */
 function verifUser($login,$password)
 {
-	session_start();
-	if (verifUserBdd($login,$password) != false)
-	{
-		$_SESSION["pseudo"]=$login;
-		$_SESSION["idUser"]=verifUserBdd($login,$password);
-		$_SESSION["heureConnexion"] = date("H:i:s");;
-		$_SESSION["isProf"] = isProf($_SESSION["idUser"]);
-		$_SESSION["connecte"] = true;
-		return true;
-	}
+	if ($id = verifUserBdd($login,$password)){
 
-	return false;
+		$_SESSION['connecte']=true;
+		$_SESSION['pseudo'] = $login;
+		$_SESSION['idUser'] = $id;
+		$_SESSION['heureConnexion']=date("H:i:s");
+		$_SESSION['isAdmin'] = isAdmin($id);
+		return true;
+	}else{
+		return false;
+	}
 }
 
 
@@ -40,6 +39,7 @@ function verifUser($login,$password)
 
 /**
  * Fonction à placer au début de chaque page privée
+
  * Cette fonction redirige vers la page $urlBad en envoyant un message d'erreur
 et arrête l'interprétation si l'utilisateur n'est pas connecté
  * Elle ne fait rien si l'utilisateur est connecté, et si $urlGood est faux

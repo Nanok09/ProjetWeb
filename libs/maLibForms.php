@@ -29,7 +29,7 @@ function mkLigneEntete($tabAsso,$listeChamps=false)
 		echo "\t<tr>\n";
 		foreach ($listeChamps as $nomChamp)	
 		{
-			echo "\t\t<td>$nomChamp</td>\n";
+			echo "\t\t<th>$nomChamp</th>\n";
 		}
 		echo "\t</tr>\n";
 	}
@@ -168,6 +168,19 @@ function mkLiens($tabData,$champLabel, $champCible, $urlBase=false, $nomCible=""
 	// A partir de données fournies dans un tableau associatif	
 	// Chaque lien pointe vers une url définie par le champ $champCible
 
+	foreach	($tabData as $nextData){
+		echo '<a href="';
+		if (!$urlBase){
+			echo $nextData[$champCible];
+		}else{
+			echo $urlBase;
+			echo"&$nomCible=" . $nextData[$champCible];;
+		}
+		echo '">';
+		echo $nextData[$champLabel];
+		echo "</a>\n<br/>\n";
+	}
+	
 	// SI urlBase n'est pas false, on utilise  l'url de base 
 	// (avec son point d'interrogation) à laquelle on ajoute le champ cible 
 	// dans la chaîne de requête, associé au paramètre $nomCible, après un '&' 
@@ -178,6 +191,7 @@ function mkLiens($tabData,$champLabel, $champCible, $urlBase=false, $nomCible=""
 
 	// mkLiens($conversations,"theme","id","index.php?view=chat","idConv");
 	// produira <a href="index.php?view=chat&idConv=1">Multimédia</a> ...
+
 	foreach ( $tabData as $nextData) {
 
 		//echo "traitement de : ";
