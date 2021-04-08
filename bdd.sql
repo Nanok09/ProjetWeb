@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 08, 2021 at 01:40 PM
+-- Generation Time: Apr 08, 2021 at 04:18 PM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.0
 
@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `commentaires` (
   `idLieu` int(11) NOT NULL,
-  `utilisateur` int(11) NOT NULL,
+  `idUtilisateur` int(11) NOT NULL,
   `message` text NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -90,7 +90,7 @@ CREATE TABLE `messagesChat` (
 
 CREATE TABLE `notes` (
   `idLieu` int(11) NOT NULL,
-  `utilisateur` int(11) NOT NULL COMMENT 'Id de l''utilisateur qui a donné la note',
+  `idUtilisateur` int(11) NOT NULL COMMENT 'Id de l''utilisateur qui a donné la note',
   `note` int(11) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -145,7 +145,7 @@ CREATE TABLE `utilisateurs` (
 --
 ALTER TABLE `commentaires`
   ADD KEY `idLieu` (`idLieu`),
-  ADD KEY `utilisateur` (`utilisateur`);
+  ADD KEY `idUtilisateur` (`idUtilisateur`);
 
 --
 -- Indexes for table `creneaux`
@@ -173,8 +173,9 @@ ALTER TABLE `messagesChat`
 -- Indexes for table `notes`
 --
 ALTER TABLE `notes`
+  ADD UNIQUE KEY `unique_note` (`idLieu`,`idUtilisateur`),
   ADD KEY `idLieu` (`idLieu`),
-  ADD KEY `utilisateur` (`utilisateur`);
+  ADD KEY `idUtilisateur` (`idUtilisateur`);
 
 --
 -- Indexes for table `photosLieux`
@@ -188,6 +189,7 @@ ALTER TABLE `photosLieux`
 --
 ALTER TABLE `reservations`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_reservation` (`idUtilisateur`,`idCreneau`),
   ADD KEY `idUtilisateur` (`idUtilisateur`),
   ADD KEY `idCreneau` (`idCreneau`);
 
@@ -195,7 +197,9 @@ ALTER TABLE `reservations`
 -- Indexes for table `utilisateurs`
 --
 ALTER TABLE `utilisateurs`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `pseudo` (`pseudo`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -222,7 +226,7 @@ ALTER TABLE `utilisateurs`
 --
 ALTER TABLE `commentaires`
   ADD CONSTRAINT `commentaires_ibfk_1` FOREIGN KEY (`idLieu`) REFERENCES `lieux` (`id`),
-  ADD CONSTRAINT `commentaires_ibfk_2` FOREIGN KEY (`utilisateur`) REFERENCES `utilisateurs` (`id`);
+  ADD CONSTRAINT `commentaires_ibfk_2` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateurs` (`id`);
 
 --
 -- Constraints for table `creneaux`
@@ -248,7 +252,7 @@ ALTER TABLE `messagesChat`
 --
 ALTER TABLE `notes`
   ADD CONSTRAINT `notes_ibfk_1` FOREIGN KEY (`idLieu`) REFERENCES `lieux` (`id`),
-  ADD CONSTRAINT `notes_ibfk_2` FOREIGN KEY (`utilisateur`) REFERENCES `utilisateurs` (`id`);
+  ADD CONSTRAINT `notes_ibfk_2` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateurs` (`id`);
 
 --
 -- Constraints for table `photosLieux`
