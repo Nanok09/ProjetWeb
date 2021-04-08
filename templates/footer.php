@@ -8,8 +8,14 @@
 
 
     Ceci est un footer
-
-
+    <?php
+    // Si l'utilisateur est connecte, on affiche un lien de deconnexion
+    if (valider("connecte","SESSION"))
+    {
+        echo "Utilisateur <b>$_SESSION[pseudo]</b> connecté depuis <b>$_SESSION[heureConnexion]</b> &nbsp; ";
+        echo "<a href=\"controleur.php?action=Logout\">Se Déconnecter</a>";
+    }
+    ?>
 </footer>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

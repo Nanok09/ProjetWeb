@@ -33,11 +33,37 @@ if ($action = valider("action")) {
         case 'Se connecter':
             if ($pseudo = valider('pseudo'))
                 if($password = valider('password')){
-                    verifUser($pseudo,$password);
+                    if(!verifUser($pseudo,$password)){
+                        $qs="?view=login-signIn&msg=Mauvais identifiants de connexion, si vous n'avez pas de compte inscrivez vous!";
+                    }
+                }else{
+                    $qs="?view=login-signIn&msg=Pour vous connecter, renseignez votre pseudo et mot de passe";
                 }
-            $qs="?view=login-signIn";
+
             break;
 
+        // Inscription //////////////////////////////////////////////////
+
+
+        case 'S\'inscrire':
+            if($pseudo = valider('pseudo'))
+            if($password = valider('password'))
+            if($nom = valider('nom'))
+            if($prenom = valider('prenom'))
+            if($email = valider('email')) {
+                createUser($pseudo, $password, $email, $nom, $prenom);
+                verifUser($pseudo, $password);
+            }else{
+                $qs="?view=login-signIn&msg=Veillez a remplir toutes les informations nécessaires à l'inscription";
+            }
+            break;
+
+        // Déconnexion //////////////////////////////////////////////////
+
+        case 'Logout':
+            session_destroy();
+            $qs="?view=login-signIn";
+            break;
     }
 
 }
