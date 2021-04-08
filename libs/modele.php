@@ -11,7 +11,7 @@ include_once("maLibSQL.pdo.php");
  */
 function verifUserBdd($login, $passe)
 {
-    $SQL = "SELECT id FROM utilisateurs WHERE pseudo=:login AND password=:passe'";
+    $SQL = "SELECT id FROM utilisateurs WHERE pseudo=:login AND password=:passe;";
     $params=array("login"=>$login,"passe"=>$passe);
     return SQLGetChamp($SQL, $params);
 }
