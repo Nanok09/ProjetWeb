@@ -17,5 +17,5 @@
 <body>
 
 <header>
-    Ceci est un header
+    <a href="index.php?view=login-signIn">Connexion/Inscription</a>
 </header>

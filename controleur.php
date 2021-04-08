@@ -13,48 +13,50 @@ if ($action = valider("action")) {
 
     echo "Action = '$action' <br />";
 
-    // ATTENTION : le codage des caractères peut poser PB
-    // si on utilise des actions comportant des accents...
-    // A EVITER si on ne maitrise pas ce type de problématiques
-
-    /* TODO: exercice 4
-    // Dans tous les cas, il faut etre logue...
-    // Sauf si on veut se connecter (action == Connexion)
-
-    if ($action != "Connexion")
-        securiser("login");
-    */
-
-    // Un paramètre action a été soumis, on fait le boulot...
     switch ($action) {
 
         // Connexion //////////////////////////////////////////////////
 
         case 'Se connecter':
-            if ($pseudo = valider('pseudo'))
-                if($password = valider('password')){
-                    if(!verifUser($pseudo,$password)){
-                        $qs="?view=login-signIn&msg=Mauvais identifiants de connexion, si vous n'avez pas de compte inscrivez vous!";
+            echo "j'ai compris que tu veux te connecter";
+            if ($pseudo = valider('pseudo')){
+                if ($password = valider('password')) {
+                    if (!verifUser($pseudo, $password)) {
+                        $qs = "?view=login-signIn&msg=Mauvais identifiants de connexion, si vous n'avez pas de compte inscrivez vous!";
                     }
-                }else{
-                    $qs="?view=login-signIn&msg=Pour vous connecter, renseignez votre pseudo et mot de passe";
+                } else {
+                    $qs = "?view=login-signIn&msg=Pour vous connecter, renseignez votre pseudo et mot de passe";
                 }
-
+            }else{
+                $qs = "?view=login-signIn&msg=Pour vous connecter, renseignez votre pseudo et mot de passe";
+            }
             break;
 
         // Inscription //////////////////////////////////////////////////
 
 
-        case 'S\'inscrire':
-            if($pseudo = valider('pseudo'))
-            if($password = valider('password'))
-            if($nom = valider('nom'))
-            if($prenom = valider('prenom'))
-            if($email = valider('email')) {
-                createUser($pseudo, $password, $email, $nom, $prenom);
-                verifUser($pseudo, $password);
+        case 'Inscription':
+            if ($pseudo = valider('pseudo')){
+                if ($password = valider('password')){
+                    if ($nom = valider('nom')) {
+                        if ($prenom = valider('prenom')){
+                            if ($email = valider('email')) {
+                                createUser($pseudo, $password, $email, $nom, $prenom);
+                                verifUser($pseudo, $password);
+                            } else {
+                                $qs = "?view=login-signIn&msg=Veillez a remplir toutes les informations nécessaires à l'inscription";
+                            }
+                        }else{
+                            $qs = "?view=login-signIn&msg=Veillez a remplir toutes les informations nécessaires à l'inscription";
+                        }
+                    }else{
+                        $qs = "?view=login-signIn&msg=Veillez a remplir toutes les informations nécessaires à l'inscription";
+                    }
+                }else{
+                    $qs = "?view=login-signIn&msg=Veillez a remplir toutes les informations nécessaires à l'inscription";
+                }
             }else{
-                $qs="?view=login-signIn&msg=Veillez a remplir toutes les informations nécessaires à l'inscription";
+                $qs = "?view=login-signIn&msg=Veillez a remplir toutes les informations nécessaires à l'inscription";
             }
             break;
 
@@ -62,7 +64,7 @@ if ($action = valider("action")) {
 
         case 'Logout':
             session_destroy();
-            $qs="?view=login-signIn";
+            $qs = "?view=login-signIn";
             break;
     }
 
