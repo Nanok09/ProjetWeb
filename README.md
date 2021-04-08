@@ -1,2 +1,7 @@
 # Air BnB du Sport
-Bienvenu sur le site Air BnB pour le sport
+
+Bienvenue sur le site Air BnB pour le sport
+
+## Configuration
+
+Créer un fichier config.php à partir de config.example.php contenant les identifiants de connexion à la bdd.
