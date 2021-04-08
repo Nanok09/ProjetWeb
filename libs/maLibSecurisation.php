@@ -39,14 +39,29 @@ function verifUser($login,$password)
 
 /**
  * Fonction à placer au début de chaque page privée
- * Cette fonction redirige vers la page $urlBad en envoyant un message d'erreur 
-	et arrête l'interprétation si l'utilisateur n'est pas connecté
+
+ * Cette fonction redirige vers la page $urlBad en envoyant un message d'erreur
+et arrête l'interprétation si l'utilisateur n'est pas connecté
  * Elle ne fait rien si l'utilisateur est connecté, et si $urlGood est faux
  * Elle redirige vers urlGood sinon
  */
-function securiser($urlBad,$urlGood=false)
-{
+function securiser($urlBad, $urlGood = FALSE) {
+	if (valider("id_joueur","SESSION") != FALSE)
+		if ($urlGood != FALSE) header("Location:".$urlGood);
+		else header("Location:index.php?view=".$urlBad);
+}
 
+function securiserAdmin($urlBad,$urlGood=false)
+{
+	if ($_SESSION['isAdmin'] == 1 AND $_SESSION['isConnected'] == true)
+	{
+		if ($urlGood == false)
+		{}
+		else
+			header("Location:".$urlGood);
+	}
+	else
+		header("Location:index.php?view=".$urlBad);
 }
 
 ?>

@@ -20,7 +20,7 @@ function mkLigneEntete($tabAsso,$listeChamps=false)
 		echo "\t<tr>\n";
 		foreach ($tabAsso as $cle => $val)	
 		{
-			echo "\t\t<th>$cle</th>\n";
+			echo "\t\t<td>$cle</td>\n";
 		}
 		echo "\t</tr>\n";
 	}
@@ -192,7 +192,29 @@ function mkLiens($tabData,$champLabel, $champCible, $urlBase=false, $nomCible=""
 	// mkLiens($conversations,"theme","id","index.php?view=chat","idConv");
 	// produira <a href="index.php?view=chat&idConv=1">Multimédia</a> ...
 
+	foreach ( $tabData as $nextData) {
 
+		//echo "traitement de : ";
+		//tprint($nextData);
+
+		// pour chaque enregistrement, on ajoute une balise de lien a qui pointe vers ...
+		echo  '<a href="';
+		// L'url cible se trouve dans $champCible si urlBase est nulle
+		if (!$urlBase) echo $nextData[$champCible];
+		// Sinon on utilise urlBase (avec son point d'interrogation) +
+		// le caractère & + nom du paramètre + signe = + valeur du paramètre
+		else {
+			echo $urlBase;
+			echo "&" . $nomCible . "=" . $nextData[$champCible];
+		}
+		// On ferme la balise a
+		echo '">';
+		// On ajoute la valeur à afficher sur le lien
+		echo $nextData[$champLabel];
+		// On ferme le lien avec la balise /a
+		echo "</a>\n<br/>";
+
+	}
 }
 ?>
 

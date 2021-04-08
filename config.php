@@ -7,4 +7,5 @@
  $BDD_user="cours_web";
  $BDD_password="web"; // vide sous windows
  $BDD_base="sportBnB"; // nom de la base de données
+
 ?>
