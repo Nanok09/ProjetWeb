@@ -2,12 +2,8 @@
 
 // V1.0 du 18 mai 2018
 
-if (file_exists('./config.php')) {
-    include_once './config.php';
-} elseif (file_exists('../libs/config.php')) {
-    include_once '../libs/config.php';
-} elseif (file_exists('libs/config.php')) {
-    include_once 'libs/config.php';
+if (file_exists(__DIR__.'/../config.php')) {
+    include_once(__DIR__.'/../config.php');
 } else {
     exit('Fichier config introuvable');
 }
