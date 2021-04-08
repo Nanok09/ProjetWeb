@@ -2,91 +2,102 @@
 
 // V1.0 du 18 mai 2018
 
-if (file_exists("./config.php"))
-	include_once("./config.php");
-else if (file_exists("../libs/config.php"))
-	include_once "../libs/config.php";
-else if (file_exists("libs/config.php"))
-	include_once "libs/config.php";
-else die("Fichier config introuvable");
+if (file_exists("../config.php")) {
+    include_once("../config.php");
+} else {
+    die("Fichier config introuvable");
+}
 
 /**
  * @file maLibSQL.php
  * Ce fichier définit les fonctions de requêtage
  * Il nécessite d'avoir défini les variables $BDD_login, $BDD_password $BDD_chaine dans config.php, qui est chargé au moment de l'appel de la librairie
- * @note Pour accélérer les traitements, les requêtes aux bases de données seront persistantes : on ne les fermera pas à chaque fin de requête. 
- * On utilise pour cela la fonction pconnect
+ *
+ * On utilise des requêtes préparées, chaque fonction prend donc en arguments une requête $sql préparée et des paramètres associés
+ * Par exemple SQLSelect("SELECT * FROM utilisateurs WHERE pseudo = ? AND password = ?",Array($pseudo,$password));
+ * ou avec :motcle et un tableau associatif
+ * SQLSelect("SELECT * FROM utilisateurs WHERE pseudo = :pseudo AND password = :motdepasse",Array("pseudo"=>$pseudo,"motdepasse"=>$password));
+ *
  * @todo On pourrait tracer les requêtes dans une table de logs
  */
 
 
 /**
  * Exécuter une requête UPDATE. Renvoie le nb de modifs ou faux si pb
- * On testera donc avec === pour différencier faux de 0 
+ * On testera donc avec === pour différencier faux de 0
  * @return le nombre d'enregistrements affectés, ou false si pb...
- * @param string $sql
+ * @param string $sql requête préparée
+ * @param array $params paramètres associés à la requête préparée
  * @pre Les variables  $BDD_login, $BDD_password $BDD_chaine doivent exister
  */
-function SQLUpdate($sql)
+function SQLUpdate($sql, $params)
 {
-	global $BDD_host;
-	global $BDD_base;
-	global $BDD_user;
-	global $BDD_password;
+    global $BDD_host;
+    global $BDD_base;
+    global $BDD_user;
+    global $BDD_password;
 
-	try {
-		$dbh = new PDO("mysql:host=$BDD_host;dbname=$BDD_base", $BDD_user, $BDD_password);
-	} catch (PDOException $e) {
-		die("<font color=\"red\">SQLUpdate/Delete: Erreur de connexion : " . $e->getMessage() . "</font>");
-	}
+    try {
+        $dbh = new PDO("mysql:host=$BDD_host;dbname=$BDD_base", $BDD_user, $BDD_password);
+    } catch (PDOException $e) {
+        die("<font color=\"red\">SQLUpdate/Delete: Erreur de connexion : " . $e->getMessage() . "</font>");
+    }
 
-	$dbh->exec("SET CHARACTER SET utf8");
-	$res = $dbh->query($sql);
-	if ($res === false) {
-		$e = $dbh->errorInfo(); 
-		die("<font color=\"red\">SQLUpdate/Delete: Erreur de requete : " . $e[2] . "</font>");
-	}
+    // $dbh->exec("SET CHARACTER SET utf8");
+    $res = $dbh->prepare($sql);
+    $res->execute($params);
+    if ($res === false) {
+        $e = $dbh->errorInfo();
+        die("<font color=\"red\">SQLUpdate/Delete: Erreur de requete : " . $e[2] . "</font>");
+    }
 
-	$dbh = null;
-	$nb = $res->rowCount();
-	if ($nb != 0) return $nb;
-	else return false;
-	
+    $dbh = null;
+    $nb = $res->rowCount();
+    if ($nb != 0) {
+        return $nb;
+    } else {
+        return false;
+    }
 }
 
 // Un delete c'est comme un Update
-function SQLDelete($sql) {return SQLUpdate($sql);}
+function SQLDelete($sql, $params)
+{
+    return SQLUpdate($sql, $params);
+}
 
 
 /**
- * Exécuter une requête INSERT 
- * @param string $sql
+ * Exécuter une requête INSERT
+ * @param string $sql requête préparée
+ * @param array $params paramètres associés à la requête préparée
  * @pre Les variables  $BDD_login, $BDD_password $BDD_chaine doivent exister
  * @return Renvoie l'insert ID ... utile quand c'est un numéro auto
  */
-function SQLInsert($sql)
+function SQLInsert($sql, $params)
 {
-	global $BDD_host;
-	global $BDD_base;
-	global $BDD_user;
-	global $BDD_password;
-	
-	try {
-		$dbh = new PDO("mysql:host=$BDD_host;dbname=$BDD_base", $BDD_user, $BDD_password);
-	} catch (PDOException $e) {
-		die("<font color=\"red\">SQLInsert: Erreur de connexion : " . $e->getMessage() . "</font>");
-	}
+    global $BDD_host;
+    global $BDD_base;
+    global $BDD_user;
+    global $BDD_password;
+    
+    try {
+        $dbh = new PDO("mysql:host=$BDD_host;dbname=$BDD_base", $BDD_user, $BDD_password);
+    } catch (PDOException $e) {
+        die("<font color=\"red\">SQLInsert: Erreur de connexion : " . $e->getMessage() . "</font>");
+    }
 
-	$dbh->exec("SET CHARACTER SET utf8");
-	$res = $dbh->query($sql);
-	if ($res === false) {
-		$e = $dbh->errorInfo(); 
-		die("<font color=\"red\">SQLInsert: Erreur de requete : " . $e[2] . "</font>");
-	}
+    // $dbh->exec("SET CHARACTER SET utf8");
+    $res = $dbh->prepare($sql);
+    $res->execute($params);
+    if ($res === false) {
+        $e = $dbh->errorInfo();
+        die("<font color=\"red\">SQLInsert: Erreur de requete : " . $e[2] . "</font>");
+    }
 
-	$lastInsertId = $dbh->lastInsertId();
-	$dbh = null; 
-	return $lastInsertId;
+    $lastInsertId = $dbh->lastInsertId();
+    $dbh = null;
+    return $lastInsertId;
 }
 
 
@@ -95,74 +106,85 @@ function SQLInsert($sql)
 * Effectue une requete SELECT dans une base de données SQL SERVER, pour récupérer uniquement un champ (la requete ne doit donc porter que sur une valeur)
 * Renvoie FALSE si pas de resultats, ou la valeur du champ sinon
 * @pre Les variables  $BDD_login, $BDD_password $BDD_chaine doivent exister
-* @param string $SQL
+ * @param string $sql requête préparée
+ * @param array $params paramètres associés à la requête préparée
 * @return false|string
 */
-function SQLGetChamp($sql)
+function SQLGetChamp($sql, $params)
 {
-	global $BDD_host;
-	global $BDD_base;
-	global $BDD_user;
-	global $BDD_password;
+    global $BDD_host;
+    global $BDD_base;
+    global $BDD_user;
+    global $BDD_password;
 
-	try {
-		$dbh = new PDO("mysql:host=$BDD_host;dbname=$BDD_base", $BDD_user, $BDD_password);
-	} catch (PDOException $e) {
-		die("<font color=\"red\">SQLGetChamp: Erreur de connexion : " . $e->getMessage() . "</font>");
-	}
+    try {
+        $dbh = new PDO("mysql:host=$BDD_host;dbname=$BDD_base", $BDD_user, $BDD_password);
+    } catch (PDOException $e) {
+        die("<font color=\"red\">SQLGetChamp: Erreur de connexion : " . $e->getMessage() . "</font>");
+    }
 
-	$dbh->exec("SET CHARACTER SET utf8");
-	$res = $dbh->query($sql);
-	if ($res === false) {
-		$e = $dbh->errorInfo(); 
-		die("<font color=\"red\">SQLGetChamp: Erreur de requete : " . $e[2] . "</font>");
-	}
+    $dbh->exec("SET CHARACTER SET utf8");
+    $res = $dbh->prepare($sql);
+    $res->execute($params);
+    if ($res === false) {
+        $e = $dbh->errorInfo();
+        die("<font color=\"red\">SQLGetChamp: Erreur de requete : " . $e[2] . "</font>");
+    }
 
-	$num = $res->rowCount();
-	$dbh = null;
+    $num = $res->rowCount();
+    $dbh = null;
 
-	if ($num==0) return false;
-	
-	$res->setFetchMode(PDO::FETCH_NUM);
+    if ($num==0) {
+        return false;
+    }
+    
+    $res->setFetchMode(PDO::FETCH_NUM);
 
-	$ligne = $res->fetch();
-	if ($ligne == false) return false;
-	else return $ligne[0];
-
+    $ligne = $res->fetch();
+    if ($ligne == false) {
+        return false;
+    } else {
+        return $ligne[0];
+    }
 }
 
 /**
  * Effectue une requete SELECT dans une base de données SQL SERVER
  * Renvoie FALSE si pas de resultats, ou la ressource sinon
  * @pre Les variables  $BDD_login, $BDD_password $BDD_chaine doivent exister
- * @param string $SQL
+ * @param string $sql requête préparée
+ * @param array $params paramètres associés à la requête préparée
  * @return boolean|resource
  */
-function SQLSelect($sql)
-{	
- 	global $BDD_host;
-	global $BDD_base;
- 	global $BDD_user;
- 	global $BDD_password;
+function SQLSelect($sql, $params)
+{
+    global $BDD_host;
+    global $BDD_base;
+    global $BDD_user;
+    global $BDD_password;
 
-	try {
-		$dbh = new PDO("mysql:host=$BDD_host;dbname=$BDD_base", $BDD_user, $BDD_password);
-	} catch (PDOException $e) {
-		die("<font color=\"red\">SQLSelect: Erreur de connexion : " . $e->getMessage() . "</font>");
-	}
+    try {
+        $dbh = new PDO("mysql:host=$BDD_host;dbname=$BDD_base", $BDD_user, $BDD_password);
+    } catch (PDOException $e) {
+        die("<font color=\"red\">SQLSelect: Erreur de connexion : " . $e->getMessage() . "</font>");
+    }
 
-	$dbh->exec("SET CHARACTER SET utf8");
-	$res = $dbh->query($sql);
-	if ($res === false) {
-		$e = $dbh->errorInfo(); 
-		die("<font color=\"red\">SQLSelect: Erreur de requete : " . $e[2] . "</font>");
-	}
-	
-	$num = $res->rowCount();
-	$dbh = null;
+    $dbh->exec("SET CHARACTER SET utf8");
+    $res = $dbh->prepare($sql);
+    $res->execute($params);
+    if ($res === false) {
+        $e = $dbh->errorInfo();
+        die("<font color=\"red\">SQLSelect: Erreur de requete : " . $e[2] . "</font>");
+    }
+    
+    $num = $res->rowCount();
+    $dbh = null;
 
-	if ($num==0) return false;
-	else return $res;
+    if ($num==0) {
+        return false;
+    } else {
+        return $res;
+    }
 }
 
 /**
@@ -173,18 +195,14 @@ function SQLSelect($sql)
 */
 function parcoursRs($result)
 {
-	if  ($result == false) return array();
+    if ($result == false) {
+        return array();
+    }
 
-	$result->setFetchMode(PDO::FETCH_ASSOC);
-	while ($ligne = $result->fetch()) 
-		$tab[]= $ligne;
-
-	return $tab;
+    $result->setFetchMode(PDO::FETCH_ASSOC);
+    while ($ligne = $result->fetch()) {
+        $tab[]= $ligne;
+    }
+    $result->closeCursor();
+    return $tab;
 }
-
-
-
-
-
-
-?>
