@@ -110,7 +110,7 @@ function SQLInsert($sql, $params)
  * @param array $params paramètres associés à la requête préparée
 * @return false|string
 */
-function SQLGetChamp($sql, $params)
+function SQLGetChamp($sql, array $input_parameters = null)
 {
     global $BDD_host;
     global $BDD_base;
@@ -125,7 +125,7 @@ function SQLGetChamp($sql, $params)
 
     $dbh->exec("SET CHARACTER SET utf8");
     $res = $dbh->prepare($sql);
-    $res->execute($params);
+    $res->execute($input_parameters);  // j'ai mis une valeur par défaut pour le paramètre 
     if ($res === false) {
         $e = $dbh->errorInfo();
         die("<font color=\"red\">SQLGetChamp: Erreur de requete : " . $e[2] . "</font>");
