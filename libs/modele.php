@@ -135,7 +135,7 @@ function getCommentaires()
 
 //Annuler un créneau réservé
 
-// ============ PHOTOS LIEUX ============
+// ============ PHOTOS LIEUX ============ 
 
 //Ajouter une photo associée à un lieu (après l'avoir uploadé sur le serveur qq part)
 
@@ -148,5 +148,5 @@ function getCommentaires()
 
 function hash2id($hash) {
 	$SQL = "SELECT id FROM users WHERE hash= :hash";        //modification pour fonctionner avec des requêtes préparées, voir modifications de SQLGetChamps
-	return SQLGetChamp($SQL,$hash); 
+	return SQLGetChamp($SQL,array("hash" => $hash)); 
 }

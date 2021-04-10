@@ -59,7 +59,13 @@ if($hash) {
 
 récupérer les terrains d'intérêt avec les en fonctions de l'historique ou de mentions j'aime ou qqch comme ça
 
-récupérer toute l'information sur un terrain 
+récupérer toute l'information sur un terrain *
+
+suggestion barre de recherche
+
+ajouter une note, modifier une note, écrire un commentaire supprimer commentaire. 
+
+ajouter un lieu supprimer, (ajouter photo)
 
 */
 
