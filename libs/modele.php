@@ -39,7 +39,7 @@ function create_user($pseudo, $password, $email, $nom, $prenom)
  * @param int id_user
  * @return bool
  */
-function id_admin($id_user)
+function is_admin($id_user)
 {
     // vérifie si l'utilisateur est un administrateur
     $SQL = "SELECT admin from utilisateurs where id=?;";
