@@ -121,23 +121,23 @@ function delete_note($id_place, $id_user)
  * @param string message
  * @return int  id_comment
  */
-function add_comment($id_place, $id_user, $message)
+function add_comment($id_place, $id_user, $message, $timestamp)
 {
-    $SQL = "INSERT INTO commentaires (idLieu,idUtilisateur,message) VALUES (:id_place,:id_user,:message)";
-    $params = array("id_place" => $id_place, "id_user" => $id_user, "message" => $message);
+    $SQL = "INSERT INTO commentaires (idLieu,idUtilisateur,message,timestamp) VALUES (:id_place,:id_user,:message,:timestamp)";
+    $params = array("id_place" => $id_place, "id_user" => $id_user, "message" => $message, "timestamp" => $timestamp);
     return SQLInsert($SQL, $params);
 }
 /**
  * Modifie un commentaire
  * @param int id_user
- * @param int idCommentaire
+ * @param int id_comment
  * @param string message
  */
 
-function modify_comment($id_user, $id_comment, $message)
+function modify_comment($id_user, $id_comment, $message, $timestamp)
 {
-    $SQL = "UPDATE commentaires SET message = :message, edited = true WHERE idCommentaire = :id_comment AND idUtilisateur= :id_user";
-    $params = array("message" => $message, "id_comment" => $id_comment, "id_user" => $id_user);
+    $SQL = "UPDATE commentaires SET message = :message, edited = true, timestamp=:timestamp WHERE idCommentaire = :id_comment AND idUtilisateur= :id_user";
+    $params = array("message" => $message, "id_comment" => $id_comment, "id_user" => $id_user, "timestamp" => $timestamp);
     return SQLUpdate($SQL, $params);
 }
 /**
@@ -153,7 +153,17 @@ function get_comments($id_place)
     $params = array("id_place" => $id_place);
     return SQLSelect($SQL, $params);
 }
-
+/**
+ * Supprime un commentaire
+ * @param int id_user
+ * @param int id_comment
+ */
+function delete_comment($id_user, $id_comment)
+{
+    $SQL = "DELETE FROM commentaires WHERE idUtilisateur=:id_user AND id=:id_comment";
+    $params = array("id_user" => $id_user, "id_comment" => $id_comment);
+    return SQLDelete($SQL, $params);
+}
 // ============ PHOTOS LIEUX ============
 
 //

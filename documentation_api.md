@@ -1,4 +1,4 @@
-# Ce fichier a pour but de clarifier le shéma pour interagir avec l'API
+# Ce fichier a pour but de clarifier le schéma pour interagir avec l'API
 
 ## Principe général :
 
@@ -146,7 +146,11 @@ Chaque action peut/doit recevoir une liste de parametres optionels:
 
 - action = modify_comment
 
-  data: Undefined
+```
+        data: {
+                timestamp: @int
+        }
+```
 
 - action = delete_comment
 
