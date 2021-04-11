@@ -106,6 +106,72 @@ if ($action = valider("action")) {
                 }
             }
             break;
+        case "add_creneau_dispo":
+            if (verif_connecte()) {
+                if (($id_user = valider("id_user", "SESSION")) &&
+                    ($id_place = valider("id_place")) &&
+                    ($date = valider("date")) &&
+                    ($time_start = valider("time_start")) &&
+                    ($time_end = valider("time_end")) &&
+                    ($capacite = valider("capacite"))) {
+                    if (get_createur_lieu($id_place) == $id_user) {
+                        $data["data"] = array();
+                        $data["data"]["id_creneau"] = add_creneau_dispo($id_place, $date, $time_start, $time_end, $capacite);
+                        set_request_success();
+                    } else {
+                        $data["status"] = 403;
+                    }
+                }
+            }
+            break;
+        case "add_reservation":
+            if (verif_connecte()) {
+                if (($id_user = valider("id_user", "SESSION")) &&
+                    ($id_place = valider("id_place")) &&
+                    ($date = valider("date")) &&
+                    ($time_start = valider("time_start")) &&
+                    ($time_end = valider("time_end")) &&
+                    ($nb_personnes = valider("nb_personnes"))) {
+                    $capacite_restante = get_capacite_restante_creneau($id_place, $date, $time_start, $time_end);
+                    if (intval($capacite_restante) >= intval($nb_personnes)) {
+                        $data["data"] = array();
+                        $data["data"]["id_reservation"] = add_reservation($id_user, $id_place, $date, $time_start, $time_end, $nb_personnes);
+                        set_request_success();
+                    } else {
+                        $data["status"] = 400;
+                    }
+                }
+            }
+            break;
+        case "delete_reservation":
+            if (verif_connecte()) {
+                if (($id_user = valider("id_user", "SESSION")) &&
+                    ($id_reservation = valider("id_reservation"))) {
+                    $nb_modified = delete_reservation($id_user, $id_reservation);
+                    if ($nb_modified > 0) {
+                        set_request_success();
+                    }
+                }
+            }
+            break;
+        case "get_creneaux_place":
+            if (($id_place = valider("id_place")) &&
+                ($date_start = valider("date_start")) &&
+                ($date_end = valider("date_end"))) {
+                $data["data"] = get_creneaux_lieu($id_place, $date_start, $date_end);
+                set_request_success();
+            }
+            break;
+        case "get_capacite_creneau":
+            if (($id_place = valider("id_place")) &&
+                ($date = valider("date")) &&
+                ($time_start = valider("time_start")) &&
+                ($time_end = valider("time_end"))) {
+                $data["data"] = array();
+                $data["data"]["capacite"] = get_capacite_restante_creneau($id_place, $date, $time_start, $time_end);
+                set_request_success();
+            }
+            break;
 
     }
 }
