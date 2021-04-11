@@ -59,15 +59,151 @@ function is_admin($id_user)
 
 // ================== LIEUX ===================
 
-/**
- * Récupérer les lieux les plus proches correspondant à certains critères
- * @param double latitude
- * @param double longitude
- * @param string sport (optionel)
- * @param prix min / max
+
+
+
+/**  fonction distance renvoie un float représentant la distance entre les points passés en entrée. La distance est donnée en km
  */
 
+
+function distance($lat1, $lng1, $lat2, $lng2, $miles = false) {
+     $pi80 = M_PI / 180;
+     $lat1 *= $pi80;
+     $lng1 *= $pi80;
+     $lat2 *= $pi80;
+     $lng2 *= $pi80;
+
+     $r = 6372.797; // rayon moyen de la Terre en km
+     $dlat = $lat2 - $lat1;
+     $dlng = $lng2 - $lng1;
+     $a = sin($dlat / 2) * sin($dlat / 2) + cos($lat1) * cos($lat2) * sin(
+$dlng / 2) * sin($dlng / 2);
+     $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+     $km = $r * $c;
+     return ($miles ? ($km * 0.621371192) : $km);
+
+}
+/* Cette version ne marche pas j'ai oublié des conversions
+function calculate_distance_between(array $a,array $b){
+    // on utilise la formule de haversine
+    $r= 6371;
+    $first_term = (sin(($a['lat']-$b['lat'])/2))**2;
+    $second_term = cos($a['lat'])*cos($b['lat'])*(sin(($a['long']-$b['long'])/2)**2);
+    $result = 2*$r*asin(sqrt($first_term + $second_term));
+    return $result;
+}
+*/
+// fonction de comparaison pour le tri customisé
+function compare($array1,$array2) {
+    if ($array1['distance_to_user']>$array2['distance_to_user']) {
+        return 1;
+    }
+    if ($array1['distance_to_user'] == $array2['distance_to_user']) {
+        return 0;
+    }
+    return -1;    
+}
+
+/**
+ * Récupérer les lieux les plus proches correspondant à certains critères
+ * Tous les paramètres sont optionels
+ * @param double lat
+ * @param double long
+ * @param string sport 
+ * @param float price_min 
+ * @param float price_max 
+ * @param bool publuc_only
+ * @param bool private_only
+ * @param int max_distance (km)
+ */
+
+
+
+
+function get_places($sport = false , bool $private_only=false, bool $public_only=false,$lat= false , $long=false, int $price_min=0, int $price_max=10000, $max_distance=1000){
+
+    // récupérer la liste des terrains potentielement intéressant dans la base de données
+
+    $SQL = "SELECT * FROM lieux WHERE prix >= :price_min AND prix <= :price_max";
+
+    $values = array(
+        'price_min' => $price_min,
+        'price_max' => $price_max,
+    );
+
+    if ($sport) {
+        $SQL.= " AND sport=:sport";
+        $values["sport"]=$sport;
+    }
+
+    if ($private_only && !$public_only) {
+        $SQL.= " AND prive=:prive";
+        $values["prive"] = 1; // si c'est que du private et pas du public alors on cherche les valeur prive=1
+    }
+    if ($public_only && !$private_only) {
+        $SQL.=" AND prive=:prive";
+        $values["prive"]=0;
+    }
+
+    if ($private_only && $public_only) {
+        // raise error 'Warning : You are asking for private and public places, those are not supported in the current version'
+        trigger_error("You are asking for private and public places, those does not exist in the current version",E_USER_WARNING );
+    }
+
+
+
+    //var_dump($values);
+
+    $query_results = parcoursRs(SQLSelect($SQL , $values));
+
+    //var_dump($result);
+
+    // filtrer le résultat à l'aide de la fonction calculate distance between 
+
+    if ($lat && $long) {
+        echo 'on est dans la partie calculer les distances!';
+        $final_results = array();
+        foreach ( $query_results as $result) {
+            $distance = distance($result['latitude'],$result['longitude'],$lat,$long);
+            //var_dump($distance);
+            if ($distance <= $max_distance)  {
+                $result['distance_to_user'] = $distance;
+                $final_results[] = $result;
+
+            } // end if du foreach 
+            
+
+        }//end For each
+        // trier les tableaux obtenus par distance à l'utilisateur croissante
+        echo '<h2> Avant tri : </h2>';
+        var_dump($final_results);
+        usort($final_results,'compare'); // utilisation de la fonction usort qui permet de faire un tri customisé 
+        return  $final_results;
+        
+    }//end if
+
+    return $query_results;
+
+
+    //renvoyer le résultat au bon format 
+
+}//end Fonction
+
+
+
+
+
+
+
 //Créer un lieu
+
+
+function create_place() {
+    echo 'appel à create place';
+}
+
+
+
 
 //Modifier un lieu pour son créateur
 
