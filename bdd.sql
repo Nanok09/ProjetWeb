@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 08, 2021 at 04:18 PM
+-- Generation Time: Apr 11, 2021 at 12:36 PM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.0
 
@@ -28,11 +28,22 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `commentaires` (
+  `id` int(11) NOT NULL,
   `idLieu` int(11) NOT NULL,
   `idUtilisateur` int(11) NOT NULL,
   `message` text NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `edited` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `commentaires`
+--
+
+INSERT INTO `commentaires` (`id`, `idLieu`, `idUtilisateur`, `message`, `timestamp`, `edited`) VALUES
+(1, 1, 4, 'blablabla', '2021-04-11 10:15:10', 0),
+(3, 1, 5, 'bla', '2021-04-11 10:35:28', 0),
+(4, 1, 4, 'blablabla2', '2021-04-11 10:27:26', 0);
 
 -- --------------------------------------------------------
 
@@ -68,6 +79,14 @@ CREATE TABLE `lieux` (
   `capacite` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `lieux`
+--
+
+INSERT INTO `lieux` (`id`, `nom`, `description`, `adresse`, `latitude`, `longitude`, `sport`, `prive`, `createur`, `prix`, `capacite`) VALUES
+(1, 'terrain1', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation', 'Addresse 1', 50.6166, 3.164, 'basket', 1, 5, 1, 10),
+(2, 'terrain2', 'description', 'Addresse 2', 51.6166, 3.064, 'tennis', 1, 4, 2, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -95,6 +114,13 @@ CREATE TABLE `notes` (
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `notes`
+--
+
+INSERT INTO `notes` (`idLieu`, `idUtilisateur`, `note`, `timestamp`) VALUES
+(2, 4, 3, '2021-04-11 10:03:15');
+
 -- --------------------------------------------------------
 
 --
@@ -104,7 +130,7 @@ CREATE TABLE `notes` (
 CREATE TABLE `photosLieux` (
   `id` int(11) NOT NULL,
   `idLieu` int(11) NOT NULL,
-  `nomFichier` varchar(255) DEFAULT NULL
+  `nomFichier` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -137,6 +163,14 @@ CREATE TABLE `utilisateurs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- Dumping data for table `utilisateurs`
+--
+
+INSERT INTO `utilisateurs` (`id`, `pseudo`, `password`, `nom`, `prenom`, `email`, `timeInscription`, `admin`) VALUES
+(4, 'matt', 'test', 'nom', 'pre', 'plotton.matthieu@gmail.com', '2021-04-11 10:36:02', 0),
+(5, 'pseudo', 'motdepasse', 'nom', 'prenom', 'test@gmail.com', '2021-04-11 08:28:03', 0);
+
+--
 -- Indexes for dumped tables
 --
 
@@ -144,6 +178,7 @@ CREATE TABLE `utilisateurs` (
 -- Indexes for table `commentaires`
 --
 ALTER TABLE `commentaires`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `idLieu` (`idLieu`),
   ADD KEY `idUtilisateur` (`idUtilisateur`);
 
@@ -182,6 +217,7 @@ ALTER TABLE `notes`
 --
 ALTER TABLE `photosLieux`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nomFichier` (`nomFichier`),
   ADD KEY `idLieu` (`idLieu`);
 
 --
@@ -206,16 +242,46 @@ ALTER TABLE `utilisateurs`
 --
 
 --
+-- AUTO_INCREMENT for table `commentaires`
+--
+ALTER TABLE `commentaires`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `creneaux`
+--
+ALTER TABLE `creneaux`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `lieux`
+--
+ALTER TABLE `lieux`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `messagesChat`
 --
 ALTER TABLE `messagesChat`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `photosLieux`
+--
+ALTER TABLE `photosLieux`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `reservations`
+--
+ALTER TABLE `reservations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `utilisateurs`
 --
 ALTER TABLE `utilisateurs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables

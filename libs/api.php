@@ -72,9 +72,9 @@ if ($action = valider("action")) {
                 if (($id_user = valider("id_user", "SESSION")) &&
                     ($id_lieu = valider("id_place")) &&
                     ($comment = valider("comment"))) {
-                    $timestamp = time();
+                    $timestamp = date('Y-m-d H:i:s');
                     $data["data"] = array();
-                    $data["data"]["timestamp"] = $timestamp;
+                    $data["data"]["timestamp"] = strtotime($timestamp);
                     $data["data"]["id_comment"] = add_comment($id_lieu, $id_user, $comment, $timestamp);
                     set_request_success();
                 }
@@ -86,7 +86,8 @@ if ($action = valider("action")) {
                     ($id_comment = valider("id_comment")) &&
                     ($comment = valider("comment"))) {
                     $data["data"] = array();
-                    $data["data"]["timestamp"] = $timestamp;
+                    $timestamp = date('Y-m-d H:i:s');
+                    $data["data"]["timestamp"] = strtotime($timestamp);
                     $nb_modified = modify_comment($id_user, $id_comment, $comment, $timestamp);
                     if ($nb_modified > 0) {
                         set_request_success();

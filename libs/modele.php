@@ -109,7 +109,7 @@ function get_note_place($id_place)
  */
 function delete_note($id_place, $id_user)
 {
-    $SQL = "DELETE FROM notes WHERE idLieu=:id_place, idUtilisateur=:id_user";
+    $SQL = "DELETE FROM notes WHERE idLieu=:id_place AND idUtilisateur=:id_user";
     $params = array("id_place" => $id_place, "id_user" => $id_user);
     return SQLDelete($SQL, $params);
 }
@@ -136,7 +136,7 @@ function add_comment($id_place, $id_user, $message, $timestamp)
 
 function modify_comment($id_user, $id_comment, $message, $timestamp)
 {
-    $SQL = "UPDATE commentaires SET message = :message, edited = true, timestamp=:timestamp WHERE idCommentaire = :id_comment AND idUtilisateur= :id_user";
+    $SQL = "UPDATE commentaires SET message = :message, edited = true, timestamp=:timestamp WHERE id = :id_comment AND idUtilisateur= :id_user";
     $params = array("message" => $message, "id_comment" => $id_comment, "id_user" => $id_user, "timestamp" => $timestamp);
     return SQLUpdate($SQL, $params);
 }
