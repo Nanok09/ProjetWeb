@@ -34,9 +34,7 @@
 
     }
 
-    .bg-custom-grey{
-        background-color: #dcdcdc;
-    }
+
 
 
 
@@ -176,7 +174,7 @@
                 <circle r="30" cx="50%" cy="30" fill="#35516E">
 
                 </circle>
-                <image href="../images/loupe.png" x="35%" y="15" height="35px" width="35px" />
+                <image href="./images/loupe.png" x="35%" y="15" height="35px" width="35px" />
             </svg>
             <form id="rechercheForm" action="../controleur.php" name="recherche" method="get">
                 <div class="form-row justify-content-center">
