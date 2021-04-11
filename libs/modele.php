@@ -67,9 +67,33 @@ function is_admin($id_user)
  * @param prix min / max
  */
 
-//Créer un lieu
+/**
+ * Modifier un terrain
+ * @param int id_place
+ * @param int id_user
+ * @param string nom
+ * @param string adresse
+ * @param string sport
+ * @param string description
+ * @param int capacite
+ * @param double prix
+ */
 
-//Modifier un lieu pour son créateur
+
+/**
+ * Créer un terrain
+ * @param int id_place
+ * @param int id_user
+ * @param string nom
+ * @param string adresse
+ * @param string sport
+ * @param string description
+ * @param int capacite
+ * @param double prix
+ * @param boolean type(privé/public)
+ */
+
+
 
 //Récupérer les infos d'un lieu
 

@@ -62,6 +62,62 @@ $photos = get_photos();
             }
         })
 
+        //On passe en mode édition lors du click sur un paragraphe
+        $(document).on("click", "p", function () {
+            var contenu = this.innerHTML;
+            console.log(contenu);
+            if (this.id == "description"){
+                $(this).replaceWith(
+                    "<textarea>"+contenu+"</textarea>"
+                );
+            }else if (this.id == "capacite" || this.id == "prix"){
+                $(this).replaceWith(
+                    "<input type='number' value=\""+contenu+"\" />"
+                );
+            }else{
+                $(this).replaceWith(
+                    "<input type='text' value=\""+contenu+"\" />"
+                );
+            }
+        });
+
+
+        //appui sur entrée dans un textarea => validation
+        $(document).on("keyup", "textarea", function (contexte) {
+            if ($(this).val() == '') return;
+            if (contexte.key == "Enter") {
+                var newContenu = $(this).val();
+                $(this).replaceWith(
+                    $("<p>")
+                        .html(newContenu)
+                );
+            }
+        });
+
+        //appui sur entrée dans un input lors de l'édition => validation
+        $(document).on("keyup", "input", function (contexte) {
+            if ($(this).val() == '') return;
+            console.log(this.class);
+            if ($(this).hasClass('crea')) return;
+            if (contexte.key == "Enter") {
+                var newContenu = $(this).val();
+                $(this).replaceWith(
+                    $("<p>")
+                        .html(newContenu)
+                );
+            }
+        });
+
+        //creation terrain
+        $("#creation").click(function(){
+            create_place();
+        });
+
+        //modification terrain
+        $("#modif").click(function(){
+            modif_place();
+        });
+
 
     });
 
@@ -95,12 +151,16 @@ $photos = get_photos();
         console.log('new');
         $("#edition").empty();
         $("#edition").append($("<h2>").html("Création d'un nouveau terrain"));
+        $("#edition").append($("<span>").html("Nom :"));
+        $("#edition").append("<input class='crea' id='nom' type='text' placeholder='Nouveau Terrain'/></br>");
         $("#edition").append($("<span>").html("Adresse :"));
-        $("#edition").append("<input id='adresse' type='text' placeholder='1500 Avenue Médicis, Paris'/></br>");
+        $("#edition").append("<input class='crea' id='adresse' type='text' placeholder='1500 Avenue Médicis, Paris'/></br>");
         $("#edition").append($("<span>").html("Sport :"));
-        $("#edition").append("<input id='sport' type='text' placeholder='tennis'/></br>");
-        $("#edition").append($("<span>").html("Prix :"));
-        $("#edition").append("<input id='prix' type='number' placeholder='50'/></br>");
+        $("#edition").append("<input class='crea' id='sport' type='text' placeholder='tennis'/></br>");
+        $("#edition").append($("<span>").html("Prix (horaire):"));
+        $("#edition").append("<input class='crea' id='prix' type='number' placeholder='50'/></br>");
+        $("#edition").append($("<span>").html("Capacité (nombre de personnes):"));
+        $("#edition").append("<input class='crea' id='capacite' type='number' placeholder='5'/></br>");
         $("#edition").append($("<span>").html("Type :"));
         $("#edition").append("</br>");
         $("#edition").append("<input id='publique' type='radio' name='type' value=0 checked/>" +
@@ -112,6 +172,14 @@ $photos = get_photos();
         $("#edition").append($("<h5>").html("Description générale"));
         $("#edition").append($("<p id='description'>").html("Description vide"));
         $("#edition").append("<input id='creation' type='button' value='Créer terrain'/>");
+    }
+
+    function create_place(){
+        return ;
+    }
+
+    function modif_place(){
+        return ;
     }
 
 </script>
