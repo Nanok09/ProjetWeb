@@ -19,8 +19,8 @@ if ($action = valider("action")) {
 
         case 'Se connecter':
             echo "j'ai compris que tu veux te connecter";
-            if ($pseudo = valider('pseudo') &&
-                $password = valider('password')
+            if (($pseudo = valider('pseudo')) &&
+                ($password = valider('password'))
             ) {
                 if (!verif_user($pseudo, $password)) {
                     $qs = "?view=login-signIn&msg=Mauvais identifiants de connexion, si vous n'avez pas de compte inscrivez vous!";
@@ -33,11 +33,11 @@ if ($action = valider("action")) {
         // Inscription //////////////////////////////////////////////////
 
         case 'Inscription':
-            if ($pseudo = valider('pseudo') &&
-                $password = valider('password') &&
-                $nom = valider('nom') &&
-                $prenom = valider('prenom') &&
-                $email = valider('email')
+            if (($pseudo = valider('pseudo')) &&
+                ($password = valider('password')) &&
+                ($nom = valider('nom')) &&
+                ($prenom = valider('prenom')) &&
+                ($email = valider('email'))
             ) {
                 create_user($pseudo, $password, $email, $nom, $prenom);
                 verif_user($pseudo, $password);
