@@ -92,7 +92,7 @@
         <div class="col rounded-pill bg-custom-grey my-2 py-3">
             <h1 class="text-center">Rechercher des terrains proches de vous !</h1>
             <div class="bg-light rounded-lg p-3 w-75 mx-auto" id="searchbar">
-                <img src="../images/loupe.png" class="img-fluid" id="imageLoupe">
+                <img src="./images/loupe.png" class="img-fluid" id="imageLoupe">
             </div>
         </div>
     </div>
@@ -133,16 +133,16 @@
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <div class="row justify-content-around pt-3">
-                    <img src="../images/sports/basketball-ball.png" class="d-block col-12 col-md-3 col-lg-2 col-xl-1 sportLogos2">
-                    <img src="../images/sports/football.png" class="d-block col-12 col-md-3 col-lg-2 col-xl-1 sportLogos2">
-                    <img src="../images/sports/rugby-ball.png" class="d-block col-12 col-md-3 col-lg-2 col-xl-1 sportLogos2">
+                    <img src="./images/sports/basketball-ball.png" class="d-block col-12 col-md-3 col-lg-2 col-xl-1 sportLogos2">
+                    <img src="./images/sports/football.png" class="d-block col-12 col-md-3 col-lg-2 col-xl-1 sportLogos2">
+                    <img src="./images/sports/rugby-ball.png" class="d-block col-12 col-md-3 col-lg-2 col-xl-1 sportLogos2">
                 </div>
             </div>
             <div class="carousel-item">
                 <div class="row justify-content-around pt-3">
-                    <img src="../images/sports/tennis-racket.png" class="d-block col-12 col-md-3 col-lg-2 col-xl-1 sportLogos2">
-                    <img src="../images/sports/climbing.png" class="d-block col-12 col-md-3 col-lg-2 col-xl-1 sportLogos2">
-                    <img src="../images/sports/dumbbell.png" class="d-block col-12 col-md-3 col-lg-2 col-xl-1 sportLogos2">
+                    <img src="./images/sports/tennis-racket.png" class="d-block col-12 col-md-3 col-lg-2 col-xl-1 sportLogos2">
+                    <img src="./images/sports/climbing.png" class="d-block col-12 col-md-3 col-lg-2 col-xl-1 sportLogos2">
+                    <img src="./images/sports/dumbbell.png" class="d-block col-12 col-md-3 col-lg-2 col-xl-1 sportLogos2">
                 </div>
             </div>
         </div>
@@ -169,15 +169,15 @@
             <div class="carousel-item active">
                 <div class="row justify-content-around pt-3">
                     <div class="col-8 col-md-4 mb-2 text-center">
-                        <img src="../images/terrains/terrain1.jpg" class="d-block m-auto sportLogos2">
+                        <img src="./images/terrains/terrain1.jpg" class="d-block m-auto sportLogos2">
                         <h5>Hoops factory Lille</h5>
                     </div>
                     <div class="col-8 col-md-4 mb-2 text-center">
-                        <img src="../images/terrains/terrain2.jpg" class="d-block m-auto sportLogos2">
+                        <img src="./images/terrains/terrain2.jpg" class="d-block m-auto sportLogos2">
                         <h5>Playground de la Porte Dorée</h5>
                     </div>
                     <div class="col-8 col-md-4 mb-2 text-center">
-                        <img src="../images/terrains/terrain3.jpg" class="d-block m-auto sportLogos2">
+                        <img src="./images/terrains/terrain3.jpg" class="d-block m-auto sportLogos2">
                         <h5>Terrain de tennis du Triolo</h5>
                     </div>
                 </div>
@@ -185,15 +185,15 @@
             <div class="carousel-item">
                 <div class="row justify-content-around pt-3">
                     <div class="col-8 col-md-3 col-lg-2 col-xl-1 mb-2 text-center">
-                        <img src="../images/terrains/terrain4.jpg" class="d-block m-auto sportLogos2">
+                        <img src="./images/terrains/terrain4.jpg" class="d-block m-auto sportLogos2">
                         <h5>Stade Hunebelle - Clamart</h5>
                     </div>
                     <div class="col-8 col-md-3 col-lg-2 col-xl-1 mb-2 text-center">
-                        <img src="../images/terrains/terrain5.png" class="d-block m-auto sportLogos2">
+                        <img src="./images/terrains/terrain5.png" class="d-block m-auto sportLogos2">
                         <h5>Parc Street Workout - Fontenay-Aux-Roses</h5>
                     </div>
                     <div class="col-8 col-md-3 col-lg-2 col-xl-1 mb-2 text-center">
-                        <img src="../images/terrains/terrain6.jpg" class="d-block m-auto sportLogos2">
+                        <img src="./images/terrains/terrain6.jpg" class="d-block m-auto sportLogos2">
                         <h5>Salle de Musculation - Villeneuve d'Ascq</h5>
                     </div>
                 </div>
