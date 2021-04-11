@@ -1,7 +1,7 @@
 <?php
 
-include_once "maLibUtils.php";	// Car on utilise la fonction valider()
-include_once "modele.php";	// Car on utilise la fonction connecterUtilisateur()
+include_once "maLibUtils.php"; // Car on utilise la fonction valider()
+include_once "modele.php"; // Car on utilise la fonction connecterUtilisateur()
 
 /**
  * @file login.php
@@ -13,55 +13,56 @@ include_once "modele.php";	// Car on utilise la fonction connecterUtilisateur()
  * Elle stocke les informations sur la personne dans des variables de session : session_start doit avoir été appelé...
  * Infos à enregistrer : pseudo, idUser, heureConnexion, isAdmin
  * Elle enregistre l'état de la connexion dans une variable de session "connecte" = true
- * L'heure de connexion doit être stockée au format date("H:i:s") 
+ * L'heure de connexion doit être stockée au format date("H:i:s")
  * @pre login et passe ne doivent pas être vides
  * @param string $login
  * @param string $password
  * @return false ou true ; un effet de bord est la création de variables de session
  */
-function verifUser($login,$password)
+function verif_user($login, $password)
 {
-	if ($id = verifUserBdd($login,$password)){
+    if ($id = verif_user_bdd($login, $password)) {
 
-		$_SESSION['connecte']=true;
-		$_SESSION['pseudo'] = $login;
-		$_SESSION['idUser'] = $id;
-		$_SESSION['heureConnexion']=date("H:i:s");
-		$_SESSION['isAdmin'] = isAdmin($id);
-		return true;
-	}else{
-		return false;
-	}
+        $_SESSION['is_connected'] = true;
+        $_SESSION['pseudo'] = $login;
+        $_SESSION['id_user'] = $id;
+        $_SESSION['heure_connexion'] = date("H:i:s");
+        $_SESSION['id_admin'] = is_admin($id);
+        return true;
+    } else {
+        return false;
+    }
 }
-
-
-
 
 /**
  * Fonction à placer au début de chaque page privée
 
- * Cette fonction redirige vers la page $urlBad en envoyant un message d'erreur
+ * Cette fonction redirige vers la page $url_bad en envoyant un message d'erreur
 et arrête l'interprétation si l'utilisateur n'est pas connecté
  * Elle ne fait rien si l'utilisateur est connecté, et si $urlGood est faux
  * Elle redirige vers urlGood sinon
  */
-function securiser($urlBad, $urlGood = FALSE) {
-	if (valider("id_joueur","SESSION") != FALSE)
-		if ($urlGood != FALSE) header("Location:".$urlGood);
-		else header("Location:index.php?view=".$urlBad);
-}
-
-function securiserAdmin($urlBad,$urlGood=false)
+function securiser($url_bad, $url_good = false)
 {
-	if ($_SESSION['isAdmin'] == 1 AND $_SESSION['isConnected'] == true)
-	{
-		if ($urlGood == false)
-		{}
-		else
-			header("Location:".$urlGood);
-	}
-	else
-		header("Location:index.php?view=".$urlBad);
+    if (valider("is_connected", "SESSION")) {
+        if ($url_good != false) {
+            header("Location:" . $url_good);
+        } else {
+            header("Location:index.php?view=" . $url_bad);
+        }
+    }
+
 }
 
-?>
+function securiser_admin($url_bad, $url_good = false)
+{
+    if ($_SESSION['is_admin'] == 1 and $_SESSION['is_connected'] == true) {
+        if ($url_good == false) {} else {
+            header("Location:" . $url_good);
+        }
+
+    } else {
+        header("Location:index.php?view=" . $url_bad);
+    }
+
+}

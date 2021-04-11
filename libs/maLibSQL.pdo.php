@@ -2,8 +2,8 @@
 
 // V1.0 du 18 mai 2018
 
-if (file_exists(__DIR__.'/../config.php')) {
-    include_once(__DIR__.'/../config.php');
+if (file_exists(__DIR__ . '/../config.php')) {
+    include_once __DIR__ . '/../config.php';
 } else {
     exit('Fichier config introuvable');
 }
@@ -20,7 +20,6 @@ if (file_exists(__DIR__.'/../config.php')) {
  *
  * @todo On pourrait tracer les requêtes dans une table de logs
  */
-
 
 /**
  * Exécuter une requête UPDATE. Renvoie le nb de modifs ou faux si pb
@@ -66,7 +65,6 @@ function SQLDelete($sql, $params)
     return SQLUpdate($sql, $params);
 }
 
-
 /**
  * Exécuter une requête INSERT
  * @param string $sql requête préparée
@@ -80,7 +78,7 @@ function SQLInsert($sql, $params)
     global $BDD_base;
     global $BDD_user;
     global $BDD_password;
-    
+
     try {
         $dbh = new PDO("mysql:host=$BDD_host;dbname=$BDD_base", $BDD_user, $BDD_password);
     } catch (PDOException $e) {
@@ -100,16 +98,14 @@ function SQLInsert($sql, $params)
     return $lastInsertId;
 }
 
-
-
 /**
-* Effectue une requete SELECT dans une base de données SQL SERVER, pour récupérer uniquement un champ (la requete ne doit donc porter que sur une valeur)
-* Renvoie FALSE si pas de resultats, ou la valeur du champ sinon
-* @pre Les variables  $BDD_login, $BDD_password $BDD_chaine doivent exister
+ * Effectue une requete SELECT dans une base de données SQL SERVER, pour récupérer uniquement un champ (la requete ne doit donc porter que sur une valeur)
+ * Renvoie FALSE si pas de resultats, ou la valeur du champ sinon
+ * @pre Les variables  $BDD_login, $BDD_password $BDD_chaine doivent exister
  * @param string $sql requête préparée
  * @param array $params paramètres associés à la requête préparée
-* @return false|string
-*/
+ * @return false|string
+ */
 function SQLGetChamp($sql, array $input_parameters = null)
 {
     global $BDD_host;
@@ -125,7 +121,7 @@ function SQLGetChamp($sql, array $input_parameters = null)
 
     $dbh->exec("SET CHARACTER SET utf8");
     $res = $dbh->prepare($sql);
-    $res->execute($input_parameters);  // j'ai mis une valeur par défaut pour le paramètre 
+    $res->execute($input_parameters); // j'ai mis une valeur par défaut pour le paramètre
     if ($res === false) {
         $e = $dbh->errorInfo();
         die("<font color=\"red\">SQLGetChamp: Erreur de requete : " . $e[2] . "</font>");
@@ -134,10 +130,10 @@ function SQLGetChamp($sql, array $input_parameters = null)
     $num = $res->rowCount();
     $dbh = null;
 
-    if ($num==0) {
+    if ($num == 0) {
         return false;
     }
-    
+
     $res->setFetchMode(PDO::FETCH_NUM);
 
     $ligne = $res->fetch();
@@ -176,11 +172,11 @@ function SQLSelect($sql, $params)
         $e = $dbh->errorInfo();
         die("<font color=\"red\">SQLSelect: Erreur de requete : " . $e[2] . "</font>");
     }
-    
+
     $num = $res->rowCount();
     $dbh = null;
 
-    if ($num==0) {
+    if ($num == 0) {
         return false;
     } else {
         return $res;
@@ -188,11 +184,11 @@ function SQLSelect($sql, $params)
 }
 
 /**
-*
-* Parcours les enregistrements d'un résultat mysql et les renvoie sous forme de tableau associatif
-* On peut ensuite l'afficher avec la fonction print_r, ou le parcourir avec foreach
-* @param resultat_Mysql $result
-*/
+ *
+ * Parcours les enregistrements d'un résultat mysql et les renvoie sous forme de tableau associatif
+ * On peut ensuite l'afficher avec la fonction print_r, ou le parcourir avec foreach
+ * @param resultat_Mysql $result
+ */
 function parcoursRs($result)
 {
     if ($result == false) {
@@ -201,7 +197,7 @@ function parcoursRs($result)
 
     $result->setFetchMode(PDO::FETCH_ASSOC);
     while ($ligne = $result->fetch()) {
-        $tab[]= $ligne;
+        $tab[] = $ligne;
     }
     $result->closeCursor();
     return $tab;

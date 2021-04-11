@@ -1,8 +1,7 @@
 <?php
-include_once("libs/modele.php");
-include_once("libs/maLibUtils.php");
-include_once("libs/maLibForms.php");
-
+include_once "libs/modele.php";
+include_once "libs/maLibUtils.php";
+include_once "libs/maLibForms.php";
 
 // Si la page est appelée directement par son adresse, on redirige en passant pas la page index
 if (basename($_SERVER["PHP_SELF"]) != "index.php") {
@@ -10,8 +9,7 @@ if (basename($_SERVER["PHP_SELF"]) != "index.php") {
     die("");
 }
 
-
-$container='
+$container = '
 <div id="container">
     <!-- Connexion -->
     <h1>Connexion</h1>
@@ -22,7 +20,7 @@ $container='
         <label for="ResterCo">Rester connecté</label>
         <input type="submit" name="action" value="Se connecter"/>
     </form>
-    
+
     <!-- Inscription -->
     <h1>Inscription</h1>
     <form id="inscription" action="controleur.php" method="GET">
@@ -36,20 +34,20 @@ $container='
 </div>
 ';
 
-if ($msg=valider('msg')){
+if ($msg = valider('msg')) {
     $container .= "<span style='color:red'>$msg</span>";
 }
 
 ?>
 
 <?php
-    if (valider("connecte","SESSION")){
-        if ($pseudo = valider("pseudo","SESSION")){
-            echo "Vous êtes connecté en tant que ".$pseudo.".";
-        }
-    }else{
-        echo $container;
+if (valider("is_connected", "SESSION")) {
+    if ($pseudo = valider("pseudo", "SESSION")) {
+        echo "Vous êtes connecté en tant que " . $pseudo . ".";
     }
+} else {
+    echo $container;
+}
 ?>
 
 
