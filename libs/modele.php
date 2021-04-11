@@ -47,6 +47,25 @@ function is_admin($id_user)
     return SQLGetChamp($SQL, $params);
 }
 
+
+/**
+ * vériefie si il existe bien un utilisateur associé à l'id fourni dans la bdd
+ * @param int id_user
+ * @return bool id_user si l'utilsateur existe et false sinon
+ */
+function is_user($user_id) {
+    $SQL= "SELECT id FROM utilisateurs WHERE id=?";
+    $param=array($user_id);
+    return SQLGetChamp($SQL,$param);
+}
+
+function get_place_creator($place_id) {
+    $SQL= "SELECT createur FROM lieux WHERE id=?";
+    $param= array($place_id);
+    return SQLGetChamp($SQL,$param);
+    
+}
+
 /**
  * Modifie les infos d'un utilisateur
  * @param int id_user
@@ -196,18 +215,98 @@ function get_places($sport = false , bool $private_only=false, bool $public_only
 
 
 //Créer un lieu
+/**
+ * Fonction permettant de creer un lieu 
+ * @param string nom
+ * @param string description 
+ * @param string adresse 
+ * @param float lat
+ * @param float long
+ * @param string sport
+ * @param int prive
+ * @param int createur_id
+ * @param float price
+ * @param int capacite
+ * @return int lastInsertedId
+ */
 
 
-function create_place() {
-    echo 'appel à create place';
+function create_place(string $nom, string $description = '', string $adresse= '', float $lat, float $long, string $sport, int $private, int $createur_id, float $price=0, int $capacite = 10) {
+    // il faut vérifier si le créateur_id correspond bien à un utilisateur. On pourait utiliser les variables de session comme paramètre par défaut..?
+    
+
+    
+    if ($id_user = is_user($createur_id)) {
+
+        $param = array(
+            'nom' => $nom,
+            'description' => $description,
+            'adresse' => $adresse,
+            'latitude' => $lat,
+            'longitude' => $long,
+            'sport' => $sport,
+            'prive' => $private,
+            'createur' => $createur_id,
+            'prix' => $price,
+            'capacite' => $capacite
+        );
+        $SQL= "INSERT INTO `lieux` (`nom`, `description`, `adresse`, `latitude`, `longitude`, `sport`, `prive`, `createur`, `prix`, `capacite`) VALUES
+        ( :nom, :description, :adresse, :latitude, :longitude, :sport, :prive, :createur, :prix, :capacite)";
+    
+        return SQLInsert($SQL,$param);
+
+    }//end if
+    trigger_error("The given creator is not registered in the data base",E_USER_WARNING );
+    return false;
+}// end function
+
+
+
+
+/** Modifier un lieu pour son créateur
+ * @param int place_id
+ * @param array modifications  un tablau associatif avec en clé les champs à modifier dans la bdd et en valeur les nouvelles valeurs à mettre
+ * @return bool false or int nb_modifications: si l'utilisateur n'a pas le droit de modifier la place en question ou si il y a eu un pb pdt la requete, sinon renvoie le nombre de modifications 
+*/
+
+
+function modify_place(int $place_id, int $user_id, array $modifications) {
+    
+
+   // UPDATE commentaires SET message = :message, edited = true, timestamp=:timestamp WHERE idCommentaire = :id_comment AND idUtilisateur= :id_user"
+
+    if ($user_id == get_place_creator($place_id)) { // vérifier que l'id correspond bien à un lieu dont l'utilisateur est le créateur
+        $SQL= "UPDATE lieux SET";
+        foreach ($modifications as $champ => $modification) {
+            $SQL.= " $champ = :$champ, ";
+        }
+        $SQL = substr($SQL, 0, -2);
+        $SQL.= " WHERE id=:id";
+        var_dump($SQL);
+        $modifications['id'] = $place_id;
+
+        var_dump($modifications);
+        return SQLUpdate($SQL,$modifications);
+    }// end if
+    
+    trigger_error('The given user is not allowed to modify this place because it is not the place creator',E_USER_WARNING);
+    return false;
 }
 
-
-
-
-//Modifier un lieu pour son créateur
-
 //Récupérer les infos d'un lieu
+
+/**
+ * @param int place_id
+ * @return array place_info
+ */
+
+function get_info(int $place_id) {
+
+    $SQL= "SELECT * FROM lieux WHERE id=?";
+    $param = array($place_id);
+    $result = parcoursRs(SQLSelect($SQL,$param));
+    return $result[0];
+}
 
 //// ================= NOTES =========================
 /**

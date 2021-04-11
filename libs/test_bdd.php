@@ -4,8 +4,9 @@ include_once("modele.php");
 
 //hotel de ville lat, long = 48.856614,2.3522219
 
-$test = get_places(false, false, false, 48.856614,2.3522219);
+$description = "j'ai modifié juste le lieu 5";
+$adresse = '5 rue du moulin bleu!';
 
 
-echo '<h2> Après tri </h2>';
-var_dump($test);
+$result = get_info(4);
+var_dump($result);
