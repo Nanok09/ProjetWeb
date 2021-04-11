@@ -99,7 +99,7 @@ function get_note_place($id_place)
 {
     $SQL = "SELECT avg(note) note_moyenne, count(note) nb_notes FROM notes WHERE idLieu = ?";
     $params = array($id_place);
-    return SQLSelect($SQL, $params)[0];
+    return parcoursRs(SQLSelect($SQL, $params))[0];
 }
 
 /**
@@ -151,7 +151,7 @@ function get_comments($id_place)
     $SQL = "SELECT u.nom nomUtilisateur, c.id, c.message, c.timestamp FROM commentaires as c INNER JOIN utilisateurs as u ON c.idUtilisateur=u.id";
     $SQL .= " WHERE c.idLieu = :id_place ORDER BY c.timestamp DESC";
     $params = array("id_place" => $id_place);
-    return SQLSelect($SQL, $params);
+    return parcoursRs(SQLSelect($SQL, $params));
 }
 /**
  * Supprime un commentaire
@@ -198,7 +198,7 @@ function get_photos_place($id_place)
 {
     $SQL = "SELECT id,nomFichier FROM photosLieux WHERE idLieu=?";
     $params = array($id_place);
-    return SQLSelect($SQL, $params);
+    return parcoursRs(SQLSelect($SQL, $params));
 }
 // ============ CHAT ==========
 
