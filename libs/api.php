@@ -1,6 +1,8 @@
 <?php
-include_once "libs/maLibUtils.php";
-include_once "libs/modele.php";
+include_once "maLibUtils.php";
+include_once "modele.php";
+
+session_start();
 
 header("Access-Control-Allow-Origin: *"); // autoriser toutes les origines à faire des requêtes à notre api
 header("Access-Control-Allow-Methods: *"); // autoriser tous les types de méthodes
@@ -33,6 +35,13 @@ function verif_connecte()
     }
 }
 
+function set_request_success()
+{
+    global $data;
+    $data["success"] = true;
+    $data["status"] = 200;
+}
+
 // ===============
 
 if ($action = valider("action")) {
@@ -40,33 +49,59 @@ if ($action = valider("action")) {
         case "add_note":
         case "modify_note":
             if (verif_connecte()) {
-                if ($idUser = valider("id_user", "SESSION") &&
-                    $idLieu = valider("id_place") &&
-                    $note = valider("note")) {
-                    add_note($idUser, $idLieu, $note);
-                } else {
-                    $data["status"] = 400;
+                if (($id_user = valider("id_user", "SESSION")) &&
+                    ($id_lieu = valider("id_place")) &&
+                    ($note = valider("note"))) {
+                    add_note($id_user, $id_lieu, $note);
+                    set_request_success();
                 }
             }
             break;
         case "delete_note":
             if (verif_connecte()) {
-                if ($idUser = valider("id_user", "SESSION") &&
-                    $idLieu = valider("id_place")) {
-                    delete_note($idLieu, $idUser);
-                } else {
-                    $data["status"] = 400;
-                }
-            }
+                if (($id_user = valider("id_user", "SESSION")) &&
+                    ($id_lieu = valider("id_place"))) {
+                    $nb_modified = delete_note($id_lieu, $id_user);
+                    if ($nb_modified > 0) {
+                        set_request_success();
+                    }
+                }}
             break;
         case "add_comment":
             if (verif_connecte()) {
-                if ($idUser = valider("id_user", "SESSION") &&
-                    $idLieu = valider("id_place") &&
-                    $comment = valider("comment")) {
-                    add_comment($idLieu, $idUser, $comment);
-                } else {
-                    $data["status"] = 400;
+                if (($id_user = valider("id_user", "SESSION")) &&
+                    ($id_lieu = valider("id_place")) &&
+                    ($comment = valider("comment"))) {
+                    $timestamp = time();
+                    $data["data"] = array();
+                    $data["data"]["timestamp"] = $timestamp;
+                    $data["data"]["id_comment"] = add_comment($id_lieu, $id_user, $comment, $timestamp);
+                    set_request_success();
+                }
+            }
+            break;
+        case "modify_comment":
+            if (verif_connecte()) {
+                if (($id_user = valider("id_user", "SESSION")) &&
+                    ($id_comment = valider("id_comment")) &&
+                    ($comment = valider("comment"))) {
+                    $data["data"] = array();
+                    $data["data"]["timestamp"] = $timestamp;
+                    $nb_modified = modify_comment($id_user, $id_comment, $comment, $timestamp);
+                    if ($nb_modified > 0) {
+                        set_request_success();
+                    }
+                }
+            }
+            break;
+        case "delete_comment":
+            if (verif_connecte()) {
+                if (($id_user = valider("id_user", "SESSION")) &&
+                    ($id_comment = valider("id_comment"))) {
+                    $nb_modified = delete_comment($id_user, $id_comment);
+                    if ($nb_modified > 0) {
+                        set_request_success();
+                    }
                 }
             }
             break;
