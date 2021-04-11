@@ -73,6 +73,18 @@ function is_admin($id_user)
 
 //Récupérer les infos d'un lieu
 
+/**
+ * Récupérer les lieux créés par un utilisateur
+ * @param int id_user
+ */
+
+function get_places($id_user){
+    $SQL = "SELECT * FROM lieux WHERE createur = ?";
+    $params = array($id_user);
+    return parcoursRs(SQLSelect($SQL, $params));
+
+}
+
 //// ================= NOTES =========================
 /**
  * Ajoute une note à un lieu (ou la modifie si elle existe déjà)
@@ -190,6 +202,16 @@ function get_photos_place($id_place)
     $params = array($id_place);
     return SQLSelect($SQL, $params);
 }
+/**
+ * Récupère toutes les photos
+ */
+function get_photos()
+{
+    $SQL = "SELECT * FROM photosLieux";
+    $params = array();
+    return parcoursRs(SQLSelect($SQL,$params));
+}
+
 // ============ CHAT ==========
 
 //Envoyer un message
