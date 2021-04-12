@@ -10,6 +10,16 @@ body {
   background-color: #dcdcdc;
 }
 
+<<<<<<< HEAD
 .bg-custom-blue {
   background-color: #123455;
 }
+=======
+.bg-custom-grey{
+    background-color: #dcdcdc;
+}
+
+.custom-rounded-corners{
+    border-radius: 50px;
+}
+>>>>>>> 8fa16163558f5c984bd6edf01be590abceb87cfa
