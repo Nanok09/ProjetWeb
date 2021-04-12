@@ -5,15 +5,15 @@ include_once("./libs/libUtils.php");
 // Si l'utilisateur est connecte, on affiche un lien de deconnexion
 if (valider("is_connected","SESSION"))
 {
-    echo "Utilisateur <b>$_SESSION[pseudo]</b> connecté depuis <b>$_SESSION[heureConnexion]</b> &nbsp; ";
-    echo "<a href=\"controleur.php?action=Logout\">Se Déconnecter</a>";
 
-    $idUser = $_SESSION["idUser"];
+    $idUser = $_SESSION["id_user"];
 
     $user_info = get_user_info($idUser);
     $user_info = $user_info[0];
     $terrains_associes = get_places_created_by($idUser);
-    $terrains_associes = $terrains_associes[0];
+    if(empty($terrains_associes)){
+        $terrains_associes["nom"] = "Vous n'avez pas encore crée de terrain";
+    }
 }
 
 
