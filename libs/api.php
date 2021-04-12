@@ -1,4 +1,7 @@
 <?php
+
+use function PHPSTORM_META\map;
+
 include_once "libUtils.php";
 include_once "modele.php";
 include_once "libValidation.php";
@@ -203,6 +206,84 @@ if ($action = valider("action")) {
                     set_request_success();
                 }
             }
+            break;
+        case "get_list_places":
+            $arg_array = array(
+                'sport' => false,
+                'private_only' => false,
+                'public_only' => false,
+                'lat' => false,
+                'long' => false,
+                'price_min' => 0,
+                'price_max' => 10000,
+                'max_distance' => 1000,
+                'max_results' => 10
+            );
+            if ($sport = valider('sport')) {
+                $arg_array['sport'] = $sport;
+            }
+            if ($user_location_lat = valider("user_location_lat")) {
+                // On prends toujours prioritairement la position envoyée par le client 
+                $arg_array['lat'] = $user_location_lat;
+            }
+            if ($user_location_long = valider("user_location_long")) {
+                // On prends toujours prioritairement la position envoyée par le client 
+
+                $arg_array['long'] = $user_location_long;
+            }
+            if ($distance_max = valider("distance_max")) {
+                $arg_array['max_distance'] = $distance_max;
+            }
+            if ($accept_public = valider("accept_public"))  {
+                if ($accept_public === 'no') {
+                    $arg_array['private_only'] = true;
+                }
+            }
+            if ($accept_private = valider("accept_private")) {
+                if ($accept_private === 'no') {
+                    $arg_array['public_only'] = true;
+                }
+            }
+            if ($prix_min = valider("prix_min")) {
+                $arg_array['price_min'] = $prix_min;
+            }
+            if ($prix_max = valider("prix_max")) {
+                $arg_array['price_max'] = $prix_max;
+            }
+            $results = get_places($arg_array['sport'],$arg_array['private_only'],$arg_array['public_only'],$arg_array['lat'],$arg_array['long'],$arg_array['price_min'],$arg_array['price_max'],$arg_array['max_distance'],$arg_array['max_results']);
+            $data['data']=array();
+            foreach ($results as $result) {
+                $place_data = array();
+                // modifier l'array obtenu pour être conforme à la doc 
+                $place_data['id'] = $result['id'];
+                $place_data['sport']=$result['sport'];
+                $place_data['private'] = $result['prive'];
+                $place_data['price'] = $result['prix'];
+                $place_data['name'] = $result['nom'];
+                $place_data['coordinates'] = array (
+                    'lat' => $result['latitude'],
+                    'long' => $result['longitude']
+                );
+                $place_data['address'] = $result['adresse'];
+                $place_data['photos']=get_photos_place($result['id']);
+                $place_data['note'] = get_note_place($result['id']);
+                if ($result['prive'] == 0) {
+                    $place_data['dispo']=false;
+                }
+                if ($result['prive'] == 1) {
+                    $place_data['dispo'] = $result['capacite']; // renseigner la capacité en temps réel 
+                }
+                $data['data'][]=$place_data;
+
+            } // end foreach
+            set_request_success();
+            break;
+        case 'get_place_info':
+            if ($place_id = valider('terrain_id')){
+                //TODO 
+            }
+            break;
+        case 'address_research':
             break;
     }
 }

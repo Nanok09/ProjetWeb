@@ -20,10 +20,11 @@ Chaque action peut/doit recevoir une liste de parametres optionels:
   + user_location_lat =lat -- une chaine de caractere décrivant la position géographique de l'utilisateur (lattitude)
   + user_location_long=long -- une chaine de caractere décrivant la position géographique de l'utilisateur (longitude)
   + distance_max=5 -- une chaine de caractère représentant le nombre de km max autorisés pour les terrains à afficher
-  + accept_public = no -- ne pas recevoir des propositions de terrains publics (par défaut on en recoit)
-  + accept_private = no -- ne pas recevoir des propositions de terrains (par défaut on en recoit)
+  + accept_public = no -- ne pas recevoir des propositions de terrains publics (par défaut on en recoit). 'no' est la seule valeur qu'il est possible de renseigner si on envoie le paramètre accept_public! 
+  + accept_private = no -- ne pas recevoir des propositions de terrains (par défaut on en recoit).  'no' est la seule valeur qu'il est possible de renseigner si on envoie le paramètre accept_public!
   + prix_min=5 -- str représentant le prix minimal (par défaut 0)
   + prix_max=6 -- str représentant le prix max (par défaut infini)
+  + max_results= 4 -- str représentant le nombre maximal de lieux différents à fournir en retour
 
 * action = get_place_info
 
@@ -116,6 +117,7 @@ Chaque action peut/doit recevoir une liste de parametres optionels:
                 coordinates: {lat:lat, long:long},
                 name: @str,
                 id: @int,
+                adresse: @str,
                 photos: [nom_fichier_1,...,nom_fichier_n],
                 sport: @str,
                 private: @bool,
@@ -131,6 +133,8 @@ Chaque action peut/doit recevoir une liste de parametres optionels:
 
         data = {
                 coordinates: {lat:lat, long:long},
+                address: @str,
+                creator: @str,
                 name: @str,
                 id: @int,
                 photos: [nom_fichier_1,...,nom_fichier_n],
