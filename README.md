@@ -8,7 +8,7 @@ Créer un fichier config.php à partir de config.example.php contenant les ident
 
 ### Doc BDD
 
-![](https://i.imgur.com/DNFfwwp.png)
+![](https://i.imgur.com/sZQgdEn.png)
 
 ### Doc API
 
