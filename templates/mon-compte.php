@@ -1,7 +1,7 @@
 <?php
 
 include_once("./libs/modele.php");
-include_once("./libs/maLibUtils.php");
+include_once("./libs/libUtils.php");
 // Si l'utilisateur est connecte, on affiche un lien de deconnexion
 if (valider("is_connected","SESSION"))
 {
@@ -12,8 +12,7 @@ if (valider("is_connected","SESSION"))
 
     $user_info = get_user_info($idUser);
     $user_info = $user_info[0];
-
-    $terrains_associes = get_places($idUser);
+    $terrains_associes = get_places_created_by($idUser);
     $terrains_associes = $terrains_associes[0];
 }
 
