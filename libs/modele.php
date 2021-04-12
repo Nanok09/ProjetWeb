@@ -35,6 +35,18 @@ function create_user($pseudo, $password, $email, $nom, $prenom)
 }
 
 /**
+ * Récupére les données affichées dans la page mon compte
+ * @param int $id_user
+ */
+function get_user_info($id_user)
+{
+    $SQL = "SELECT pseudo, email, nom, prenom FROM utilisateurs WHERE id=?;";
+    $params = array($id_user);
+    return parcoursRs(SQLSelect($SQL, $params));
+}
+
+
+/**
  * Vérifie si un utilisateur est admin
  * @param int id_user
  * @return bool
