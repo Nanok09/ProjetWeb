@@ -45,7 +45,6 @@ function get_user_info($id_user)
     return parcoursRs(SQLSelect($SQL, $params));
 }
 
-
 /**
  * Vérifie si un utilisateur est admin
  * @param int id_user
@@ -229,7 +228,7 @@ function get_places($sport = false, bool $private_only = false, bool $public_onl
  * @return int lastInsertedId
  */
 
-function create_place(string $nom, string $description = '', string $adresse = '', float $lat, float $long, string $sport, int $private, int $createur_id, float $price = 0, int $capacite = 10)
+function create_place(string $nom, float $lat, float $long, string $sport, int $private, int $createur_id, float $price = 0, int $capacite = 10, string $description = '', string $adresse = '')
 {
     // il faut vérifier si le créateur_id correspond bien à un utilisateur. On pourait utiliser les variables de session comme paramètre par défaut..?
 

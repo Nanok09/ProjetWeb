@@ -54,7 +54,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-light shadow">
         <a class="navbar-brand" href="index.php?view=accueil">
-            <img src="images/logo.svg" width="200" height="50" alt="">
+            <img src="images/Logo.svg" width="200" height="50" alt="">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample08"
             aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,7 +85,7 @@
 if (valider("is_connected", "SESSION")) {
     echo "<a id=\"deconnexion\" class=\"dropdown-item text-danger\" href=\"controleur.php?action=Logout\">Se Déconnecter</a>";
 } else {
-    echo " <a class=\"dropdown-item\" href=\"index.php?view=login-signin\">Inscription/Connexion</a>";
+    echo " <a class=\"dropdown-item\" href=\"index.php?view=login-signIn\">Inscription/Connexion</a>";
 }
 ?>
                     </div>

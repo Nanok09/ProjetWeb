@@ -24,6 +24,8 @@ if ($action = valider("action")) {
             ) {
                 if (!verif_user($pseudo, $password)) {
                     $qs = "?view=login-signIn&msg=Mauvais identifiants de connexion, si vous n'avez pas de compte inscrivez vous!";
+                } else {
+                    $qs = "?view=accueil";
                 }
             } else {
                 $qs = "?view=login-signIn&msg=Pour vous connecter, renseignez votre pseudo et mot de passe";
@@ -41,6 +43,7 @@ if ($action = valider("action")) {
             ) {
                 create_user($pseudo, $password, $email, $nom, $prenom);
                 verif_user($pseudo, $password);
+                $qs = "?view=accueil";
             } else {
                 $qs = "?view=login-signIn&msg=Veillez a remplir toutes les informations nécessaires à l'inscription";
             }
