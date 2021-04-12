@@ -12,9 +12,9 @@ if (valider("connecte","SESSION"))
 ?>
 
 
-<div class="container-fluid pb-0 mb-0 justify-content-center text-light " style="background-color: #153455">
-    <footer>
-        <div class="row my-5 justify-content-center py-5">
+
+    <footer class="text-light" style="background-color: #153455">
+        <div class="row mt-5 justify-content-center py-5">
             <div class="col-11">
                 <div class="row ">
                     <div class="col-xl-8 col-md-4 col-sm-4 col-12 my-auto mx-auto a">
@@ -49,7 +49,6 @@ if (valider("connecte","SESSION"))
             </div>
         </div>
     </footer>
-</div>
 
 
 </body>
