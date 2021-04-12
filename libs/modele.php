@@ -554,7 +554,6 @@ function get_creneaux_lieu($id_place, $date_debut, $date_fin)
     $SQLExplode2 = "SELECT t.idLieu, t.date, sum(t.nbPersonnes) as nbPersonnes, v.id as idCreneauHoraire, v.debut, v.fin FROM reservations as t LEFT JOIN creneauxValides as v ON t.heureDebut<=v.debut AND t.heureFin>=v.fin " . $condition . " GROUP BY date,idCreneauHoraire";
     $SQL = "SELECT e1.date, e1.debut time_start, e1.fin time_end, e1.capacite, e2.nbPersonnes reservations, (e1.capacite - if(e2.nbPersonnes is null,0,e2.nbPersonnes)) as remaining_capacite FROM (" . $SQLExplode1 . ") as e1 LEFT JOIN (" . $SQLExplode2 . ") as e2 ON e1.idLieu = e2.idLieu AND e1.date = e2.date AND e1.idCreneauHoraire = e2.idCreneauHoraire ORDER BY date ASC, time_start ASC;";
     $params = array("id_place" => $id_place, "date_debut" => $date_debut, "date_fin" => $date_fin);
-    var_dump($SQL);
     return parcoursRs(SQLSelect($SQL, $params));
 }
 /**
