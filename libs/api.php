@@ -177,12 +177,21 @@ if ($action = valider("action")) {
                 foreach ($creneaux as $creneau) {
                     $start = date("c", strtotime("$creneau[date] $creneau[time_start]"));
                     $end = date("c", strtotime("$creneau[date] $creneau[time_end]"));
-                    $title = "$creneau[remaining_capacite] places restantes";
-                    $class_name = "bg-success";
+                    $title = "$creneau[remaining_capacite] places restantes / $creneau[capacite]";
+                    $class_name = "bg-success border-success";
                     if (intval($creneau["remaining_capacite"]) == 0) {
-                        $class_name = "bg-danger";
+                        $class_name = "bg-danger border-danger";
                     }
-                    array_push($events, array("start" => $start, "end" => $end, "title" => $title, "className" => $class_name));
+                    if (count($events) > 0) {
+                        $last_event = $events[count($events) - 1];
+                    } else {
+                        $last_event = array("end" => "", "title" => "");
+                    }
+                    if ($last_event["end"] == $start && $last_event["title"] == $title) {
+                        $events[count($events) - 1]["end"] = $end;
+                    } else {
+                        array_push($events, array("start" => $start, "end" => $end, "title" => $title, "className" => $class_name));
+                    }
                 }
                 $data["data"] = $events;
                 set_request_success();

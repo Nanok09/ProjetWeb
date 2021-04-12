@@ -417,7 +417,7 @@ function delete_comment($id_user, $id_comment)
 
 //
 /**
- * Ajouter une photo associée à un lieu (après l'avoir uploadé sur le serveur qq part)
+ * Ajouter une photo associée à un lieu (après l'avoir uploadé sur le serveur dans un dossier spécifique)
  * @param int id_place
  * @param string nomFichier
  * @return int idPhoto
@@ -461,13 +461,31 @@ function get_photos()
 
 // ============ CHAT ==========
 
-//Envoyer un message
+/**
+ * Envoyer un message
+ * @param int id_user
+ * @param int id_user_dest id du destinataire
+ * @param string message
+ */
 
-//Récupérer toutes les personnes avec qui quelqu'un a parlé
+//
 
-//Récupérer tous les messages entre 2 personnes
+/**
+ * Récupérer toutes les personnes avec qui quelqu'un a parlé, les derniers messages, timestamps
+ * @param int id_user
+ */
 
-//Récupérer le dernier message "reçu" pour l'actualisation en ajax?
+/**
+ * Récupérer tous les messages entre 2 personnes
+ * @param int id_user
+ * @param int id_user2
+ */
+
+/**
+ * Récupère les messages reçus par id_user après l'id du dernier message reçu
+ * @param int id_user
+ * @param int id_last_msg
+ */
 
 // ============= CRENEAUX DISPONIBLES ============
 
@@ -534,8 +552,9 @@ function get_creneaux_lieu($id_place, $date_debut, $date_fin)
     $condition = "WHERE t.idLieu = :id_place AND t.date >= :date_debut AND t.date <= :date_fin";
     $SQLExplode1 = "SELECT t.id as idCreneauDispo, t.idLieu, t.date, sum(t.capacite) as capacite, v.id as idCreneauHoraire, v.debut, v.fin FROM creneauxDispo as t LEFT JOIN creneauxValides as v ON t.heureDebut<=v.debut AND t.heureFin>=v.fin " . $condition . " GROUP BY date,idCreneauHoraire";
     $SQLExplode2 = "SELECT t.idLieu, t.date, sum(t.nbPersonnes) as nbPersonnes, v.id as idCreneauHoraire, v.debut, v.fin FROM reservations as t LEFT JOIN creneauxValides as v ON t.heureDebut<=v.debut AND t.heureFin>=v.fin " . $condition . " GROUP BY date,idCreneauHoraire";
-    $SQL = "SELECT e1.date, e1.debut time_start, e1.fin time_end, e1.capacite, e2.nbPersonnes reservations, (e1.capacite - if(e2.nbPersonnes is null,0,e2.nbPersonnes)) as remaining_capacite FROM (" . $SQLExplode1 . ") as e1 LEFT JOIN (" . $SQLExplode2 . ") as e2 ON e1.idLieu = e2.idLieu AND e1.date = e2.date AND e1.idCreneauHoraire = e2.idCreneauHoraire;";
+    $SQL = "SELECT e1.date, e1.debut time_start, e1.fin time_end, e1.capacite, e2.nbPersonnes reservations, (e1.capacite - if(e2.nbPersonnes is null,0,e2.nbPersonnes)) as remaining_capacite FROM (" . $SQLExplode1 . ") as e1 LEFT JOIN (" . $SQLExplode2 . ") as e2 ON e1.idLieu = e2.idLieu AND e1.date = e2.date AND e1.idCreneauHoraire = e2.idCreneauHoraire ORDER BY date ASC, time_start ASC;";
     $params = array("id_place" => $id_place, "date_debut" => $date_debut, "date_fin" => $date_fin);
+    var_dump($SQL);
     return parcoursRs(SQLSelect($SQL, $params));
 }
 /**
