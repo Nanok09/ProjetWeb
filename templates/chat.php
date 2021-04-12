@@ -1,55 +1,61 @@
+<?php
 
-    <style>
-        body {
-            background-color: #123455;
 
-            min-height: 100vh;
-        }
+?>
 
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
 
-        ::-webkit-scrollbar-track {
-            width: 5px;
-            background: #f5f5f5;
-        }
 
-        ::-webkit-scrollbar-thumb {
-            width: 1em;
-            background-color: #ddd;
-            outline: 1px solid slategrey;
-            border-radius: 1rem;
-        }
 
-        .text-small {
-            font-size: 0.9rem;
-            color: #35516E;
-        }
+<style>
+    body {
 
-        .messages-box,
-        .chat-box {
-            height: 510px;
-            overflow-y: scroll;
-        }
+        min-height: 100vh;
+    }
 
-        .rounded-lg {
-            border-radius: 15px;
-        }
+    ::-webkit-scrollbar {
+        width: 5px;
+    }
 
-        input::placeholder {
-            font-size: 0.9rem;
-            color: #999;
-        }
-        h6{
-            color: #35516E;
-        }
-        .text-small-light{
-            font-size: 0.9rem;
-            color: #FFF7ED;
-        }
+    ::-webkit-scrollbar-track {
+        width: 5px;
+        background: #f5f5f5;
+    }
 
-    </style>
+    ::-webkit-scrollbar-thumb {
+        width: 1em;
+        background-color: #ddd;
+        outline: 1px solid slategrey;
+        border-radius: 1rem;
+    }
+
+    .text-small {
+        font-size: 0.9rem;
+        color: #35516E;
+    }
+
+    .messages-box,
+    .chat-box {
+        height: 510px;
+        overflow-y: scroll;
+    }
+
+    .rounded-lg {
+        border-radius: 15px;
+    }
+
+    input::placeholder {
+        font-size: 0.9rem;
+        color: #999;
+    }
+    h6{
+        color: #35516E;
+    }
+    .text-small-light{
+        font-size: 0.9rem;
+        color: #FFF7ED;
+    }
+
+</style>
 </head>
 <body>
 <div class="container py-5 px-4">
