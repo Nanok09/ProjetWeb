@@ -67,9 +67,33 @@ function is_admin($id_user)
  * @param prix min / max
  */
 
-//Créer un lieu
+/**
+ * Modifier un terrain
+ * @param int id_place
+ * @param int id_user
+ * @param string nom
+ * @param string adresse
+ * @param string sport
+ * @param string description
+ * @param int capacite
+ * @param double prix
+ */
 
-//Modifier un lieu pour son créateur
+
+/**
+ * Créer un terrain
+ * @param int id_place
+ * @param int id_user
+ * @param string nom
+ * @param string adresse
+ * @param string sport
+ * @param string description
+ * @param int capacite
+ * @param double prix
+ * @param boolean type(privé/public)
+ */
+
+
 
 //Récupérer les infos d'un lieu
 
@@ -83,6 +107,18 @@ function get_createur_lieu($id_place)
     $params = array("id_place" => $id_place);
     return SQLGetChamp($SQL, $params);
 }
+/**
+* Récupérer les lieux créés par un utilisateur
+ * @param int id_user
+ */
+
+function get_places($id_user){
+    $SQL = "SELECT * FROM lieux WHERE createur = ?";
+    $params = array($id_user);
+    return parcoursRs(SQLSelect($SQL, $params));
+
+}
+
 //// ================= NOTES =========================
 /**
  * Ajoute une note à un lieu (ou la modifie si elle existe déjà)
@@ -210,6 +246,16 @@ function get_photos_place($id_place)
     $params = array($id_place);
     return parcoursRs(SQLSelect($SQL, $params));
 }
+/**
+ * Récupère toutes les photos
+ */
+function get_photos()
+{
+    $SQL = "SELECT * FROM photosLieux";
+    $params = array();
+    return parcoursRs(SQLSelect($SQL,$params));
+}
+
 // ============ CHAT ==========
 
 //Envoyer un message
