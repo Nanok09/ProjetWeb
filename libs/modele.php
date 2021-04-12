@@ -1,6 +1,6 @@
 <?php
 
-include_once "maLibSQL.pdo.php";
+include_once "libSQL.pdo.php";
 include_once "libValidation.php";
 // ============ UTILISATEURS ==============
 /**
@@ -98,7 +98,17 @@ function is_admin($id_user)
 //Récupérer les infos d'un lieu
 
 /**
- * Récupérer les lieux créés par un utilisateur
+ * Récupère le créateur d'un lieu
+ * @param int id_place
+ */
+function get_createur_lieu($id_place)
+{
+    $SQL = "SELECT createur FROM lieux WHERE id = :id_place";
+    $params = array("id_place" => $id_place);
+    return SQLGetChamp($SQL, $params);
+}
+/**
+* Récupérer les lieux créés par un utilisateur
  * @param int id_user
  */
 
@@ -256,21 +266,91 @@ function get_photos()
 
 //Récupérer le dernier message "reçu" pour l'actualisation en ajax?
 
-// ============= CRENEAUX ============
+// ============= CRENEAUX DISPONIBLES ============
 
-//Ajouter un créneau de disponibilité d'un lieu pour le créateur
-
-//Modifier la capacité d'un créneau pour le créateur
+//
+/**
+ * Ajouter un créneau de disponibilité d'un lieu pour le créateur
+ * @pre verifier si id_user est le createur de id_place
+ * @param int id_place
+ * @param string date (jour sous la forme yyyy-mm-dd)
+ * @param string heure_debut (hh:mm)
+ * @param string heure_fin (hh:mm)
+ * @param int capacite
+ */
+function add_creneau_dispo($id_place, $date, $heure_debut, $heure_fin, $capacite)
+{
+    $SQL = "INSERT INTO creneauxDispo (idLieu,date,heureDebut,heureFin,capacite) VALUES(:id_place,:date,:heure_debut,:heure_fin,:capacite);";
+    $params = array("id_place" => $id_place, "date" => $date, "heure_debut" => $heure_debut, "heure_fin" => $heure_fin, "capacite" => $capacite);
+    return SQLInsert($SQL, $params);
+}
 
 // ============= RESERVATIONS ============
 
-//Réserver un créneau
+/**
+ * Réserver un créneau
+ * pre vérifier qu'il y a au minimum nb_personnes en capacité restante sur le créneau ciblé
+ * @param int id_user
+ * @param int id_lieu
+ * @param string date (yyyy-mm-dd)
+ * @param string heure_debut (hh:mm)
+ * @param string heure_fin (hh:mm)
+ * @param int nb_personnes
+ */
+function add_reservation($id_user, $id_place, $date, $heure_debut, $heure_fin, $nb_personnes)
+{
+    $SQL = "INSERT INTO reservations (idUtilisateur,date,heureDebut,heureFin,nbPersonnes,idLieu) VALUES (:id_user,:date,:heure_debut,:heure_fin,:nb_personnes,:id_place);";
+    $params = array("id_user" => $id_user, "date" => $date, "heure_debut" => $heure_debut, "heure_fin" => $heure_fin, "nb_personnes" => $nb_personnes, "id_place" => $id_place);
+    return SQLInsert($SQL, $params);
+}
 
-//Annuler un créneau réservé
-//=============== FONCTIONS NECESSAIRES POUR L'API ==============================
+/**
+ * Annuler un créneau réservé
+ * @param int id_user
+ * @param int id_reservation
+ */
+function delete_reservation($id_user, $id_reservation)
+{
+    $SQL = "DELETE FROM reservations WHERE idUtilisateur = :id_user AND id = :id_reservation;";
+    $params = array("id_user" => $id_user, "id_reservation" => $id_reservation);
+    return SQLDelete($SQL, $params);
+}
 
-// function hash2id($hash)
-// {
-//     $SQL = "SELECT id FROM users WHERE hash= :hash";        //modification pour fonctionner avec des requêtes préparées, voir modifications de SQLGetChamps
-//     return SQLGetChamp($SQL, array("hash" => $hash));
-// }
+// ============== DISPONIBILITES ==================
+
+//
+
+/**
+ * Récupère toutes les disponibilités d'un lieu entre deux dates (date_debut et fin incluses)
+ * @param int id_place
+ * @param string date_debut (yyyy-mm-dd)
+ * @param string date_fin (yyyy-mm-dd)
+ */
+function get_creneaux_lieu($id_place, $date_debut, $date_fin)
+{
+    $condition = "WHERE t.idLieu = :id_place AND t.date >= :date_debut AND t.date <= :date_fin";
+    $SQLExplode1 = "SELECT t.id as idCreneauDispo, t.idLieu, t.date, sum(t.capacite) as capacite, v.id as idCreneauHoraire, v.debut, v.fin FROM creneauxDispo as t LEFT JOIN creneauxValides as v ON t.heureDebut<=v.debut AND t.heureFin>=v.fin " . $condition . " GROUP BY date,idCreneauHoraire";
+    $SQLExplode2 = "SELECT t.idLieu, t.date, sum(t.nbPersonnes) as nbPersonnes, v.id as idCreneauHoraire, v.debut, v.fin FROM reservations as t LEFT JOIN creneauxValides as v ON t.heureDebut<=v.debut AND t.heureFin>=v.fin " . $condition . " GROUP BY date,idCreneauHoraire";
+    $SQL = "SELECT e1.date, e1.debut time_start, e1.fin time_end, e1.capacite, e2.nbPersonnes reservations, (e1.capacite - if(e2.nbPersonnes is null,0,e2.nbPersonnes)) as remaining_capacite FROM (" . $SQLExplode1 . ") as e1 LEFT JOIN (" . $SQLExplode2 . ") as e2 ON e1.idLieu = e2.idLieu AND e1.date = e2.date AND e1.idCreneauHoraire = e2.idCreneauHoraire;";
+    $params = array("id_place" => $id_place, "date_debut" => $date_debut, "date_fin" => $date_fin);
+    return parcoursRs(SQLSelect($SQL, $params));
+}
+/**
+ * Récupère le nombre de places disponibles pour un lieu donné, un jour donné, entre heure_debut et heure_fin
+ * @param int id_place
+ * @param string date (yyyy-mm-dd)
+ * @param string heure_debut (hh:mm)
+ * @param string heure_fin (hh:mm)
+ */
+function get_capacite_restante_creneau($id_place, $date, $heure_debut, $heure_fin)
+{
+    $condition = "WHERE t.idLieu = :id_place AND t.date = :date";
+    $SQLExplode1 = "SELECT t.id as idCreneauDispo, t.idLieu, t.date, sum(t.capacite) as capacite, v.id as idCreneauHoraire, v.debut, v.fin FROM creneauxDispo as t LEFT JOIN creneauxValides as v ON t.heureDebut<=v.debut AND t.heureFin>=v.fin " . $condition . " GROUP BY idCreneauHoraire";
+    $SQLExplode2 = "SELECT t.idLieu, t.date, sum(t.nbPersonnes) as nbPersonnes, v.id as idCreneauHoraire, v.debut, v.fin FROM reservations as t LEFT JOIN creneauxValides as v ON t.heureDebut<=v.debut AND t.heureFin>=v.fin " . $condition . " GROUP BY idCreneauHoraire";
+    $SQL = "SELECT min(if(capaciteRestante is null,0,capaciteRestante)) as capacite FROM creneauxValides v LEFT JOIN ";
+    $SQL .= "(SELECT e1.idCreneauHoraire, (e1.capacite - if(e2.nbPersonnes is null,0,e2.nbPersonnes)) as capaciteRestante FROM (" . $SQLExplode1 . ") as e1 LEFT JOIN (" . $SQLExplode2 . ") as e2 ON e1.idLieu = e2.idLieu AND e1.date = e2.date AND e1.idCreneauHoraire = e2.idCreneauHoraire) calc ";
+    $SQL .= "ON calc.idCreneauHoraire = v.id ";
+    $SQL .= "WHERE v.debut>=:heure_debut AND v.fin <=:heure_fin";
+    $params = array("id_place" => $id_place, "date" => $date, "heure_debut" => $heure_debut, "heure_fin" => $heure_fin);
+    return SQLGetChamp($SQL, $params);
+}
