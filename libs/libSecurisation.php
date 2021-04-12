@@ -1,6 +1,6 @@
 <?php
 
-include_once "maLibUtils.php"; // Car on utilise la fonction valider()
+include_once "libUtils.php"; // Car on utilise la fonction valider()
 include_once "modele.php"; // Car on utilise la fonction connecterUtilisateur()
 
 /**
@@ -38,31 +38,33 @@ function verif_user($login, $password)
  * Fonction à placer au début de chaque page privée
 
  * Cette fonction redirige vers la page $url_bad en envoyant un message d'erreur
-et arrête l'interprétation si l'utilisateur n'est pas connecté
+ * et arrête l'interprétation si l'utilisateur n'est pas connecté
  * Elle ne fait rien si l'utilisateur est connecté, et si $urlGood est faux
  * Elle redirige vers urlGood sinon
  */
-function securiser($url_bad, $url_good = false)
+function securiser($urlBad, $urlGood = false)
 {
-    if (valider("is_connected", "SESSION")) {
-        if ($url_good != false) {
-            header("Location:" . $url_good);
-        } else {
-            header("Location:index.php?view=" . $url_bad);
-        }
+    if (!valider("is_connected", "SESSION")) {
+        header("Location:$urlBad");
+        die("");
     }
-
+    if ($urlGood) {
+        header("Location:$urlGood");
+        die("");
+    }
 }
 
+/**
+ * A placer au début de chaque page uniquement accessible pour les administrateurs
+ */
 function securiser_admin($url_bad, $url_good = false)
 {
-    if ($_SESSION['is_admin'] == 1 and $_SESSION['is_connected'] == true) {
-        if ($url_good == false) {} else {
+    if (valider("is_admin", "SESSION") == 1 && valider("is_connected", "SESSION")) {
+        if ($url_good) {
             header("Location:" . $url_good);
         }
-
     } else {
-        header("Location:index.php?view=" . $url_bad);
+        header("Location:" . $url_bad);
     }
 
 }

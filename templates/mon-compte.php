@@ -3,7 +3,7 @@
 include_once("./libs/modele.php");
 include_once("./libs/maLibUtils.php");
 // Si l'utilisateur est connecte, on affiche un lien de deconnexion
-if (valider("connecte","SESSION"))
+if (valider("is_connected","SESSION"))
 {
     echo "Utilisateur <b>$_SESSION[pseudo]</b> connecté depuis <b>$_SESSION[heureConnexion]</b> &nbsp; ";
     echo "<a href=\"controleur.php?action=Logout\">Se Déconnecter</a>";
@@ -20,46 +20,47 @@ if (valider("connecte","SESSION"))
 
 ?>
 
-    <style>
-        body {
-            background-color: #fdedcf;
-            font-family: "Avenir Next";
-        }
+<style>
+body {
+    background-color: #fdedcf;
+    font-family: "Avenir Next";
+}
 
-        .padding {
-            padding: 3rem !important
-        }
+.padding {
+    padding: 3rem !important
+}
 
-        .user-card-full {
-            overflow: hidden
-        }
+.user-card-full {
+    overflow: hidden
+}
 
-        .card {
-            border-radius: 15px;
-            border: none;
-            margin-bottom: 30px
-        }
+.card {
+    border-radius: 15px;
+    border: none;
+    margin-bottom: 30px
+}
 
-        .card-block{
-            color:#fdedcf;
-        }
+.card-block {
+    color: #fdedcf;
+}
 
-        .m-r-0 {
-            margin-top:6px;
-            margin-right: 0px
-        }
+.m-r-0 {
+    margin-top: 6px;
+    margin-right: 0px
+}
 
-        .m-l-0 {
-            margin-top:6px;
-            margin-left: 0%
-        }
+.m-l-0 {
+    margin-top: 6px;
+    margin-left: 0%
+}
 
-        .m-b-20{
-            margin-top: 30px;
-            margin-bottom: 30px;
-        }
-    </style>
+.m-b-20 {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+</style>
 </head>
+
 <body>
 <h1 style="color: #123455; text-align: center; margin-top: 40px;">Mon Compte</h1>
 <div class="page-content page-container" id="page-content" >
@@ -116,6 +117,6 @@ if (valider("connecte","SESSION"))
             </div>
         </div>
     </div>
-</div>
 </body>
+
 </html>

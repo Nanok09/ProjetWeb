@@ -65,6 +65,34 @@ Chaque action peut/doit recevoir une liste de parametres optionels:
 * action = address_research
   + address = addresse -- str représentant l'adresse à trouver
 
+* action = add_creneau_dispo
+  + id_place  = id du terrain
+  + date = string(yyyy-mm-dd)
+  + time_start = string(hh:mm)
+  + time_end = string(hh:mm)
+  + capacite = int
+
+* action = add_reservation
+  + id_place  = id du terrain
+  + date = string(yyyy-mm-dd)
+  + time_start = string(hh:mm)
+  + time_end = string(hh:mm)
+  + nb_personnes = int
+
+* action = delete_reservation
+  + id_reservation = int
+
+* action = get_creneaux_place
+  + id_place = int id du terrain
+  + date_start = string(yyyy-mm-dd)
+  + date_end = string(yyyy-mm-dd)
+
+* action = get_capacite_creneau
+  + id_place = int id du terrain
+  + date = string(yyyy-mm-dd)
+  + time_start = hh:mm
+  + time_end = hh:mm
+
 # Partie réponse de l'API
 
 ### Format général de la réponse :
@@ -168,6 +196,54 @@ Chaque action peut/doit recevoir une liste de parametres optionels:
                 coordinates: {lat:lat,long:long},
                 address : @str (représentant le nom complet de l'adresse ),
         },...,{}]
+```
+
+* action = add_creneau_dispo
+
+``` 
+
+        data: {
+                id_creneau: @int
+        }
+```
+
+* action = add_reservation
+
+``` 
+
+        data: {
+                id_reservation: @int
+        }
+```
+
+* action = delete_reservation
+
+  data: Undefined
+
+* action = get_creneaux_place
+
+``` 
+
+    data: [
+            {
+              date: string (yyyy-mm-dd),
+              time_start: string (hh:mm),
+              time_end: string (hh:mm),
+              capacite: int,
+              reservations: int,
+              remaining_capacite: int (capacite-reservations)
+            },
+            ...
+          ]
+
+```
+
+* action = get_capacite_creneau
+
+``` 
+    data : {
+      capacite: int
+    }
 ```
 
 # Exemples
