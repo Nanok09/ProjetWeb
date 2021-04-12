@@ -1,6 +1,7 @@
 <?php
-include_once "maLibUtils.php";
+include_once "libUtils.php";
 include_once "modele.php";
+include_once "libValidation.php";
 
 session_start();
 
@@ -52,8 +53,10 @@ if ($action = valider("action")) {
                 if (($id_user = valider("id_user", "SESSION")) &&
                     ($id_lieu = valider("id_place")) &&
                     ($note = valider("note"))) {
-                    add_note($id_user, $id_lieu, $note);
-                    set_request_success();
+                    if (is_valid_note($note)) {
+                        add_note($id_user, $id_lieu, $note);
+                        set_request_success();
+                    }
                 }
             }
             break;
@@ -114,12 +117,15 @@ if ($action = valider("action")) {
                     ($time_start = valider("time_start")) &&
                     ($time_end = valider("time_end")) &&
                     ($capacite = valider("capacite"))) {
-                    if (get_createur_lieu($id_place) == $id_user) {
+                    if (get_createur_lieu($id_place) == $id_user &&
+                        is_valid_date($date) &&
+                        is_valid_time($time_start) &&
+                        is_valid_time($time_end) &&
+                        (strtotime($time_start) < strtotime($time_end))
+                    ) {
                         $data["data"] = array();
                         $data["data"]["id_creneau"] = add_creneau_dispo($id_place, $date, $time_start, $time_end, $capacite);
                         set_request_success();
-                    } else {
-                        $data["status"] = 403;
                     }
                 }
             }
@@ -132,13 +138,19 @@ if ($action = valider("action")) {
                     ($time_start = valider("time_start")) &&
                     ($time_end = valider("time_end")) &&
                     ($nb_personnes = valider("nb_personnes"))) {
-                    $capacite_restante = get_capacite_restante_creneau($id_place, $date, $time_start, $time_end);
-                    if (intval($capacite_restante) >= intval($nb_personnes)) {
-                        $data["data"] = array();
-                        $data["data"]["id_reservation"] = add_reservation($id_user, $id_place, $date, $time_start, $time_end, $nb_personnes);
-                        set_request_success();
-                    } else {
-                        $data["status"] = 400;
+                    if (is_valid_date($date) &&
+                        is_valid_time($time_start) &&
+                        is_valid_time($time_end) &&
+                        (strtotime($time_start) < strtotime($time_end))
+                    ) {
+                        $capacite_restante = get_capacite_restante_creneau($id_place, $date, $time_start, $time_end);
+                        if (intval($capacite_restante) >= intval($nb_personnes)) {
+                            $data["data"] = array();
+                            $data["data"]["id_reservation"] = add_reservation($id_user, $id_place, $date, $time_start, $time_end, $nb_personnes);
+                            set_request_success();
+                        } else {
+                            $data["status"] = 200;
+                        }
                     }
                 }
             }
@@ -156,9 +168,23 @@ if ($action = valider("action")) {
             break;
         case "get_creneaux_place":
             if (($id_place = valider("id_place")) &&
-                ($date_start = valider("date_start")) &&
-                ($date_end = valider("date_end"))) {
-                $data["data"] = get_creneaux_lieu($id_place, $date_start, $date_end);
+                ($start = valider("start")) &&
+                ($end = valider("end"))) {
+                $date_start = date("Y-m-d", strtotime($start));
+                $date_end = date("Y-m-d", strtotime($end));
+                $creneaux = get_creneaux_lieu($id_place, $date_start, $date_end);
+                $events = array();
+                foreach ($creneaux as $creneau) {
+                    $start = date("c", strtotime("$creneau[date] $creneau[time_start]"));
+                    $end = date("c", strtotime("$creneau[date] $creneau[time_end]"));
+                    $title = "$creneau[remaining_capacite] places restantes";
+                    $class_name = "bg-success";
+                    if (intval($creneau["remaining_capacite"]) == 0) {
+                        $class_name = "bg-danger";
+                    }
+                    array_push($events, array("start" => $start, "end" => $end, "title" => $title, "className" => $class_name));
+                }
+                $data["data"] = $events;
                 set_request_success();
             }
             break;
@@ -167,12 +193,17 @@ if ($action = valider("action")) {
                 ($date = valider("date")) &&
                 ($time_start = valider("time_start")) &&
                 ($time_end = valider("time_end"))) {
-                $data["data"] = array();
-                $data["data"]["capacite"] = get_capacite_restante_creneau($id_place, $date, $time_start, $time_end);
-                set_request_success();
+                if (is_valid_date($date) &&
+                    is_valid_time($time_start) &&
+                    is_valid_time($time_end) &&
+                    (strtotime($time_start) < strtotime($time_end))
+                ) {
+                    $data["data"] = array();
+                    $data["data"]["capacite"] = get_capacite_restante_creneau($id_place, $date, $time_start, $time_end);
+                    set_request_success();
+                }
             }
             break;
-
     }
 }
 

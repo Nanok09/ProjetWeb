@@ -1,7 +1,7 @@
 <?php
 include_once "libs/modele.php";
-include_once "libs/maLibUtils.php";
-include_once "libs/maLibForms.php";
+include_once "libs/libUtils.php";
+include_once "libs/libForms.php";
 
 // Si la page est appelée directement par son adresse, on redirige en passant pas la page index
 if (basename($_SERVER["PHP_SELF"]) != "index.php") {
@@ -49,5 +49,3 @@ if (valider("is_connected", "SESSION")) {
     echo $container;
 }
 ?>
-
-
