@@ -43,7 +43,7 @@ if (valider("is_connected", "SESSION")) {
                             <h6 class="mt-55 mt-2 bold-text" style="color: #fdedcf"><b>NOUS CONTACTER</b></h6><small> <span><i class="fa fa-envelope" aria-hidden="true"></i></span> contact@sportbnb.com</small>
                         </div>
                         <div class="col-xl-2 col-md-4 col-sm-4 col-auto order-2 align-self-end mt-3 ">
-                            <h6 class="bold-text" style="color: #fdedcf"><b>FAIRE UN DON</b></h6><small><span><i class="fa fa-envelope" aria-hidden="true"></i></span><a href="#" style="color: white">www.faireundon.fr</a></small>
+                            <h6 class="bold-text" style="color: #fdedcf"><b>FAIRE UN DON</b></h6><small><span><i class="fa fa-envelope" aria-hidden="true"></i></span><a href="#" style="color: white"> www.faireundon.fr</a></small>
                         </div>
                     </div>
                 </div>
