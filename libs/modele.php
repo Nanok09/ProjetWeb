@@ -47,23 +47,24 @@ function is_admin($id_user)
     return SQLGetChamp($SQL, $params);
 }
 
-
 /**
  * vériefie si il existe bien un utilisateur associé à l'id fourni dans la bdd
  * @param int id_user
  * @return bool id_user si l'utilsateur existe et false sinon
  */
-function is_user($user_id) {
-    $SQL= "SELECT id FROM utilisateurs WHERE id=?";
-    $param=array($user_id);
-    return SQLGetChamp($SQL,$param);
+function is_user($user_id)
+{
+    $SQL = "SELECT id FROM utilisateurs WHERE id=?";
+    $param = array($user_id);
+    return SQLGetChamp($SQL, $param);
 }
 
-function get_place_creator($place_id) {
-    $SQL= "SELECT createur FROM lieux WHERE id=?";
-    $param= array($place_id);
-    return SQLGetChamp($SQL,$param);
-    
+function get_place_creator($place_id)
+{
+    $SQL = "SELECT createur FROM lieux WHERE id=?";
+    $param = array($place_id);
+    return SQLGetChamp($SQL, $param);
+
 }
 
 /**
@@ -78,49 +79,47 @@ function get_place_creator($place_id) {
 
 // ================== LIEUX ===================
 
-
-
-
 /**  fonction distance renvoie un float représentant la distance entre les points passés en entrée. La distance est donnée en km
  */
 
+function distance($lat1, $lng1, $lat2, $lng2, $miles = false)
+{
+    $pi80 = M_PI / 180;
+    $lat1 *= $pi80;
+    $lng1 *= $pi80;
+    $lat2 *= $pi80;
+    $lng2 *= $pi80;
 
-function distance($lat1, $lng1, $lat2, $lng2, $miles = false) {
-     $pi80 = M_PI / 180;
-     $lat1 *= $pi80;
-     $lng1 *= $pi80;
-     $lat2 *= $pi80;
-     $lng2 *= $pi80;
-
-     $r = 6372.797; // rayon moyen de la Terre en km
-     $dlat = $lat2 - $lat1;
-     $dlng = $lng2 - $lng1;
-     $a = sin($dlat / 2) * sin($dlat / 2) + cos($lat1) * cos($lat2) * sin(
-$dlng / 2) * sin($dlng / 2);
-     $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-     $km = $r * $c;
-     return ($miles ? ($km * 0.621371192) : $km);
+    $r = 6372.797; // rayon moyen de la Terre en km
+    $dlat = $lat2 - $lat1;
+    $dlng = $lng2 - $lng1;
+    $a = sin($dlat / 2) * sin($dlat / 2) + cos($lat1) * cos($lat2) * sin(
+        $dlng / 2) * sin($dlng / 2);
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+    $km = $r * $c;
+    return ($miles ? ($km * 0.621371192) : $km);
 
 }
 /* Cette version ne marche pas j'ai oublié des conversions
 function calculate_distance_between(array $a,array $b){
-    // on utilise la formule de haversine
-    $r= 6371;
-    $first_term = (sin(($a['lat']-$b['lat'])/2))**2;
-    $second_term = cos($a['lat'])*cos($b['lat'])*(sin(($a['long']-$b['long'])/2)**2);
-    $result = 2*$r*asin(sqrt($first_term + $second_term));
-    return $result;
+// on utilise la formule de haversine
+$r= 6371;
+$first_term = (sin(($a['lat']-$b['lat'])/2))**2;
+$second_term = cos($a['lat'])*cos($b['lat'])*(sin(($a['long']-$b['long'])/2)**2);
+$result = 2*$r*asin(sqrt($first_term + $second_term));
+return $result;
 }
-*/
+ */
 // fonction de comparaison pour le tri customisé
-function compare($array1,$array2) {
-    if ($array1['distance_to_user']>$array2['distance_to_user']) {
+function compare($array1, $array2)
+{
+    if ($array1['distance_to_user'] > $array2['distance_to_user']) {
         return 1;
     }
     if ($array1['distance_to_user'] == $array2['distance_to_user']) {
         return 0;
     }
-    return -1;    
+    return -1;
 }
 
 /**
@@ -128,15 +127,16 @@ function compare($array1,$array2) {
  * Tous les paramètres sont optionels
  * @param double lat
  * @param double long
- * @param string sport 
- * @param float price_min 
- * @param float price_max 
+ * @param string sport
+ * @param float price_min
+ * @param float price_max
  * @param bool publuc_only
  * @param bool private_only
  * @param int max_distance (km)
  */
 
-function get_places($sport = false , bool $private_only=false, bool $public_only=false,$lat= false , $long=false, int $price_min=0, int $price_max=10000, $max_distance=1000){
+function get_places($sport = false, bool $private_only = false, bool $public_only = false, $lat = false, $long = false, int $price_min = 0, int $price_max = 10000, $max_distance = 1000)
+{
 
     // récupérer la liste des terrains potentielement intéressant dans la base de données
 
@@ -148,75 +148,65 @@ function get_places($sport = false , bool $private_only=false, bool $public_only
     );
 
     if ($sport) {
-        $SQL.= " AND sport=:sport";
-        $values["sport"]=$sport;
+        $SQL .= " AND sport=:sport";
+        $values["sport"] = $sport;
     }
 
     if ($private_only && !$public_only) {
-        $SQL.= " AND prive=:prive";
+        $SQL .= " AND prive=:prive";
         $values["prive"] = 1; // si c'est que du private et pas du public alors on cherche les valeur prive=1
     }
     if ($public_only && !$private_only) {
-        $SQL.=" AND prive=:prive";
-        $values["prive"]=0;
+        $SQL .= " AND prive=:prive";
+        $values["prive"] = 0;
     }
 
     if ($private_only && $public_only) {
         // raise error 'Warning : You are asking for private and public places, those are not supported in the current version'
-        trigger_error("You are asking for private and public places, those does not exist in the current version",E_USER_WARNING );
+        trigger_error("You are asking for private and public places, those does not exist in the current version", E_USER_WARNING);
     }
-
-
 
     //var_dump($values);
 
-    $query_results = parcoursRs(SQLSelect($SQL , $values));
+    $query_results = parcoursRs(SQLSelect($SQL, $values));
 
     //var_dump($result);
 
-    // filtrer le résultat à l'aide de la fonction calculate distance between 
+    // filtrer le résultat à l'aide de la fonction calculate distance between
 
     if ($lat && $long) {
         echo 'on est dans la partie calculer les distances!';
         $final_results = array();
-        foreach ( $query_results as $result) {
-            $distance = distance($result['latitude'],$result['longitude'],$lat,$long);
+        foreach ($query_results as $result) {
+            $distance = distance($result['latitude'], $result['longitude'], $lat, $long);
             //var_dump($distance);
-            if ($distance <= $max_distance)  {
+            if ($distance <= $max_distance) {
                 $result['distance_to_user'] = $distance;
                 $final_results[] = $result;
 
-            } // end if du foreach 
-            
+            } // end if du foreach
 
-        }//end For each
+        } //end For each
         // trier les tableaux obtenus par distance à l'utilisateur croissante
         echo '<h2> Avant tri : </h2>';
         var_dump($final_results);
-        usort($final_results,'compare'); // utilisation de la fonction usort qui permet de faire un tri customisé 
-        return  $final_results;
-        
-    }//end if
+        usort($final_results, 'compare'); // utilisation de la fonction usort qui permet de faire un tri customisé
+        return $final_results;
+
+    } //end if
 
     return $query_results;
 
+    //renvoyer le résultat au bon format
 
-    //renvoyer le résultat au bon format 
-
-}//end Fonction
-
-
-
-
-
-
+} //end Fonction
 
 //Créer un lieu
 /**
- * Fonction permettant de creer un lieu 
+ * Fonction permettant de creer un lieu
  * @param string nom
- * @param string description 
- * @param string adresse 
+ * @param string description
+ * @param string adresse
  * @param float lat
  * @param float long
  * @param string sport
@@ -227,12 +217,10 @@ function get_places($sport = false , bool $private_only=false, bool $public_only
  * @return int lastInsertedId
  */
 
-
-function create_place(string $nom, string $description = '', string $adresse= '', float $lat, float $long, string $sport, int $private, int $createur_id, float $price=0, int $capacite = 10) {
+function create_place(string $nom, string $description = '', string $adresse = '', float $lat, float $long, string $sport, int $private, int $createur_id, float $price = 0, int $capacite = 10)
+{
     // il faut vérifier si le créateur_id correspond bien à un utilisateur. On pourait utiliser les variables de session comme paramètre par défaut..?
-    
 
-    
     if ($id_user = is_user($createur_id)) {
 
         $param = array(
@@ -245,48 +233,44 @@ function create_place(string $nom, string $description = '', string $adresse= ''
             'prive' => $private,
             'createur' => $createur_id,
             'prix' => $price,
-            'capacite' => $capacite
+            'capacite' => $capacite,
         );
-        $SQL= "INSERT INTO `lieux` (`nom`, `description`, `adresse`, `latitude`, `longitude`, `sport`, `prive`, `createur`, `prix`, `capacite`) VALUES
+        $SQL = "INSERT INTO `lieux` (`nom`, `description`, `adresse`, `latitude`, `longitude`, `sport`, `prive`, `createur`, `prix`, `capacite`) VALUES
         ( :nom, :description, :adresse, :latitude, :longitude, :sport, :prive, :createur, :prix, :capacite)";
-    
-        return SQLInsert($SQL,$param);
 
-    }//end if
-    trigger_error("The given creator is not registered in the data base",E_USER_WARNING );
+        return SQLInsert($SQL, $param);
+
+    } //end if
+    trigger_error("The given creator is not registered in the data base", E_USER_WARNING);
     return false;
-}// end function
-
-
-
+} // end function
 
 /** Modifier un lieu pour son créateur
  * @param int place_id
  * @param array modifications  un tablau associatif avec en clé les champs à modifier dans la bdd et en valeur les nouvelles valeurs à mettre
- * @return bool false or int nb_modifications: si l'utilisateur n'a pas le droit de modifier la place en question ou si il y a eu un pb pdt la requete, sinon renvoie le nombre de modifications 
-*/
+ * @return bool false or int nb_modifications: si l'utilisateur n'a pas le droit de modifier la place en question ou si il y a eu un pb pdt la requete, sinon renvoie le nombre de modifications
+ */
 
+function modify_place(int $place_id, int $user_id, array $modifications)
+{
 
-function modify_place(int $place_id, int $user_id, array $modifications) {
-    
-
-   // UPDATE commentaires SET message = :message, edited = true, timestamp=:timestamp WHERE idCommentaire = :id_comment AND idUtilisateur= :id_user"
+    // UPDATE commentaires SET message = :message, edited = true, timestamp=:timestamp WHERE idCommentaire = :id_comment AND idUtilisateur= :id_user"
 
     if ($user_id == get_place_creator($place_id)) { // vérifier que l'id correspond bien à un lieu dont l'utilisateur est le créateur
-        $SQL= "UPDATE lieux SET";
+        $SQL = "UPDATE lieux SET";
         foreach ($modifications as $champ => $modification) {
-            $SQL.= " $champ = :$champ, ";
+            $SQL .= " $champ = :$champ, ";
         }
         $SQL = substr($SQL, 0, -2);
-        $SQL.= " WHERE id=:id";
+        $SQL .= " WHERE id=:id";
         var_dump($SQL);
         $modifications['id'] = $place_id;
 
         var_dump($modifications);
-        return SQLUpdate($SQL,$modifications);
-    }// end if
-    
-    trigger_error('The given user is not allowed to modify this place because it is not the place creator',E_USER_WARNING);
+        return SQLUpdate($SQL, $modifications);
+    } // end if
+
+    trigger_error('The given user is not allowed to modify this place because it is not the place creator', E_USER_WARNING);
     return false;
 }
 
@@ -297,15 +281,17 @@ function modify_place(int $place_id, int $user_id, array $modifications) {
  * @return array place_info
  */
 
-function get_info(int $place_id) {
+function get_info(int $place_id)
+{
 
-    $SQL= "SELECT * FROM lieux WHERE id=?";
+    $SQL = "SELECT * FROM lieux WHERE id=?";
     $param = array($place_id);
-    $result = parcoursRs(SQLSelect($SQL,$param));
+    $result = parcoursRs(SQLSelect($SQL, $param));
     return $result[0];
-  
+
+}
 /**
-  * Récupère le créateur d'un lieu
+ * Récupère le créateur d'un lieu
  * @param int id_place
  */
 function get_createur_lieu($id_place)
@@ -315,11 +301,11 @@ function get_createur_lieu($id_place)
     return SQLGetChamp($SQL, $params);
 }
 /**
-* Récupérer les lieux créés par un utilisateur
+ * Récupérer les lieux créés par un utilisateur
  * @param int id_user
  */
-
-function get_places($id_user){
+function get_places_created_by($id_user)
+{
     $SQL = "SELECT * FROM lieux WHERE createur = ?";
     $params = array($id_user);
     return parcoursRs(SQLSelect($SQL, $params));
@@ -459,7 +445,7 @@ function get_photos()
 {
     $SQL = "SELECT * FROM photosLieux";
     $params = array();
-    return parcoursRs(SQLSelect($SQL,$params));
+    return parcoursRs(SQLSelect($SQL, $params));
 }
 
 // ============ CHAT ==========

@@ -10,7 +10,7 @@ if (basename($_SERVER["PHP_SELF"]) != "index.php") {
 }
 
 $id_user = valider("id_user", "SESSION");
-$mesTerrains = get_places($id_user);
+$mesTerrains = get_places_created_by($id_user);
 $photos = get_photos();
 
 ?>
@@ -155,7 +155,7 @@ function print_new_place_creation() {
     $("#edition").append("<input class='crea' id='nom' type='text' placeholder='Nouveau Terrain'/></br>");
     $("#edition").append($("<span>").html("Adresse :"));
     $("#edition").append(
-    "<input class='crea' id='adresse' type='text' placeholder='1500 Avenue Médicis, Paris'/></br>");
+        "<input class='crea' id='adresse' type='text' placeholder='1500 Avenue Médicis, Paris'/></br>");
     $("#edition").append($("<span>").html("Sport :"));
     $("#edition").append("<input class='crea' id='sport' type='text' placeholder='tennis'/></br>");
     $("#edition").append($("<span>").html("Prix (horaire):"));
