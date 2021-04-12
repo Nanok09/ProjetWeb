@@ -61,6 +61,20 @@ if ($action = valider("action")) {
             unset($_COOKIE['password']);
             $qs = "?view=login-signIn";
             break;
+
+        case 'Créer terrain':
+            if (($nom = valider('nom')) &&
+                ($adresse = valider('adresse')) &&
+                ($sport = valider('sport')) &&
+                ($prix = valider('prix')) &&
+                ($capacite = valider('capacite')) &&
+                ($prive = valider('type')) &&
+                ($description = valider('description'))
+            ){
+                $createur_id = valider('id_user','SESSION');
+                //create_place($nom,$description,$adresse,$lat,$long,$sport,$prive,$createur_id,$prix,$capacite);
+            }
+            break;
     }
 
 }

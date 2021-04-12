@@ -85,6 +85,7 @@ $photos = get_photos();
         //appui sur entrée dans un textarea => validation
         $(document).on("keyup", "textarea", function (contexte) {
             if ($(this).val() == '') return;
+            if ($(this).hasClass('crea')) return;
             if (contexte.key == "Enter") {
                 var newContenu = $(this).val();
                 $(this).replaceWith(
@@ -149,29 +150,29 @@ $photos = get_photos();
     //Structure html de la création d'un terrain
     function print_new_place_creation(){
         console.log('new');
-        $("#edition").empty();
-        $("#edition").append($("<h2>").html("Création d'un nouveau terrain"));
-        $("#edition").append($("<span>").html("Nom :"));
-        $("#edition").append("<input class='crea' id='nom' type='text' placeholder='Nouveau Terrain'/></br>");
-        $("#edition").append($("<span>").html("Adresse :"));
-        $("#edition").append("<input class='crea' id='adresse' type='text' placeholder='1500 Avenue Médicis, Paris'/></br>");
-        $("#edition").append($("<span>").html("Sport :"));
-        $("#edition").append("<input class='crea' id='sport' type='text' placeholder='tennis'/></br>");
-        $("#edition").append($("<span>").html("Prix (horaire):"));
-        $("#edition").append("<input class='crea' id='prix' type='number' placeholder='50'/></br>");
-        $("#edition").append($("<span>").html("Capacité (nombre de personnes):"));
-        $("#edition").append("<input class='crea' id='capacite' type='number' placeholder='5'/></br>");
-        $("#edition").append($("<span>").html("Type :"));
-        $("#edition").append("</br>");
-        $("#edition").append("<input id='publique' type='radio' name='type' value=0 checked/>" +
+        $("#creation_place").empty();
+        $("#creation_place").append($("<h2>").html("Création d'un nouveau terrain"));
+        $("#creation_place").append($("<span>").html("Nom :"));
+        $("#creation_place").append("<input class='crea' id='nom' type='text' name='nom' placeholder='Nouveau Terrain'/></br>");
+        $("#creation_place").append($("<span>").html("Adresse :"));
+        $("#creation_place").append("<input class='crea' id='adresse' type='text' name='adresse' placeholder='1500 Avenue Médicis, Paris'/></br>");
+        $("#creation_place").append($("<span>").html("Sport :"));
+        $("#creation_place").append("<input class='crea' id='sport' type='text' name='sport' placeholder='tennis'/></br>");
+        $("#creation_place").append($("<span>").html("Prix (horaire):"));
+        $("#creation_place").append("<input class='crea' id='prix' type='number' name='prix' placeholder='50'/></br>");
+        $("#creation_place").append($("<span>").html("Capacité (nombre de personnes):"));
+        $("#creation_place").append("<input class='crea' id='capacite' type='number' name='capacite' placeholder='5'/></br>");
+        $("#creation_place").append($("<span>").html("Type :"));
+        $("#creation_place").append("</br>");
+        $("#creation_place").append("<input id='publique' type='radio' name='type' value=0 checked/>" +
             "<label for='publique'>Publique</label>");
-        $("#edition").append("<input id='prive' type='radio' name='type' value=1/>" +
+        $("#creation_place").append("<input id='prive' type='radio' name='type' value=1/>" +
             "<label for='prive'>Privé</label>");
 
-        $("#edition").append("</br>");
-        $("#edition").append($("<h5>").html("Description générale"));
-        $("#edition").append($("<p id='description'>").html("Description vide"));
-        $("#edition").append("<input id='creation' type='button' value='Créer terrain'/>");
+        $("#creation_place").append("</br>");
+        $("#creation_place").append($("<h5>").html("Description générale"));
+        $("#creation_place").append("<textarea id='description' class='crea' name='description'></textarea>");
+        $("#creation_place").append("<input id='creation' type='submit' name='action' value='Créer terrain'/>");
     }
 
     function create_place(){
@@ -194,3 +195,6 @@ $photos = get_photos();
 
 <div id="edition">
 </div>
+
+<form id='creation_place' action='controleur.php'>
+</form>
