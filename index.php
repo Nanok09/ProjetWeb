@@ -1,7 +1,11 @@
 <?php
 session_start();
 
-
+if(empty($_SESSION['id_user'])){
+   if(!empty($_COOKIE['pseudo'])){
+       verif_user($_COOKIE['pseudo'],$_COOKIE['password']);
+   }
+}
 
 
 include_once "libs/maLibUtils.php";

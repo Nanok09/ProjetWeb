@@ -25,6 +25,10 @@ if ($action = valider("action")) {
                 if (!verif_user($pseudo, $password)) {
                     $qs = "?view=login-signIn&msg=Mauvais identifiants de connexion, si vous n'avez pas de compte inscrivez vous!";
                 }
+                if (valider('ResterCo')) {
+                    setcookie("password", $password);
+                    setcookie("pseudo", $pseudo);
+                }
             } else {
                 $qs = "?view=login-signIn&msg=Pour vous connecter, renseignez votre pseudo et mot de passe";
             }
@@ -42,7 +46,8 @@ if ($action = valider("action")) {
                 create_user($pseudo, $password, $email, $nom, $prenom);
                 verif_user($pseudo, $password);
             } else {
-                $qs = "?view=login-signIn&msg=Veillez a remplir toutes les informations nécessaires à l'inscription";
+                $msg = "Veuillez remplir toutes les informations nécessaires à l%E2%80%99inscription";
+                $qs = "?view=login-signIn&msg=" . $msg;
             }
             break;
 
@@ -50,6 +55,10 @@ if ($action = valider("action")) {
 
         case 'Logout':
             session_destroy();
+            setcookie('pseudo');
+            setcookie('password');
+            unset($_COOKIE['pseudo']);
+            unset($_COOKIE['password']);
             $qs = "?view=login-signIn";
             break;
     }

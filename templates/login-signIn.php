@@ -43,7 +43,7 @@ if ($msg = valider('msg')) {
 <?php
 if (valider("is_connected", "SESSION")) {
     if ($pseudo = valider("pseudo", "SESSION")) {
-        echo "Vous êtes connecté en tant que " . $pseudo . ".";
+        echo "<p>Vous êtes connecté en tant que " . $pseudo . ".</p>";
     }
 } else {
     echo $container;
