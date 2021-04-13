@@ -9,8 +9,6 @@ if(empty($_SESSION['id_user'])){
 }
 
 
-include_once "libs/maLibUtils.php";
-
 
 // Dans tous les cas, on affiche l'entete,
 // qui contient les balises de structure de la page, le logo, etc.
