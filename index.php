@@ -1,7 +1,16 @@
 <?php
 session_start();
 
-include_once "libs/libUtils.php";
+
+if(empty($_SESSION['id_user'])){
+   if(!empty($_COOKIE['pseudo'])){
+       verif_user($_COOKIE['pseudo'],$_COOKIE['password']);
+   }
+}
+
+
+include_once "libs/maLibUtils.php";
+
 
 // Dans tous les cas, on affiche l'entete,
 // qui contient les balises de structure de la page, le logo, etc.

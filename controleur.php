@@ -27,6 +27,10 @@ if ($action = valider("action")) {
                 } else {
                     $qs = "?view=accueil";
                 }
+                if (valider('ResterCo')) {
+                    setcookie("password", $password);
+                    setcookie("pseudo", $pseudo);
+                }
             } else {
                 $qs = "?view=login-signIn&msg=Pour vous connecter, renseignez votre pseudo et mot de passe";
             }
@@ -45,7 +49,8 @@ if ($action = valider("action")) {
                 verif_user($pseudo, $password);
                 $qs = "?view=accueil";
             } else {
-                $qs = "?view=login-signIn&msg=Veillez a remplir toutes les informations nécessaires à l'inscription";
+                $msg = "Veuillez remplir toutes les informations nécessaires à l%E2%80%99inscription";
+                $qs = "?view=login-signIn&msg=" . $msg;
             }
             break;
 
@@ -53,7 +58,25 @@ if ($action = valider("action")) {
 
         case 'Logout':
             session_destroy();
+            setcookie('pseudo');
+            setcookie('password');
+            unset($_COOKIE['pseudo']);
+            unset($_COOKIE['password']);
             $qs = "?view=login-signIn";
+            break;
+
+        case 'Créer terrain':
+            if (($nom = valider('nom')) &&
+                ($adresse = valider('adresse')) &&
+                ($sport = valider('sport')) &&
+                ($prix = valider('prix')) &&
+                ($capacite = valider('capacite')) &&
+                ($prive = valider('type')) &&
+                ($description = valider('description'))
+            ){
+                $createur_id = valider('id_user','SESSION');
+                create_place($nom,$description,$adresse,$lat,$long,$sport,$prive,$createur_id,$prix,$capacite);
+            }
             break;
     }
 
