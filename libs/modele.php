@@ -75,7 +75,6 @@ function get_place_creator($place_id)
     $SQL = "SELECT createur FROM lieux WHERE id=?";
     $param = array($place_id);
     return SQLGetChamp($SQL, $param);
-
 }
 
 /**
@@ -105,11 +104,11 @@ function distance($lat1, $lng1, $lat2, $lng2, $miles = false)
     $dlat = $lat2 - $lat1;
     $dlng = $lng2 - $lng1;
     $a = sin($dlat / 2) * sin($dlat / 2) + cos($lat1) * cos($lat2) * sin(
-        $dlng / 2) * sin($dlng / 2);
+        $dlng / 2
+    ) * sin($dlng / 2);
     $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
     $km = $r * $c;
     return ($miles ? ($km * 0.621371192) : $km);
-
 }
 /* Cette version ne marche pas j'ai oublié des conversions
 function calculate_distance_between(array $a,array $b){
@@ -194,7 +193,6 @@ function get_places($sport = false, bool $private_only = false, bool $public_onl
             if ($distance <= $max_distance) {
                 $result['distance_to_user'] = $distance;
                 $final_results[] = $result;
-
             } // end if du foreach
 
         } //end For each
@@ -203,7 +201,6 @@ function get_places($sport = false, bool $private_only = false, bool $public_onl
         var_dump($final_results);
         usort($final_results, 'compare'); // utilisation de la fonction usort qui permet de faire un tri customisé
         return $final_results;
-
     } //end if
 
     return $query_results;
@@ -250,7 +247,6 @@ function create_place(string $nom, float $lat, float $long, string $sport, int $
         ( :nom, :description, :adresse, :latitude, :longitude, :sport, :prive, :createur, :prix, :capacite)";
 
         return SQLInsert($SQL, $param);
-
     } //end if
     trigger_error("The given creator is not registered in the data base", E_USER_WARNING);
     return false;
@@ -299,7 +295,6 @@ function get_info(int $place_id)
     $param = array($place_id);
     $result = parcoursRs(SQLSelect($SQL, $param));
     return $result[0];
-
 }
 /**
  * Récupère le créateur d'un lieu
@@ -391,10 +386,10 @@ function modify_comment($id_user, $id_comment, $message, $timestamp)
 }
 /**
  * Récupère la liste des commentaires pour un lieu, ordonnés du plus récent au plus vieux
- * @TODO limiter le nb de commentaires récupérés ?
  * @param int id_place
  * @return liste de tableaux associatifs contenant les champs "nomUtilisateur", "id" (du commentaire), "message", "timestamp"
  */
+// TODO: limiter le nb de commentaires récupérés ?
 function get_comments($id_place)
 {
     $SQL = "SELECT u.nom nomUtilisateur, c.id, c.message, c.timestamp FROM commentaires as c INNER JOIN utilisateurs as u ON c.idUtilisateur=u.id";
@@ -417,7 +412,7 @@ function delete_comment($id_user, $id_comment)
 
 //
 /**
- * Ajouter une photo associée à un lieu (après l'avoir uploadé sur le serveur qq part)
+ * Ajouter une photo associée à un lieu (après l'avoir uploadé sur le serveur dans un dossier spécifique)
  * @param int id_place
  * @param string nomFichier
  * @return int idPhoto
@@ -461,13 +456,31 @@ function get_photos()
 
 // ============ CHAT ==========
 
-//Envoyer un message
+/**
+ * Envoyer un message
+ * @param int id_user
+ * @param int id_user_dest id du destinataire
+ * @param string message
+ */
 
-//Récupérer toutes les personnes avec qui quelqu'un a parlé
+//
 
-//Récupérer tous les messages entre 2 personnes
+/**
+ * Récupérer toutes les personnes avec qui quelqu'un a parlé, les derniers messages, timestamps
+ * @param int id_user
+ */
 
-//Récupérer le dernier message "reçu" pour l'actualisation en ajax?
+/**
+ * Récupérer tous les messages entre 2 personnes
+ * @param int id_user
+ * @param int id_user2
+ */
+
+/**
+ * Récupère les messages reçus par id_user après l'id du dernier message reçu
+ * @param int id_user
+ * @param int id_last_msg
+ */
 
 // ============= CRENEAUX DISPONIBLES ============
 
@@ -534,7 +547,7 @@ function get_creneaux_lieu($id_place, $date_debut, $date_fin)
     $condition = "WHERE t.idLieu = :id_place AND t.date >= :date_debut AND t.date <= :date_fin";
     $SQLExplode1 = "SELECT t.id as idCreneauDispo, t.idLieu, t.date, sum(t.capacite) as capacite, v.id as idCreneauHoraire, v.debut, v.fin FROM creneauxDispo as t LEFT JOIN creneauxValides as v ON t.heureDebut<=v.debut AND t.heureFin>=v.fin " . $condition . " GROUP BY date,idCreneauHoraire";
     $SQLExplode2 = "SELECT t.idLieu, t.date, sum(t.nbPersonnes) as nbPersonnes, v.id as idCreneauHoraire, v.debut, v.fin FROM reservations as t LEFT JOIN creneauxValides as v ON t.heureDebut<=v.debut AND t.heureFin>=v.fin " . $condition . " GROUP BY date,idCreneauHoraire";
-    $SQL = "SELECT e1.date, e1.debut time_start, e1.fin time_end, e1.capacite, e2.nbPersonnes reservations, (e1.capacite - if(e2.nbPersonnes is null,0,e2.nbPersonnes)) as remaining_capacite FROM (" . $SQLExplode1 . ") as e1 LEFT JOIN (" . $SQLExplode2 . ") as e2 ON e1.idLieu = e2.idLieu AND e1.date = e2.date AND e1.idCreneauHoraire = e2.idCreneauHoraire;";
+    $SQL = "SELECT e1.date, e1.debut time_start, e1.fin time_end, e1.capacite, e2.nbPersonnes reservations, (e1.capacite - if(e2.nbPersonnes is null,0,e2.nbPersonnes)) as remaining_capacite FROM (" . $SQLExplode1 . ") as e1 LEFT JOIN (" . $SQLExplode2 . ") as e2 ON e1.idLieu = e2.idLieu AND e1.date = e2.date AND e1.idCreneauHoraire = e2.idCreneauHoraire ORDER BY date ASC, time_start ASC;";
     $params = array("id_place" => $id_place, "date_debut" => $date_debut, "date_fin" => $date_fin);
     return parcoursRs(SQLSelect($SQL, $params));
 }
@@ -556,4 +569,16 @@ function get_capacite_restante_creneau($id_place, $date, $heure_debut, $heure_fi
     $SQL .= "WHERE v.debut>=:heure_debut AND v.fin <=:heure_fin";
     $params = array("id_place" => $id_place, "date" => $date, "heure_debut" => $heure_debut, "heure_fin" => $heure_fin);
     return SQLGetChamp($SQL, $params);
+}
+// ============= SPORTS ===========
+
+/**
+ * Retourne la liste de tous les sports avec leur id, nom, logo
+ * @return array
+ */
+function get_all_sports()
+{
+    $SQL = "SELECT id, nom, logo FROM sports";
+    $params = array();
+    return parcoursRs(SQLSelect($SQL, $params));
 }

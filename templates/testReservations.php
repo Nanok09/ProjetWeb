@@ -14,31 +14,39 @@ $id_user = valider("id_user", "SESSION");
 ?>
 
 <div class="container">
-    <div id="calendar"></div>
-    <h2>Ajouter créneau dispo</h2>
-    <form id="add_creneau">
-        date
-        <input type="date" name="date" required>
-        debut
-        <input type="time" name="time_start" step="1800" required>
-        fin
-        <input type="time" name="time_end" step="1800" required>
-        capacite
-        <input type="number" name="capacite" required>
-        <input type="submit">
-    </form>
-    <h2>Ajouter réservation</h2>
-    <form id="add_reservation">
-        date
-        <input type="date" name="date" required>
-        debut
-        <input type="time" name="time_start" step="1800" required>
-        fin
-        <input type="time" name="time_end" step="1800" required>
-        capacite
-        <input type="number" name="nb_personnes" required>
-        <input type="submit">
-    </form>
+    <div class="card">
+        <div class="card-body bg-light">
+            <div id="calendar"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h2>Ajouter créneau dispo</h2>
+            <form id="add_creneau">
+                date
+                <input type="date" name="date" required>
+                debut
+                <input type="time" name="time_start" step="1800" required>
+                fin
+                <input type="time" name="time_end" step="1800" required>
+                capacite
+                <input type="number" name="capacite" required>
+                <input type="submit">
+            </form>
+            <h2>Ajouter réservation</h2>
+            <form id="add_reservation">
+                date
+                <input type="date" name="date" required>
+                debut
+                <input type="time" name="time_start" step="1800" required>
+                fin
+                <input type="time" name="time_end" step="1800" required>
+                capacite
+                <input type="number" name="nb_personnes" required>
+                <input type="submit">
+            </form>
+        </div>
+    </div>
 </div>
 <script>
 var calendarEl = document.getElementById('calendar');

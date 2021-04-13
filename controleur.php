@@ -27,6 +27,10 @@ if ($action = valider("action")) {
                 } else {
                     $qs = "?view=accueil";
                 }
+                if (valider('ResterCo')) {
+                    setcookie("password", $password);
+                    setcookie("pseudo", $pseudo);
+                }
             } else {
                 $qs = "?view=login-signIn&msg=Pour vous connecter, renseignez votre pseudo et mot de passe";
             }
@@ -45,7 +49,8 @@ if ($action = valider("action")) {
                 verif_user($pseudo, $password);
                 $qs = "?view=accueil";
             } else {
-                $qs = "?view=login-signIn&msg=Veillez a remplir toutes les informations nécessaires à l'inscription";
+                $msg = "Veuillez remplir toutes les informations nécessaires à l%E2%80%99inscription";
+                $qs = "?view=login-signIn&msg=" . $msg;
             }
             break;
 
@@ -53,7 +58,32 @@ if ($action = valider("action")) {
 
         case 'Logout':
             session_destroy();
+            setcookie('pseudo');
+            setcookie('password');
+            unset($_COOKIE['pseudo']);
+            unset($_COOKIE['password']);
             $qs = "?view=login-signIn";
+            break;
+
+        case 'create_place':
+            if (($nom = valider('nom')) &&
+                ($sport = valider('sport')) &&
+                ($prix = valider('prix')) &&
+                ($capacite = valider('capacite')) &&
+                ($prive = valider('type')) &&
+                ($description = valider('description')) &&
+                ($coord = valider('coord'))
+            ){
+                $createur_id = valider('id_user','SESSION');
+                $coord = str_replace("\\",'',$coord);
+                $coord = json_decode($coord,true);
+                $adresse = $coord['address'];
+                $lat = $coord['coordinates']['lat'];
+                $long = $coord['coordinates']['long'];
+
+                create_place($nom,$lat,$long,$sport,$prive,$createur_id,$prix,$capacite,$description,$adresse);
+                $qs = "?view=mesTerrains";
+            }
             break;
     }
 
@@ -66,7 +96,10 @@ if ($action = valider("action")) {
 //$urlBase = dirname($_SERVER["PHP_SELF"]) . "/index.php";
 // On redirige vers la page index avec les bons arguments
 
+
 header("Location:" . "index.php" . $qs);
+
+
 //qs doit contenir le symbole '?'
 
 // On écrit seulement après cette entête

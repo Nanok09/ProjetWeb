@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
         integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/common.css" type="text/css">
+    <link rel="stylesheet" href="./css/common.css" type="text/css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@5.6.0/main.min.css"
         type="text/css">
-    <link rel="stylesheet" type="text/css" href="../css/header.css">
+    <link rel="stylesheet" type="text/css" href="./css/header.css">
     <title>Sport'BnB</title>
 
     <!-- Font Awesome JS -->
@@ -46,6 +46,8 @@
     }
     </style>
 
+
+
 </head>
 
 <body>
@@ -56,38 +58,39 @@
         <a class="navbar-brand" href="index.php?view=accueil">
             <img src="images/Logo.svg" width="200" height="50" alt="">
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample08"
-            aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar"
+            aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse justify-content-md-center" id="navbarsExample08">
+        <div class="collapse navbar-collapse justify-content-md-center" id="navbar">
             <ul class="navbar-nav">
                 <li class="nav-item active border-right border-dark">
-                    <a class="nav-link" href="index.php?view=accueil">Accueil<span class="sr-only">(current)</span></a>
+                    <a class="nav-link mx-2" href="index.php?view=accueil">Accueil<span
+                            class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item border-right border-dark">
-                    <a class="nav-link" href="index.php?view=recherche">Rechercher</a>
+                    <a class="nav-link mx-2" href="index.php?view=recherche">Rechercher</a>
                 </li>
                 <li class="nav-item border-right border-dark">
-                    <a class="nav-link" href="index.php?view=louer" tabindex="-1" aria-disabled="true">Louer</a>
+                    <a class="nav-link mx-2" href="index.php?view=louer" tabindex="-1" aria-disabled="true">Louer</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?view=mesTerrains">Mes Terrains</a>
+                    <a class="nav-link mx-2" href="index.php?view=mesTerrains">Mes Terrains</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="dropdown08" data-toggle="dropdown"
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">Compte</a>
-                    <div class="dropdown-menu" aria-labelledby="dropdown08">
-                        <a class="dropdown-item" href="index.php?view=mon-compte">Mon Compte</a>
-                        <a class="dropdown-item" href="index.php?view=chat">Mes discussions</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown">
                         <?php
-if (valider("is_connected", "SESSION")) {
-    echo "<a id=\"deconnexion\" class=\"dropdown-item text-danger\" href=\"controleur.php?action=Logout\">Se Déconnecter</a>";
-} else {
-    echo " <a class=\"dropdown-item\" href=\"index.php?view=login-signIn\">Inscription/Connexion</a>";
-}
-?>
+                        if (valider("is_connected", "SESSION")) {
+                            echo "<a id=\"deconnexion\" class=\"dropdown-item text-danger\" href=\"controleur.php?action=Logout\">Se Déconnecter</a>";
+                            echo '<a class="dropdown-item" href="index.php?view=mon-compte">Mon Compte</a>';
+                            echo '<a class="dropdown-item" href="index.php?view=chat">Mes discussions</a>';
+                        } else {
+                            echo " <a class=\"dropdown-item\" href=\"index.php?view=login-signIn\">Inscription/Connexion</a>";
+                        }
+                        ?>
                     </div>
                 </li>
             </ul>

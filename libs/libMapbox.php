@@ -85,7 +85,8 @@ return $coords;
 $public_token = 'pk.eyJ1IjoiYXlwMzAzIiwiYSI6ImNrbjhueDA1aDB6dGEyeG54cnNiMXU5enIifQ.xF0Hdno28id2nLnF-rqg2w';
 
 function get_current_user_location() {
-    // pour l'instant ça retourne un certain endroit à villeneuve d'ascq 
+
+
     return array(3.1442651,50.6232523); // /!\ ATTENTION : les coordonnées sont dans  l'autre sens par rapport a Google maps
 }
 
