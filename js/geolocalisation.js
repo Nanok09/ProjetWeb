@@ -1,4 +1,4 @@
-var url_root = "http://localhost/airBnb/";
+var url_root = "";
 
 
 var geolocation = null;

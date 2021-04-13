@@ -65,17 +65,24 @@ if ($action = valider("action")) {
             $qs = "?view=login-signIn";
             break;
 
-        case 'Créer terrain':
+        case 'create_place':
             if (($nom = valider('nom')) &&
-                ($adresse = valider('adresse')) &&
                 ($sport = valider('sport')) &&
                 ($prix = valider('prix')) &&
                 ($capacite = valider('capacite')) &&
                 ($prive = valider('type')) &&
-                ($description = valider('description'))
+                ($description = valider('description')) &&
+                ($coord = valider('coord'))
             ){
                 $createur_id = valider('id_user','SESSION');
-                create_place($nom,$description,$adresse,$lat,$long,$sport,$prive,$createur_id,$prix,$capacite);
+                $coord = str_replace("\\",'',$coord);
+                $coord = json_decode($coord,true);
+                $adresse = $coord['address'];
+                $lat = $coord['coordinates']['lat'];
+                $long = $coord['coordinates']['long'];
+
+                create_place($nom,$lat,$long,$sport,$prive,$createur_id,$prix,$capacite,$description,$adresse);
+                $qs = "?view=mesTerrains";
             }
             break;
     }
@@ -89,7 +96,10 @@ if ($action = valider("action")) {
 //$urlBase = dirname($_SERVER["PHP_SELF"]) . "/index.php";
 // On redirige vers la page index avec les bons arguments
 
+
 header("Location:" . "index.php" . $qs);
+
+
 //qs doit contenir le symbole '?'
 
 // On écrit seulement après cette entête
