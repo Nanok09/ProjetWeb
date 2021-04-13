@@ -14,6 +14,7 @@ if (valider("is_connected", "SESSION")) {
                     <div class="col-xl-8 col-md-4 col-sm-4 col-12 my-auto mx-auto a">
                         <h1 class="mb-md-0 mb-5 bold-text" style="color: #fdedcf">Sport'bnb</h1>
                     </div>
+
                     <div class="col-xl-2 col-md-4 col-sm-4 col-12">
                         <h6 class="mb-3 mb-lg-4" style="color: #fdedcf"><b>MENU</b></h6>
                         <ul class="list-unstyled">
