@@ -3,8 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
-
--- Generation Time: Apr 12, 2021 at 06:46 PM
+-- Generation Time: Apr 13, 2021 at 10:12 AM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.0
 
@@ -74,7 +73,11 @@ INSERT INTO `creneauxDispo` (`id`, `idLieu`, `date`, `heureDebut`, `heureFin`, `
 (12, 1, '2021-04-17', '17:00:00', '19:30:00', 10),
 (13, 1, '2021-04-15', '01:00:00', '02:30:00', 5),
 (14, 1, '2021-04-17', '18:30:00', '19:00:00', 10),
-(15, 1, '2021-04-16', '00:00:00', '23:59:00', 10);
+(15, 1, '2021-04-16', '00:00:00', '23:59:00', 10),
+(16, 1, '2021-04-14', '16:00:00', '17:00:00', 10),
+(17, 1, '2021-04-13', '16:00:00', '17:00:00', 10),
+(18, 1, '2021-04-14', '13:00:00', '14:30:00', 10),
+(19, 1, '2021-04-13', '16:30:00', '17:30:00', 10);
 
 -- --------------------------------------------------------
 
@@ -245,7 +248,29 @@ INSERT INTO `reservations` (`id`, `idUtilisateur`, `date`, `heureDebut`, `heureF
 (8, 4, '2021-04-17', '18:00:00', '19:00:00', 10, 1),
 (9, 4, '2021-04-17', '17:00:00', '19:00:00', 10, 1),
 (10, 4, '2021-04-16', '19:00:00', '23:30:00', 10, 1),
-(11, 4, '2021-04-16', '15:00:00', '16:30:00', 10, 1);
+(11, 4, '2021-04-16', '15:00:00', '16:30:00', 10, 1),
+(12, 4, '2021-04-14', '16:00:00', '17:00:00', 5, 1),
+(13, 4, '2021-04-14', '13:00:00', '13:30:00', 10, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sports`
+--
+
+CREATE TABLE `sports` (
+  `id` varchar(30) NOT NULL,
+  `nom` varchar(50) NOT NULL,
+  `logo` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `sports`
+--
+
+INSERT INTO `sports` (`id`, `nom`, `logo`) VALUES
+('basket', 'Basket', 'basketball-ball.png'),
+('tennis', 'Tennis', 'tennis-racket.png');
 
 -- --------------------------------------------------------
 
@@ -302,7 +327,8 @@ ALTER TABLE `creneauxValides`
 --
 ALTER TABLE `lieux`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `createur` (`createur`);
+  ADD KEY `createur` (`createur`),
+  ADD KEY `sport` (`sport`);
 
 --
 -- Indexes for table `messagesChat`
@@ -337,6 +363,12 @@ ALTER TABLE `reservations`
   ADD KEY `idLieu` (`idLieu`);
 
 --
+-- Indexes for table `sports`
+--
+ALTER TABLE `sports`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `utilisateurs`
 --
 ALTER TABLE `utilisateurs`
@@ -358,7 +390,7 @@ ALTER TABLE `commentaires`
 -- AUTO_INCREMENT for table `creneauxDispo`
 --
 ALTER TABLE `creneauxDispo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `creneauxValides`
@@ -388,7 +420,7 @@ ALTER TABLE `photosLieux`
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `utilisateurs`
@@ -417,7 +449,8 @@ ALTER TABLE `creneauxDispo`
 -- Constraints for table `lieux`
 --
 ALTER TABLE `lieux`
-  ADD CONSTRAINT `lieux_ibfk_1` FOREIGN KEY (`createur`) REFERENCES `utilisateurs` (`id`);
+  ADD CONSTRAINT `lieux_ibfk_1` FOREIGN KEY (`createur`) REFERENCES `utilisateurs` (`id`),
+  ADD CONSTRAINT `lieux_ibfk_2` FOREIGN KEY (`sport`) REFERENCES `sports` (`id`);
 
 --
 -- Constraints for table `messagesChat`

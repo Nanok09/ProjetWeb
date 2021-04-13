@@ -75,7 +75,6 @@ function get_place_creator($place_id)
     $SQL = "SELECT createur FROM lieux WHERE id=?";
     $param = array($place_id);
     return SQLGetChamp($SQL, $param);
-
 }
 
 /**
@@ -105,11 +104,11 @@ function distance($lat1, $lng1, $lat2, $lng2, $miles = false)
     $dlat = $lat2 - $lat1;
     $dlng = $lng2 - $lng1;
     $a = sin($dlat / 2) * sin($dlat / 2) + cos($lat1) * cos($lat2) * sin(
-        $dlng / 2) * sin($dlng / 2);
+        $dlng / 2
+    ) * sin($dlng / 2);
     $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
     $km = $r * $c;
     return ($miles ? ($km * 0.621371192) : $km);
-
 }
 /* Cette version ne marche pas j'ai oublié des conversions
 function calculate_distance_between(array $a,array $b){
@@ -194,7 +193,6 @@ function get_places($sport = false, bool $private_only = false, bool $public_onl
             if ($distance <= $max_distance) {
                 $result['distance_to_user'] = $distance;
                 $final_results[] = $result;
-
             } // end if du foreach
 
         } //end For each
@@ -203,7 +201,6 @@ function get_places($sport = false, bool $private_only = false, bool $public_onl
         var_dump($final_results);
         usort($final_results, 'compare'); // utilisation de la fonction usort qui permet de faire un tri customisé
         return $final_results;
-
     } //end if
 
     return $query_results;
@@ -250,7 +247,6 @@ function create_place(string $nom, float $lat, float $long, string $sport, int $
         ( :nom, :description, :adresse, :latitude, :longitude, :sport, :prive, :createur, :prix, :capacite)";
 
         return SQLInsert($SQL, $param);
-
     } //end if
     trigger_error("The given creator is not registered in the data base", E_USER_WARNING);
     return false;
@@ -299,7 +295,6 @@ function get_info(int $place_id)
     $param = array($place_id);
     $result = parcoursRs(SQLSelect($SQL, $param));
     return $result[0];
-
 }
 /**
  * Récupère le créateur d'un lieu
@@ -391,10 +386,10 @@ function modify_comment($id_user, $id_comment, $message, $timestamp)
 }
 /**
  * Récupère la liste des commentaires pour un lieu, ordonnés du plus récent au plus vieux
- * @TODO limiter le nb de commentaires récupérés ?
  * @param int id_place
  * @return liste de tableaux associatifs contenant les champs "nomUtilisateur", "id" (du commentaire), "message", "timestamp"
  */
+// TODO: limiter le nb de commentaires récupérés ?
 function get_comments($id_place)
 {
     $SQL = "SELECT u.nom nomUtilisateur, c.id, c.message, c.timestamp FROM commentaires as c INNER JOIN utilisateurs as u ON c.idUtilisateur=u.id";
@@ -574,4 +569,16 @@ function get_capacite_restante_creneau($id_place, $date, $heure_debut, $heure_fi
     $SQL .= "WHERE v.debut>=:heure_debut AND v.fin <=:heure_fin";
     $params = array("id_place" => $id_place, "date" => $date, "heure_debut" => $heure_debut, "heure_fin" => $heure_fin);
     return SQLGetChamp($SQL, $params);
+}
+// ============= SPORTS ===========
+
+/**
+ * Retourne la liste de tous les sports avec leur id, nom, logo
+ * @return array
+ */
+function get_all_sports()
+{
+    $SQL = "SELECT id, nom, logo FROM sports";
+    $params = array();
+    return parcoursRs(SQLSelect($SQL, $params));
 }
