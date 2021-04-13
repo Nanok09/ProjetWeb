@@ -229,4 +229,3 @@ $photos = get_photos();
 <form id='creation_place' action='controleur.php'>
 </form>
 
-

@@ -9,7 +9,7 @@ if (file_exists(__DIR__ . '/../config.php')) {
 }
 
 /**
- * @file maLibSQL.php
+ * @file libSQL.php
  * Ce fichier définit les fonctions de requêtage
  * Il nécessite d'avoir défini les variables $BDD_login, $BDD_password $BDD_chaine dans config.php, qui est chargé au moment de l'appel de la librairie
  *

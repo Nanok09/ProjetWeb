@@ -6,9 +6,38 @@ On effectue uniquement des Requêtes à la page concernée (pour l'instant /libs
 
 action:
 
-* get_list_terrains
-* get_terrain_info
-* get_recommandations
+* get_list_places : effectue une recherche des terrains en fct de différents critères
+* get_place_info : récupère les infos d'un terrain/lieu
+* get_recommandations : récupère une liste de terrains/lieux recommandés
+
+* address_research : à partir d'une adresse tapée par l'utilisateur, suggère une liste d'adresses associées à leurs coordonnées (latitude/longitude)
+
+___
+
+* add_note : ajoute une note à un terrain
+* modify_note : modifie une note donnée
+* delete_note : supprime une note donnée
+
+___
+
+* add_comment : ajoute un commentaire lié à un terrain
+* modify_comment : le modifie
+* delete_comment : le supprime
+
+___
+
+* add_creneau_dispo : pour l'utilisateur qui loue un terrain/lieu, ajoute un créneau disponible avec une certaine capacité que d'autres utilisateurs pourront réserver
+* add_reservation : réserver un créneau
+* delete_reservation : supprime une reservation faite
+
+* get_creneaux_place : récupère tous les créneaux dispos et le nombre de places restantes pour un terrain/lieu entre 2 dates (pour affichage sur calendrier)
+* get_capacite_creneau : récupère le nombre de places restantes pouvant être réservées sur un terrain pendant la totalité d'un créneau horaire
+
+___
+
+* send_message : envoyer un message sur le chat
+* get_conversation : récupére les messages d'une conversation avec un autre utilisateur
+* get_new_messages : récupère d'éventuels nouveaux messages reçus
 
 # Partie requete à l'API
 
@@ -64,6 +93,34 @@ Chaque action peut/doit recevoir une liste de parametres optionels:
 
 * action = address_research
   + address = addresse -- str représentant l'adresse à trouver
+
+* action = add_creneau_dispo
+  + id_place  = id du terrain
+  + date = string(yyyy-mm-dd)
+  + time_start = string(hh:mm)
+  + time_end = string(hh:mm)
+  + capacite = int
+
+* action = add_reservation
+  + id_place  = id du terrain
+  + date = string(yyyy-mm-dd)
+  + time_start = string(hh:mm)
+  + time_end = string(hh:mm)
+  + nb_personnes = int
+
+* action = delete_reservation
+  + id_reservation = int
+
+* action = get_creneaux_place
+  + id_place = int id du terrain
+  + date_start = string(yyyy-mm-dd)
+  + date_end = string(yyyy-mm-dd)
+
+* action = get_capacite_creneau
+  + id_place = int id du terrain
+  + date = string(yyyy-mm-dd)
+  + time_start = hh:mm
+  + time_end = hh:mm
 
 # Partie réponse de l'API
 
@@ -143,7 +200,7 @@ Chaque action peut/doit recevoir une liste de parametres optionels:
 
         data: {
                 id_comment: @int
-                timestamp: @int
+                timestamp: @int (unix timestamp en s)
         }
 ```
 
@@ -168,6 +225,55 @@ Chaque action peut/doit recevoir une liste de parametres optionels:
                 coordinates: {lat:lat,long:long},
                 address : @str (représentant le nom complet de l'adresse ),
         },...,{}]
+```
+
+* action = add_creneau_dispo
+
+``` 
+
+        data: {
+                id_creneau: @int
+        }
+```
+
+* action = add_reservation
+
+``` 
+
+        data: {
+                id_reservation: @int
+        }
+```
+
+* action = delete_reservation
+
+  data: Undefined
+
+* action = get_creneaux_place
+
+(utilisé par fullcalendar pour afficher les creneaux dans un calendrier)
+
+``` 
+
+    data: [
+            {
+              start: string date (iso format),
+              end: string date (iso format),
+              title: string titre (contient la capacité restante / capacité totale),
+              className: string classes des elements des evenements dans le calendrier
+            },
+            ...
+          ]
+
+```
+
+* action = get_capacite_creneau
+
+``` 
+
+    data : {
+      capacite: int
+    }
 ```
 
 # Exemples

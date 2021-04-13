@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-include_once "libs/maLibUtils.php";
-include_once "libs/maLibSQL.pdo.php";
-include_once "libs/maLibSecurisation.php";
+include_once "libs/libUtils.php";
+include_once "libs/libSQL.pdo.php";
+include_once "libs/libSecurisation.php";
 include_once "libs/modele.php";
 
 $qs = "";
@@ -24,6 +24,8 @@ if ($action = valider("action")) {
             ) {
                 if (!verif_user($pseudo, $password)) {
                     $qs = "?view=login-signIn&msg=Mauvais identifiants de connexion, si vous n'avez pas de compte inscrivez vous!";
+                } else {
+                    $qs = "?view=accueil";
                 }
                 if (valider('ResterCo')) {
                     setcookie("password", $password);
@@ -45,6 +47,7 @@ if ($action = valider("action")) {
             ) {
                 create_user($pseudo, $password, $email, $nom, $prenom);
                 verif_user($pseudo, $password);
+                $qs = "?view=accueil";
             } else {
                 $msg = "Veuillez remplir toutes les informations nécessaires à l%E2%80%99inscription";
                 $qs = "?view=login-signIn&msg=" . $msg;

@@ -1,12 +1,22 @@
-body{
-    background-color: #fdedcf;
+body {
+  background-color: #fdedcf;
 }
 
-.bg-custom-beige{
-    background-color: #fdedcf;
-
+.bg-custom-beige {
+  background-color: #fdedcf;
 }
 
-.bg-custom-grey{
-    background-color: #dcdcdc;
+.bg-custom-grey {
+  background-color: #dcdcdc;
+}
+
+.bg-custom-blue {
+  background-color: #123455;
+}
+.bg-custom-grey {
+  background-color: #dcdcdc;
+}
+
+.custom-rounded-corners {
+  border-radius: 50px;
 }
