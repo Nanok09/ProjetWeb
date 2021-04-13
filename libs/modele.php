@@ -132,7 +132,7 @@ function compare($array1, $array2)
     return -1;
 }
 
-/**
+/** TODO : gérer le cas où on envoie pas une localisation mais juste une adresse et instaurer un paramètre max_results
  * Récupérer les lieux les plus proches correspondant à certains critères
  * Tous les paramètres sont optionels
  * @param double lat
@@ -143,9 +143,10 @@ function compare($array1, $array2)
  * @param bool publuc_only
  * @param bool private_only
  * @param int max_distance (km)
+ * @param int max_results (TODO)
  */
 
-function get_places($sport = false, bool $private_only = false, bool $public_only = false, $lat = false, $long = false, int $price_min = 0, int $price_max = 10000, $max_distance = 1000)
+function get_places($sport = false, bool $private_only = false, bool $public_only = false, $lat = false, $long = false, int $price_min = 0, int $price_max = 10000, $max_distance = 1000, $max_results = 10)
 {
 
     // récupérer la liste des terrains potentielement intéressant dans la base de données
@@ -185,7 +186,7 @@ function get_places($sport = false, bool $private_only = false, bool $public_onl
     // filtrer le résultat à l'aide de la fonction calculate distance between
 
     if ($lat && $long) {
-        echo 'on est dans la partie calculer les distances!';
+        //echo 'on est dans la partie calculer les distances!';
         $final_results = array();
         foreach ($query_results as $result) {
             $distance = distance($result['latitude'], $result['longitude'], $lat, $long);
@@ -197,8 +198,8 @@ function get_places($sport = false, bool $private_only = false, bool $public_onl
 
         } //end For each
         // trier les tableaux obtenus par distance à l'utilisateur croissante
-        echo '<h2> Avant tri : </h2>';
-        var_dump($final_results);
+        //echo '<h2> Avant tri : </h2>';
+        //var_dump($final_results);
         usort($final_results, 'compare'); // utilisation de la fonction usort qui permet de faire un tri customisé
         return $final_results;
     } //end if
@@ -288,7 +289,7 @@ function modify_place(int $place_id, int $user_id, array $modifications)
  * @return array place_info
  */
 
-function get_info(int $place_id)
+function get_place_info(int $place_id)
 {
 
     $SQL = "SELECT * FROM lieux WHERE id=?";
@@ -341,7 +342,7 @@ function add_note($id_user, $id_place, $note)
  */
 function get_note_place($id_place)
 {
-    $SQL = "SELECT avg(note) note_moyenne, count(note) nb_notes FROM notes WHERE idLieu = ?";
+    $SQL = "SELECT avg(note) mean, count(note) nb_notes FROM notes WHERE idLieu = ?";
     $params = array($id_place);
     return parcoursRs(SQLSelect($SQL, $params))[0];
 }

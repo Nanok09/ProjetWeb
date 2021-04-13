@@ -95,17 +95,20 @@ function get_current_user_location() {
 
 
 
-
+//pour l'instant calculatebbox n'est pas fonctionnelle...
 
 function calculate_bbox(float $bbox_param,array $localisation) {
     // pour l'instant cette fonction n'est pas utile en l'état mais ça pourrait changer 
-    $bbox_array = array($localisation[0]-$bbox_param,$localisation[1]-$bbox_param,$localisation[0]+$bbox_param,$localisation[1]+$bbox_param);
-    return implode(",",$bbox_array);
+    //$bbox_array = array($localisation[0]-$bbox_param,$localisation[1]-$bbox_param,$localisation[0]+$bbox_param,$localisation[1]+$bbox_param);
+    //return implode(",",$bbox_array);
+    return '';
 }
 
 
 // cette fonction renvoie un tableau de couples de coordonnées correspondant à l'adresse $adresse et prends des arguments optionels
 
+// dans mapbox le c'est dans l'ordre : array(longitude,latitude)
+// sinon pour le reste c'est dans l'odre latitude,longitude
 
 function adress_to_coordinates(string $adress, $proximity = array(3.1442651,50.6232523) , float $bbox_param = 1 , int $limit = 10) {
     //Cette fonction fait un appel à l'API de mapbox. On a le droit à 50 000 requêtes gratuites par jour.
@@ -146,13 +149,40 @@ function adress_to_coordinates(string $adress, $proximity = array(3.1442651,50.6
 }
 
 
+function address_research($address,array $proximity = array(3.1442651,50.6232523) , float $bbox_param = 1 , int $limit = 10 ) {
+    global $public_token;
+    $url_root= "https://api.mapbox.com/geocoding/v5/mapbox.places/";
+
+    $bbox = calculate_bbox($bbox_param,$proximity);
+    $proximity_url = implode(",",$proximity);
+
+    $request_url = $url_root . urlencode($address) . ".json?" . 'proximity='. $proximity_url .'&bbox='. $bbox. '&limit=' .$limit . '&access_token='. $public_token;
+    //var_dump($request_url);
+    $source = file_get_contents($request_url);
+    $obj = json_decode($source);
+    $results = array();
+    for ($i = 0; $i < count($obj->features); $i++) {
+        $result = array(
+            'coordinates' => array('lat' => $obj->features[$i]->geometry->coordinates[1], 'long' => $obj->features[$i]->geometry->coordinates[0]),
+            'address' => $obj->features[$i]->place_name
+            );
+        $results[]=$result;
+    }
+    return $results;
+
+}
+
+
 //pour tester 
-$test = adress_to_coordinates('Avenue paul langevin');
+/*
+$test = address_research('Avenue paul langevin');
 echo '<h2> Voici ce que retourne la fonction native : </h2>';
-var_dump($test[0]);
+var_dump($test);
+*/
+/*
 echo "<h2> Voici ce que renvoie l' API de mapbox : </h2>";
 var_dump($test[1]);
-
+*/
 
 
 // la réponse intéressante est : 49.141262,6.200084
