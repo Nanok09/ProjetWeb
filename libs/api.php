@@ -5,6 +5,7 @@ use function PHPSTORM_META\map;
 include_once "libUtils.php";
 include_once "modele.php";
 include_once "libValidation.php";
+include_once "libMapbox.php";
 
 session_start();
 
@@ -314,10 +315,15 @@ if ($action = valider("action")) {
                 'distance_max' => 100,
                 'max_results' => 10
             );
-            if ($user_location_lat = valider("user_location_lat") && $user_location_long = valider("user_location_long")) {
+            if ($user_location_long = valider("user_location_long")) {
                 // On prends toujours prioritairement la position envoyée par le client 
-                $arg_array['proximity'] = array($user_location_lat,$user_location_long);
+                $arg_array['proximity'][] = $user_location_long; // inversé par rapport à l'ordre habituel
             }
+            if ($user_location_lat = valider("user_location_lat")) {
+                // On prends toujours prioritairement la position envoyée par le client 
+                $arg_array['proximity'][] = $user_location_lat; // inversé par rapport à l'ordre habituel
+            }
+
             if ($distance_max = valider("distance_max")) {
                 $arg_array['max_distance'] = $distance_max;
             }
@@ -327,7 +333,8 @@ if ($action = valider("action")) {
             if ($address = valider('address')) { // on fait l'appel à l'api externe seulement si il y a un champ non vide
                 // appel à l'api mapbox
                 $arg_array['address'] = $address;
-                $data['data'] = adress_to_coordinates($arg_array['address'],$arg_array['proximity'],$arg_array['distance_max'],$arg_array['max_results']);
+                //var_dump($arg_array);
+                $data['data'] = address_research($arg_array['address'],$arg_array['proximity'],$arg_array['distance_max'],$arg_array['max_results']);
                 set_request_success();
             }
             break;
