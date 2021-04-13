@@ -2,12 +2,15 @@
 include_once "libs/modele.php";
 include_once "libs/libUtils.php";
 include_once "libs/libForms.php";
+include_once "libs/libSecurisation.php"; // pour securiser
 
 // Si la page est appelée directement par son adresse, on redirige en passant pas la page index
 if (basename($_SERVER["PHP_SELF"]) != "index.php") {
     header("Location:../index.php?view=mesTerrains");
     die("");
 }
+
+securiser("?view=accueil");
 
 $id_user = valider("id_user", "SESSION");
 $mesTerrains = get_places_created_by($id_user);
