@@ -72,7 +72,7 @@ if ($action = valider("action")) {
                 ($description = valider('description'))
             ){
                 $createur_id = valider('id_user','SESSION');
-                //create_place($nom,$description,$adresse,$lat,$long,$sport,$prive,$createur_id,$prix,$capacite);
+                create_place($nom,$description,$adresse,$lat,$long,$sport,$prive,$createur_id,$prix,$capacite);
             }
             break;
     }

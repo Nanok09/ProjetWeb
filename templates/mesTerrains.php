@@ -14,12 +14,21 @@ $mesTerrains = get_places($id_user);
 $photos = get_photos();
 
 ?>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<script src="js/geolocalisation.js"></script>
 <style>
     h5+p:hover{
         cursor:pointer;
     }
-</style>
+    #map {
+        width: 400px;
+        height: 400px;
+        display : inline-block;
+    }
 
+</style>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js"></script>
 <script>
     var terrains = <?php echo json_encode($mesTerrains); ?>;
     var photos = <?php echo json_encode($photos); ?>;
@@ -98,7 +107,6 @@ $photos = get_photos();
         //appui sur entrée dans un input lors de l'édition => validation
         $(document).on("keyup", "input", function (contexte) {
             if ($(this).val() == '') return;
-            console.log(this.class);
             if ($(this).hasClass('crea')) return;
             if (contexte.key == "Enter") {
                 var newContenu = $(this).val();
@@ -109,18 +117,47 @@ $photos = get_photos();
             }
         });
 
-        //creation terrain
-        $("#creation").click(function(){
-            create_place();
+
+        mapboxgl.accessToken = 'pk.eyJ1IjoiYXlwMzAzIiwiYSI6ImNrbjhueDA1aDB6dGEyeG54cnNiMXU5enIifQ.xF0Hdno28id2nLnF-rqg2w';
+        var map = new mapboxgl.Map({
+            container: 'map', // container id
+            style: 'mapbox://styles/mapbox/streets-v11', // style URL
+            center: [-74.5, 40], // starting position [lng, lat]
+            zoom: 9 // starting zoom
         });
 
-        //modification terrain
-        $("#modif").click(function(){
-            modif_place();
+
+        $("#adresse").on('change',function(contexte) {
+            var adress = $("#adresse")[0].value;
+            //console.log(typeof(adress));
+            if (adress) {
+                console.log(adress);
+                var coord = get_coord(adress);
+                console.log(coord);
+            }
         });
 
 
     });
+
+    //recherches coordonnée, requete à notre API
+    function get_coord(adresse){
+
+        $.ajax({
+            type: "POST",
+            url: "libs/api.php",
+            data:{'action':'address_research',
+                'address':adresse,
+                'user_location_lat':},
+            error: function () {
+                console.log("Error");
+            },
+            success: function (oRep) {
+                console.log(oRep);
+                return oRep;
+            }
+        })
+    }
 
     //Structure html de l'édition d'un terrain
     function print_place_edition(terrain){
@@ -172,16 +209,9 @@ $photos = get_photos();
         $("#creation_place").append("</br>");
         $("#creation_place").append($("<h5>").html("Description générale"));
         $("#creation_place").append("<textarea id='description' class='crea' name='description'></textarea>");
-        $("#creation_place").append("<input id='creation' type='submit' name='action' value='Créer terrain'/>");
+        $("#creation_place").append("<input id='creation' name='action' type='button' onClick='document.getElementById(\"creation_place\").submit();' value='Créer terrain'/>");
     }
 
-    function create_place(){
-        return ;
-    }
-
-    function modif_place(){
-        return ;
-    }
 
 </script>
 
@@ -191,10 +221,12 @@ $photos = get_photos();
     </select>
 
 </div>
-
+<div id="map"></div>
 
 <div id="edition">
 </div>
 
 <form id='creation_place' action='controleur.php'>
 </form>
+
+
