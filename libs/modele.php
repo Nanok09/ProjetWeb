@@ -293,7 +293,7 @@ function modify_place(int $place_id, int $user_id, array $modifications)
  * @return array place_info
  */
 
-function get_info(int $place_id)
+function get_place_info(int $place_id)
 {
 
     $SQL = "SELECT * FROM lieux WHERE id=?";
@@ -347,7 +347,7 @@ function add_note($id_user, $id_place, $note)
  */
 function get_note_place($id_place)
 {
-    $SQL = "SELECT avg(note) note_moyenne, count(note) nb_notes FROM notes WHERE idLieu = ?";
+    $SQL = "SELECT avg(note) mean, count(note) nb_notes FROM notes WHERE idLieu = ?";
     $params = array($id_place);
     return parcoursRs(SQLSelect($SQL, $params))[0];
 }

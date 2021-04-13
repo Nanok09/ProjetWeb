@@ -250,6 +250,9 @@ if ($action = valider("action")) {
             if ($prix_max = valider("prix_max")) {
                 $arg_array['price_max'] = $prix_max;
             }
+            if ($max_results = valider("max_results")) {
+                $arg_array['max_results'] = $max_results;
+            }
             $results = get_places($arg_array['sport'],$arg_array['private_only'],$arg_array['public_only'],$arg_array['lat'],$arg_array['long'],$arg_array['price_min'],$arg_array['price_max'],$arg_array['max_distance'],$arg_array['max_results']);
             $data['data']=array();
             foreach ($results as $result) {
@@ -266,7 +269,7 @@ if ($action = valider("action")) {
                 );
                 $place_data['address'] = $result['adresse'];
                 $place_data['photos']=get_photos_place($result['id']);
-                $place_data['note'] = get_note_place($result['id']);
+                $place_data['note'] = get_note_place($result['id'])['mean'];
                 if ($result['prive'] == 0) {
                     $place_data['dispo']=false;
                 }
@@ -280,10 +283,53 @@ if ($action = valider("action")) {
             break;
         case 'get_place_info':
             if ($place_id = valider('terrain_id')){
-                //TODO 
+                $result= get_place_info($place_id);
+                $place_data = array();
+                $place_data['id'] = $result['id'];
+                $place_data['sport']=$result['sport'];
+                $place_data['creator'] = $result['createur'];
+                $place_data['private'] = $result['prive'];
+                $place_data['price'] = $result['prix'];
+                $place_data['name'] = $result['nom'];
+                $place_data['coordinates'] = array (
+                    'lat' => $result['latitude'],
+                    'long' => $result['longitude']
+                );
+                $place_data['address'] = $result['adresse'];
+                $place_data['photos']=get_photos_place($result['id']);
+                $place_data['note'] = get_note_place($result['id']);
+                if ($result['prive'] == 0) {
+                    $place_data['dispo']=false;
+                }
+                if ($result['prive'] == 1) {
+                    $place_data['dispo'] = $result['capacite']; // renseigner la capacité en temps réel 
+                }
+                $data['data'] = $place_data;
+                set_request_success();
             }
             break;
         case 'address_research':
+            $arg_array = array(
+                'proximity' => array(),
+                'distance_max' => 100,
+                'max_results' => 10
+            );
+            if ($user_location_lat = valider("user_location_lat") && $user_location_long = valider("user_location_long")) {
+                // On prends toujours prioritairement la position envoyée par le client 
+                $arg_array['proximity'] = array($user_location_lat,$user_location_long);
+            }
+            if ($distance_max = valider("distance_max")) {
+                $arg_array['max_distance'] = $distance_max;
+            }
+            if ($max_results = valider("max_results")) {
+                $arg_array['max_results'] = $max_results;
+            }
+            if ($address = valider('address')) { // on fait l'appel à l'api externe seulement si il y a un champ non vide
+                // appel à l'api mapbox
+                $arg_array['address'] = $address;
+                $data['data'] = adress_to_coordinates($arg_array['address'],$arg_array['proximity'],$arg_array['distance_max'],$arg_array['max_results']);
+                set_request_success();
+            }
             break;
     }
 }

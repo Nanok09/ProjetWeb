@@ -64,7 +64,11 @@ Chaque action peut/doit recevoir une liste de parametres optionels:
   + id_comment = id -- str représentant l'id du commentaire
 
 * action = address_research
-  + address = addresse -- str représentant l'adresse à trouver
+  + address = addresse -- str représentant l'adresse à trouver^
+  + user_location_lat =lat -- une chaine de caractere décrivant la position géographique de l'utilisateur (lattitude)
+  + user_location_long =long -- une chaine de caractere décrivant la position géographique de l'utilisateur (longitude)
+  + distance_max = 100 -- chaine de caractères représentant la distance maximale par rapport à l'utilisateur des adresses retournées. La distance est en km. 
+  + max_results = 4 -- chaine de caractère représentant le nombre maximum d'adresses à retourner 
 
 * action = add_creneau_dispo
   + id_place  = id du terrain
