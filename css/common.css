@@ -10,3 +10,8 @@ body{
 .bg-custom-grey{
     background-color: #dcdcdc;
 }
+
+
+.custom-rounded-corners{
+    border-radius: 50px;
+}
