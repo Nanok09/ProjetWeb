@@ -307,6 +307,7 @@ if ($action = valider("action")) {
             set_request_success();
             break;
         case 'get_place_info':
+            $hour = (int) date('h');
             if ($place_id = valider('terrain_id')){
                 $arg_array = array(
                     'date' => date('Y-m-d')
