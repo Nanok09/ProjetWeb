@@ -421,7 +421,7 @@ function delete_comment($id_user, $id_comment)
 function add_photo_place($id_place, $file_name)
 {
     $SQL = "INSERT INTO photosLieux (idLieu,nomFichier) VALUES (:id_place,:file_name)";
-    $params = array("id_place" => $id_place, "nomFichier" => $file_name);
+    $params = array("id_place" => $id_place, "file_name" => $file_name);
     return SQLInsert($SQL, $params);
 }
 /**
