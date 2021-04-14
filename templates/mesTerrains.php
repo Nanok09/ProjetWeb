@@ -209,7 +209,7 @@ $photos = get_photos();
         $("#creation_place").append($("<span>").html("Type :"));
         $("#creation_place").append("</br>");
         $("#creation_place").append("<input id='publique' type='radio' name='type' value=0 checked/>" +
-            "<label for='publique'>Publique</label>");
+            "<label for='publique'>Public</label>");
         $("#creation_place").append("<input id='prive' type='radio' name='type' value=1 />" +
             "<label for='prive'>Privé</label>");
 
