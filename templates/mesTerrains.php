@@ -292,8 +292,8 @@ $photos = get_photos();
     <h2>Mes Terrains</h2>
     <select>
     </select>
-
 </div>
+
 <div id="map"></div>
 
 
