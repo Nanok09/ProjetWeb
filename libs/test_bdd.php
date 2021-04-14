@@ -9,10 +9,10 @@ $raw= 'Avenue paul langevin';
 //$result = get_note_place($id_place);
 
 //var_dump($result);
+$id_auteur = 1;
+$id_destinataire = 4;
 
-$coded = urlencode($raw);
-echo '<h2> Version codée : </h2>';
-var_dump($coded);
-echo 'echo <h2> Version décodée : </h2>';
-var_dump(urldecode($coded));
+$result = add_message_to_conv(1,4,5,'ça faisait longtemps! :) ');
+
+
 
