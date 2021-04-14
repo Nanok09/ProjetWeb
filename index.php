@@ -24,7 +24,10 @@ if (!$view) {
     $view = "accueil";
 }else{
     if (!(valider('is_connected','SESSION'))){
-        if ($view != "" && $view != "accueil"){
+        if ($view != "accueil"
+            && $view != "recherche"
+            && $view != "resultats"
+        ){
             $view="login-signIn";
         }
     }
