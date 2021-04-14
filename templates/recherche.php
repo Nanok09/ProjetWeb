@@ -118,6 +118,8 @@ $("window").ready(function() {
         window.adressePosition = $(this).data("coordinates");
         $("#suggestList").hide();
         $("#ajaxLoader").hide();
+        $("#adresseLat").val(window.adressePosition.lat);
+        $("#adresseLong").val(window.adressePosition.long);
     })
 
 
@@ -158,59 +160,66 @@ $("window").ready(function() {
         }
     })
 
-    $("#submitForm").click(function() {
-
-        let selectedSport = $("#selectSport").children("option:selected").val();
-
-        if ($("#maLocalisation").prop("disabled")) {
-            console.log("Recherche par adresse");
-            console.log(window.adressePosition);
-            $.ajax({
-                type: "POST",
-                url: "libs/api.php",
-                headers: {
-                    "debug-data": true
-                },
-                data: {
-                    "action": "get_list_places",
-                    "user_location_lat": window.adressePosition["lat"],
-                    "user_location_long": window.adressePosition["long"],
-                    "sport": selectedSport
-                },
-                success: function(oRep) {
-                    console.log(oRep);
-
-                },
-                dataType: "json"
-            });
-
-        } else if ($("#adresseInput").prop("disabled")) {
-            $.ajax({
-                type: "POST",
-                url: "libs/api.php",
-                headers: {
-                    "debug-data": true
-                },
-                data: {
-                    "action": "get_list_places",
-                    "user_location_lat": window.position["coords"]["latitude"],
-                    "user_location_long": window.position["coords"]["longitude"],
-                    "sport": selectedSport
-                },
-                success: function(oRep) {
-                    console.log(oRep);
-
-                },
-                dataType: "json"
-            });
-        }
+    $('#dateReservation').val(new Date().toDateInputValue());
 
 
-    })
+
+    /*
+        $("#submitForm").click(function() {
+
+            let selectedSport = $("#selectSport").children("option:selected").val();
+
+            if ($("#maLocalisation").prop("disabled")) {
+                console.log("Recherche par adresse");
+                console.log(window.adressePosition);
+                $.ajax({
+                    type: "POST",
+                    url: "libs/api.php",
+                    headers: {
+                        "debug-data": true
+                    },
+                    data: {
+                        "action": "get_list_places",
+                        "user_location_lat": window.adressePosition["lat"],
+                        "user_location_long": window.adressePosition["long"],
+                        "sport": selectedSport
+                    },
+                    success: function(oRep) {
+                        console.log(oRep);
+
+                    },
+                    dataType: "json"
+                });
+
+            } else if ($("#adresseInput").prop("disabled")) {
+                $.ajax({
+                    type: "POST",
+                    url: "libs/api.php",
+                    headers: {
+                        "debug-data": true
+                    },
+                    data: {
+                        "action": "get_list_places",
+                        "user_location_lat": window.position["coords"]["latitude"],
+                        "user_location_long": window.position["coords"]["longitude"],
+                        "sport": selectedSport
+                    },
+                    success: function(oRep) {
+                        console.log(oRep);
+
+                    },
+                    dataType: "json"
+                });
+            }
+
+
+        })
+    */
+    /*
     $("#rechercheForm").submit(function(event) {
         event.preventDefault();
     })
-
+*/
 
 }) //end window.ready()
 
@@ -297,6 +306,12 @@ function addKeyBoardEvent(e) {
 
 
 }
+
+Date.prototype.toDateInputValue = (function() {
+    var local = new Date(this);
+    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+    return local.toJSON().slice(0,10);
+});
 </script>
 
 
@@ -307,7 +322,7 @@ function addKeyBoardEvent(e) {
         Rechercher
     </h1>
     <div class="container">
-        <form id="rechercheForm" name="recherche" method="get">
+        <form id="rechercheForm" name="Recherche" method="GET" action="./controleur.php">
             <div class="form-row justify-content-center">
                 <div class="col-12">
                     <div class="form-group">
@@ -337,43 +352,70 @@ function addKeyBoardEvent(e) {
                     <img id="ajaxLoader" src="./images/ajaxLoader.gif">
                     <input id="adresseInput" class="form-control custom-rounded-corners" type="text" name="adresse"
                         placeholder="Adresse" required>
-                    <input id="latContainer" type="text" class="d-none">
-                    <input id="longContainer" type="text" class="d-none">
                     <ul id="suggestList">
                     </ul>
+                    <input type="text" name="lat" id="adresseLat" class="d-none">
+                    <input type="text" name="long" id="adresseLong" class="d-none">
                 </div>
                 <div class="w-100"></div>
                 <div class="col-12 mb-3">
-                    <div class="row mb-2">
-                        <div class="col-md-3 col-6 mb-2">
-                            <input class="form-control custom-rounded-corners" type="text" name="horaireA"
-                                placeholder="Heure de début">
-                        </div>
-                        <div class="col-md-3 col-6 mb-2">
-                            <input class="form-control custom-rounded-corners" type="text" name="horaireD"
-                                placeholder="Heure de fin">
-                        </div>
-                        <div class="col-md-3 col-6 mb-2">
+                    <div class="row mb-2 justify-content-around">
+                        <div class="col-md-3 col-6">
                             <input class="form-control custom-rounded-corners" type="text" name="prixMi"
                                 placeholder="Prix Minimal">
                         </div>
-                        <div class="col-md-3 col-6 mb-2">
+                        <div class="col-md-3 col-6">
                             <input class="form-control custom-rounded-corners" type="text" name="prixMa"
                                 placeholder="Prix Maximal">
                         </div>
                     </div>
                 </div>
+
+                <div class="col-12 mb-3">
+                    <input class="form-control custom-rounded-corners" type="text" name="distanceMax"
+                           placeholder="Rayon maximal">
+                </div>
+                <div class="col-12 mb-3">
+                    <div class="row mb-2 justify-content-around">
+                        <div class="col-3">
+                            <label for="dateReservation">Date réservation</label>
+                            <input id="dateReservation" type="date" name="date" name="dateReservation">
+                        </div>
+                        <div class="col-3">
+                            <label for="dateReservation">Date réservation</label>
+                            <input type="time" name="time_start" step="1800" name="heureDebut" value="15:30:00">
+                        </div>
+
+                        <div class="col-3">
+                            <label for="dateReservation">Date réservation</label>
+                            <input type="time" name="time_end" step="1800" name="heureFin" value="16:30:00">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-12 mb-3">
+                    <div class="row justify-content-center">
+                        <div class="form-group col-4">
+                            <label for="nbResultats" class="radio-container"
+                                   style="color: #153455; font-size: 1.1rem;">Nombre de Résultats Max?</label>
+                            <input id="nbResultats" type="number" name="nbResultats">
+                        </div>
+
+                    </div>
+                </div>
                 <div class="col-12 mb-1 row justify-content-center">
                     <div class="form-group col-4">
                         <label for="publicTerrains" class="radio-container m-r-45"
-                            style="color: #153455; font-size: 1.1rem;">Terrains Public</label>
+                               style="color: #153455; font-size: 1.1rem;">Terrains Public</label>
                         <input id="publicTerrains" type="checkbox" checked="checked" name="public">
                         <span class="checkmark"></span>
                     </div>
 
                     <div class="form-group col-4">
                         <label for="priveTerrains" class="radio-container"
-                            style="color: #153455; font-size: 1.1rem;">Terrains Privés</label>
+                               style="color: #153455; font-size: 1.1rem;">Terrains Privés</label>
                         <input id="priveTerrains" type="checkbox" checked="checked" name="prive">
                         <span class="checkmark"></span>
                     </div>

@@ -7,7 +7,7 @@ include_once "libs/libSecurisation.php";
 include_once "libs/modele.php";
 include_once "libs/upload_photo.php";
 
-
+tprint($_POST);
 
 $qs = "";
 
@@ -18,15 +18,16 @@ if ($action = valider("action")) {
 
     switch ($action) {
 
-        // Connexion //////////////////////////////////////////////////
+            // Connexion //////////////////////////////////////////////////
 
         case 'Se connecter':
-            echo "j'ai compris que tu veux te connecter";
+            // echo "j'ai compris que tu veux te connecter";
             if (($pseudo = valider('pseudo')) &&
                 ($password = valider('password'))
             ) {
                 if (!verif_user($pseudo, $password)) {
-                    $qs = "?view=login-signIn&msg=Mauvais identifiants de connexion, si vous n'avez pas de compte inscrivez vous!";
+                    $msg = "Mauvais identifiants de connexion, si vous n'avez pas de compte inscrivez vous!";
+                    $qs = "?view=login-signIn&msg=" . urlencode($msg);
                 } else {
                     $qs = "?view=accueil";
                 }
@@ -39,7 +40,7 @@ if ($action = valider("action")) {
             }
             break;
 
-        // Inscription //////////////////////////////////////////////////
+            // Inscription //////////////////////////////////////////////////
 
         case 'Inscription':
             if (($pseudo = valider('pseudo')) &&
@@ -52,12 +53,12 @@ if ($action = valider("action")) {
                 verif_user($pseudo, $password);
                 $qs = "?view=accueil";
             } else {
-                $msg = "Veuillez remplir toutes les informations nécessaires à l%E2%80%99inscription";
-                $qs = "?view=login-signIn&msg=" . $msg;
+                $msg = "Veuillez remplir toutes les informations nécessaires à l'inscription";
+                $qs = "?view=login-signIn&msg=" . urlencode($msg);
             }
             break;
 
-        // Déconnexion //////////////////////////////////////////////////
+            // Déconnexion //////////////////////////////////////////////////
 
         case 'Logout':
             session_destroy();
@@ -67,6 +68,8 @@ if ($action = valider("action")) {
             unset($_COOKIE['password']);
             $qs = "?view=login-signIn";
             break;
+
+        // Création terrain //////////////////////////////////////////////////
 
         case 'Créer terrain':
             if (($nom = valider('nom')) &&
@@ -94,10 +97,10 @@ if ($action = valider("action")) {
                 if (!($description = valider('description'))) {
                     $description = '';
                 }
-                $id_place=create_place($nom, $lat, $long, $sport, $prive, $createur_id, $prix, $capacite, $description, $adresse);
+                $id_place = create_place($nom, $lat, $long, $sport, $prive, $createur_id, $prix, $capacite, $description, $adresse);
                 $upload_done = upload($_FILES["fileToUpload"]);
                 echo $id_place;
-                if ($upload_done){
+                if ($upload_done) {
                     add_photo_place(intval($id_place), $_FILES["fileToUpload"]["name"]);
                 }
                 $qs = "?view=mesTerrains";
@@ -105,14 +108,84 @@ if ($action = valider("action")) {
                 $qs = "?view=mesTerrains&msg=Veuillez au moins remplir le nom, l'adresse et le sport";
             }
             break;
-        case "AjouterChat":
-            if($id_auteur=valider('id_auteur') && $id_destinataire=valider('id_destinataire') && $msg=valider('msg'))
+        //case "AjouterChat":
+            //if($id_auteur=valider('id_auteur') && $id_destinataire=valider('id_destinataire') && $msg=valider('msg'))
                 //send_message($id_auteur,$id_destinataire,$msg);
-            $qs = "?view=chat&id=".$id_auteur;
+            //$qs = "?view=chat&id=".$id_auteur;
+           // break;
+    
+
+
+
+        // Ajout photo //////////////////////////////////////////////////
+
+        case 'ajouter photo':
+            if ($id_place = valider('id_place')){
+                $upload_done = upload($_FILES["fileToUpload"]);
+                echo $upload_done."</br>";
+                echo $id_place;
+                if ($upload_done){
+                    add_photo_place(intval($id_place), $_FILES["fileToUpload"]["name"]);
+                    $qs="?view=mesTerrains";
+                }else{
+                    $qs="?view=mesTerrains&msg3=Erreur lors de l upload.";
+                }
+            }
+            break;
+
+        // Modifier infos terrains //////////////////////////////////////////////////
+
+        case 'modif_place':
+            if ($id_place = valider('id_place')){
+                $user_id=valider('id_user', 'SESSION');
+                $modification=[];
+                if ($nom = valider('nom')){
+                    $modification['nom'] = $nom;
+                }
+                if ($description = valider('description')){
+                    $modification['description'] = $description;
+                }
+                if ($capacite = valider('capacite')){
+                    $modification['capacite'] = $capacite;
+                }
+                if ($prix = valider('prix')){
+                    $modification['prix'] = $prix;
+                }
+                if ($sport = valider('sport')){
+                    $modification['sport'] = $sport;
+                }
+                tprint($modification);
+                modify_place($id_place, $user_id, $modification);
+                $qs = "?view=mesTerrains";
+            }
+            break;
+
+        case "Recherche":
+
+
+            if($sports = valider("sports")){
+
+            }
+            $localisation=valider("maLocalisation");
+            $adresse=valider("adresse");
+            $horaireA=valider("heureFin");
+            $horaireD=valider("heureDebut");
+            $prixMi=valider("prixMi");
+            $prixMa=valider("prixMa");
+            $lat=valider("lat");
+            $long=valider("long");
+            $distanceMax=valider("distanceMax");
+            $dateReservation=valider("dateReservation");
+            $acceptPublic=valider("public");
+            $acceptPrive=valider("prive");
+            $nBMax=valider("nbResultats");
+
+            $qs = "?view=resultats&sports=".$sports."&localisation=".$localisation."&adresse=".$adresse.
+                "&horaireA=".$horaireA."&horaireD=".$horaireD."&prixMi=".$prixMi."&prixMa=".$prixMa.
+                "&lat=".$lat."&long=".$long."&dMax=".$distanceMax."&dateRes=".$dateReservation
+                ."&acceptPublic=".$acceptPublic."&acceptPrive=".$acceptPrive."&nBMax=".$nBMax;
             break;
     }
-
-
 }
 
 // On redirige toujours vers la page index, mais on ne connait pas le répertoire de base
@@ -130,7 +203,3 @@ header("Location:" . "index.php" . $qs);
 
 // On écrit seulement après cette entête
 ob_end_flush();
-
-
-
-?>

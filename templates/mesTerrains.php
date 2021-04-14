@@ -58,6 +58,7 @@ $photos = get_photos();
         //de l'utilisateur.
 
         var selected = $("#liste_terrains select option:selected");
+        //console.log(selected.data());
         if (selected.html() == '+') {
             print_new_place_creation();
         } else {
@@ -76,58 +77,39 @@ $photos = get_photos();
         //On passe en mode édition lors du click sur un paragraphe
         $(document).on("click", "p", function () {
             var contenu = this.innerHTML;
+            if (this.id == "current_address") return ;
             console.log(contenu);
             if (this.id == "description") {
                 $(this).replaceWith(
-                    "<textarea>" + contenu + "</textarea>"
+                    "<textarea name='description'>" + contenu + "</textarea>"
                 );
             } else if (this.id == "capacite" || this.id == "prix") {
                 $(this).replaceWith(
-                    "<input type='number' value=\"" + contenu + "\" />"
+                    "<input name='"+this.id+"' type='number' value=\"" + contenu + "\" />"
                 );
             } else {
                 $(this).replaceWith(
-                    "<input type='text' value=\"" + contenu + "\" />"
+                    "<input name='"+this.id+"' type='text' value=\"" + contenu + "\" />"
                 );
             }
         });
 
-
-        //appui sur entrée dans un textarea => validation
-        $(document).on("keyup", "textarea", function (contexte) {
-            if ($(this).val() == '') return;
-            if ($(this).hasClass('crea')) return;
-            if (contexte.key == "Enter") {
-                var newContenu = $(this).val();
-                $(this).replaceWith(
-                    $("<p>")
-                        .html(newContenu)
-                );
-            }
-        });
-
-        //appui sur entrée dans un input lors de l'édition => validation
-        $(document).on("keyup", "input", function (contexte) {
-            if ($(this).val() == '') return;
-            if ($(this).hasClass('crea')) return;
-            if (contexte.key == "Enter") {
-                var newContenu = $(this).val();
-                $(this).replaceWith(
-                    $("<p>")
-                        .html(newContenu)
-                );
-            }
-        });
-
-
-
-        $(document).on("keyup","#adresse",function () {
+        $(document).on("keyup", "#adresse", function () {
             var adress = $("#adresse")[0].value;
             console.log(adress);
             if (adress) {
                 get_coord(adress);
             }
         });
+
+
+        //bouton gérer créneaux
+        $("#gerer_creneaux").attr('onclick','window.location.href=\'index.php?view=ajouter_creneau&id='+selected.data().id+'\';');
+
+        //création form photo
+        $("#ajout_photo").append("<input type='hidden' value='" +selected.data().id+ "' name='id_place'/>");
+        $("#ajout_photo").append("<input type='file' name='fileToUpload'/></br>");
+        $("#ajout_photo").append("<input id='ajouter_photo' type='submit' name='action' value='ajouter photo'/>");
 
 
     });
@@ -140,10 +122,10 @@ $photos = get_photos();
             console.log(str);
             $("#choice").append(
                 $("<option>").html(coord[i].address)
-                        .attr('value',str)
+                    .attr('value', str)
             )
         }
-        $("#choice").css('display','inline');
+        $("#choice").css('display', 'inline');
     }
 
     //recherches coordonnée, requete à notre API
@@ -168,35 +150,50 @@ $photos = get_photos();
 
     //Structure html de l'édition d'un terrain
     function print_place_edition(terrain) {
-        console.log(terrain);
+        $("#ajout_creneaux").css('display','block');
+        $("#ajout_photo").css('display','block');
         $("#edition").empty();
         $("#creation_place").empty();
-        $("#map").css('display','none');
+        $("#edition").append($("<h5>").html("Photos : "));
+        $("#map").css('display', 'none');
         for (let i = 0; i < photos.length; i++) {
             if (photos[i].idLieu == terrain.id) {
+                console.log(photos[i]);
                 $("#edition").append("<img style='width : 300px;' src=\"images/terrains/" + photos[i].nomFichier + "\"/>");
             }
         }
-        $("#edition").append($("<h2>").html("Edition de terrain"));
-        $("#edition").append($("<h5>").html("Nom : "));
-        $("#edition").append($("<p id='nom'>").html(terrain.nom));
-        $("#edition").append($("<h5>").html("Description : "));
-        $("#edition").append($("<p id='description'>").html(terrain.description));
-        $("#edition").append($("<h5>").html("Adresse : "));
+        $("#edition").append($("<h3>").html("Infos Terrain : "));
+        $("#edition").append($("<h4>").html("Nom : "));
+        $("#edition").append($("<p id='nom' name='nom'>").html(terrain.nom));
+        $("#edition").append($("<h4>").html("Description : "));
+        if (terrain.description == ''){
+            $("#edition").append($("<p id='description' name='description'>").html('Pas de description'));
+        }else{
+            $("#edition").append($("<p id='description' name='description'>").html(terrain.description));
+        }
+        $("#edition").append($("<h4>").html("Adresse : (non modifiable)"));
         $("#edition").append($("<p id='current_address'>").html(terrain.adresse));
-        $("#edition").append($("<h5>").html("Capacité : (nombre de personnes)"));
-        $("#edition").append($("<p id='capacite'>").html(terrain.capacite));
-        $("#edition").append($("<h5>").html("prix : (horaire)"));
-        $("#edition").append($("<p id='prix' >").html(terrain.prix));
-        $("#edition").append($("<h5>").html("sport : "));
-        $("#edition").append($("<p id='sport'>").html(terrain.sport));
-        $("#edition").append("<input id='modif' type='button' value='Enregistrer Modifications'/>");
+        $("#edition").append($("<h4>").html("Capacité : (nombre de personnes)"));
+        $("#edition").append($("<p id='capacite' name='capacite'>").html(terrain.capacite));
+        $("#edition").append($("<h4>").html("prix : (horaire)"));
+        $("#edition").append($("<p id='prix' name='prix' >").html(terrain.prix));
+        $("#edition").append($("<h4>").html("sport : "));
+        $("#edition").append($("<p id='sport' name='sport'>").html(terrain.sport));
+        $("#edition").append("<input name='action' type='hidden' value='modif_place'>");
+        $("#edition").append("<input name='id_place' type='hidden' value='" +terrain.id+ "'>");
+        $("#edition").append("</br><input type='button' value='Enregistrer modifications' onClick='submit();'>");
+    }
+
+    function modif_infos(){
+
     }
 
     //Structure html de la création d'un terrain
     function print_new_place_creation() {
         $("#creation_place").empty();
         $("#edition").empty();
+        $("#ajout_creneaux").css('display','none');
+        $("#ajout_photo").css('display','none');
         $("#creation_place").append($("<h2>").html("Création d'un nouveau terrain"));
         $("#creation_place").append($("<span>").html("Nom :"));
         $("#creation_place").append("<input class='crea' id='nom' type='text' name='nom' placeholder='Nouveau Terrain'/></br>");
@@ -212,13 +209,14 @@ $photos = get_photos();
         $("#creation_place").append($("<span>").html("Type :"));
         $("#creation_place").append("</br>");
         $("#creation_place").append("<input id='publique' type='radio' name='type' value=0 checked/>" +
-            "<label for='publique'>Publique</label>");
+            "<label for='publique'>Public</label>");
         $("#creation_place").append("<input id='prive' type='radio' name='type' value=1 />" +
             "<label for='prive'>Privé</label>");
 
         $("#creation_place").append("</br>");
         $("#creation_place").append($("<h5>").html("Description générale"));
-        $("#creation_place").append("<textarea id='description' class='crea' name='description'></textarea></br>");$("#creation_place").append($("<span>").html("Photo de votre terrain :"));
+        $("#creation_place").append("<textarea id='description' class='crea' name='description'></textarea></br>");
+        $("#creation_place").append($("<span>").html("Photo de votre terrain :"));
         $("#creation_place").append("<input id='fileToUpload' type='file' name='fileToUpload'/></br>");
         $("#creation_place").append("<input id='creation' name='action' type='submit' value='Créer terrain'/>");
     }
@@ -294,20 +292,33 @@ $photos = get_photos();
     <h2>Mes Terrains</h2>
     <select>
     </select>
-
 </div>
+
 <div id="map"></div>
 
-<div id="edition">
-</div>
+
+<form id="edition" action="controleur.php" method="post">
+</form>
 
 <form id='creation_place' action='controleur.php' method="POST" enctype="multipart/form-data">
 </form>
 
 <?php
 if ($msg = valider('msg')) {
-echo "<span style='color:red'>$msg</span>";
+    echo "<span style='color:red'>$msg</span>";
 }
 
 ?>
 
+<form id="ajout_photo" action="controleur.php" method='post' style="display:none;" enctype="multipart/form-data">
+    <h3>Ajouter une photo</h3>
+</form>
+
+<?php
+if ($msg = valider('msg3')) {
+    echo "<span style='color:red'>$msg</span>";
+}
+
+?>
+
+<input id="gerer_creneaux" type="button" value="Gérer mes créneaux"/></br>
