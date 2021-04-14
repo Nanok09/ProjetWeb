@@ -21,7 +21,13 @@ $view = valider("view");
 
 // S'il est vide, on charge la vue accueil par défaut
 if (!$view) {
-    $view = "Accueil";
+    $view = "accueil";
+}else{
+    if (!(valider('is_connected','SESSION'))){
+        if ($view != "" && $view != "accueil"){
+            $view="login-signIn";
+        }
+    }
 }
 
 // En fonction de la vue à afficher, on appelle tel ou tel template
