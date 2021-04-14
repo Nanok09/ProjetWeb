@@ -105,6 +105,26 @@ if ($action = valider("action")) {
                 $qs = "?view=mesTerrains&msg=Veuillez au moins remplir le nom, l'adresse et le sport";
             }
             break;
+
+        case "Recherche":
+
+
+            if($sports = valider("sports")){
+
+            }
+            $localisation=valider("maLocalisation");
+            $adresse=valider("adresse");
+            $horaireA=valider("horaireA");
+            $horaireD=valider("horaireD");
+            $prixMi=valider("prixMi");
+            $prixMa=valider("prixMa");
+            $lat=valider("lat");
+            $long=valider("long");
+
+            $qs = "?view=resultats&sports=".$sports."&localisation=".$localisation."&adresse=".$adresse.
+                "&horaireA=".$horaireA."&horaireD=".$horaireD."&prixMi=".$prixMi."&prixMa=".$prixMa.
+                "&lat=".$lat."&long=".$long;
+            break;
     }
 
 }

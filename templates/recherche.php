@@ -118,6 +118,8 @@ $("window").ready(function() {
         window.adressePosition = $(this).data("coordinates");
         $("#suggestList").hide();
         $("#ajaxLoader").hide();
+        $("#adresseLat").val(window.adressePosition.lat);
+        $("#adresseLong").val(window.adressePosition.long);
     })
 
 
@@ -158,59 +160,70 @@ $("window").ready(function() {
         }
     })
 
-    $("#submitForm").click(function() {
+    $("#submitForm").click(function(){
 
-        let selectedSport = $("#selectSport").children("option:selected").val();
 
-        if ($("#maLocalisation").prop("disabled")) {
-            console.log("Recherche par adresse");
-            console.log(window.adressePosition);
-            $.ajax({
-                type: "POST",
-                url: "libs/api.php",
-                headers: {
-                    "debug-data": true
-                },
-                data: {
-                    "action": "get_list_places",
-                    "user_location_lat": window.adressePosition["lat"],
-                    "user_location_long": window.adressePosition["long"],
-                    "sport": selectedSport
-                },
-                success: function(oRep) {
-                    console.log(oRep);
-
-                },
-                dataType: "json"
-            });
-
-        } else if ($("#adresseInput").prop("disabled")) {
-            $.ajax({
-                type: "POST",
-                url: "libs/api.php",
-                headers: {
-                    "debug-data": true
-                },
-                data: {
-                    "action": "get_list_places",
-                    "user_location_lat": window.position["coords"]["latitude"],
-                    "user_location_long": window.position["coords"]["longitude"],
-                    "sport": selectedSport
-                },
-                success: function(oRep) {
-                    console.log(oRep);
-
-                },
-                dataType: "json"
-            });
-        }
 
 
     })
+
+
+    /*
+        $("#submitForm").click(function() {
+
+            let selectedSport = $("#selectSport").children("option:selected").val();
+
+            if ($("#maLocalisation").prop("disabled")) {
+                console.log("Recherche par adresse");
+                console.log(window.adressePosition);
+                $.ajax({
+                    type: "POST",
+                    url: "libs/api.php",
+                    headers: {
+                        "debug-data": true
+                    },
+                    data: {
+                        "action": "get_list_places",
+                        "user_location_lat": window.adressePosition["lat"],
+                        "user_location_long": window.adressePosition["long"],
+                        "sport": selectedSport
+                    },
+                    success: function(oRep) {
+                        console.log(oRep);
+
+                    },
+                    dataType: "json"
+                });
+
+            } else if ($("#adresseInput").prop("disabled")) {
+                $.ajax({
+                    type: "POST",
+                    url: "libs/api.php",
+                    headers: {
+                        "debug-data": true
+                    },
+                    data: {
+                        "action": "get_list_places",
+                        "user_location_lat": window.position["coords"]["latitude"],
+                        "user_location_long": window.position["coords"]["longitude"],
+                        "sport": selectedSport
+                    },
+                    success: function(oRep) {
+                        console.log(oRep);
+
+                    },
+                    dataType: "json"
+                });
+            }
+
+
+        })
+    */
+    /*
     $("#rechercheForm").submit(function(event) {
         event.preventDefault();
     })
-
+*/
 
 }) //end window.ready()
 
@@ -307,7 +320,7 @@ function addKeyBoardEvent(e) {
         Rechercher
     </h1>
     <div class="container">
-        <form id="rechercheForm" name="recherche" method="get">
+        <form id="rechercheForm" name="Recherche" method="GET" action="./controleur.php">
             <div class="form-row justify-content-center">
                 <div class="col-12">
                     <div class="form-group">
@@ -337,10 +350,10 @@ function addKeyBoardEvent(e) {
                     <img id="ajaxLoader" src="./images/ajaxLoader.gif">
                     <input id="adresseInput" class="form-control custom-rounded-corners" type="text" name="adresse"
                         placeholder="Adresse" required>
-                    <input id="latContainer" type="text" class="d-none">
-                    <input id="longContainer" type="text" class="d-none">
                     <ul id="suggestList">
                     </ul>
+                    <input type="text" name="lat" id="adresseLat" class="d-none">
+                    <input type="text" name="long" id="adresseLong" class="d-none">
                 </div>
                 <div class="w-100"></div>
                 <div class="col-12 mb-3">
