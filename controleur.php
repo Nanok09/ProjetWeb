@@ -68,21 +68,31 @@ if ($action = valider("action")) {
         case 'create_place':
             if (($nom = valider('nom')) &&
                 ($sport = valider('sport')) &&
-                ($prix = valider('prix')) &&
-                ($capacite = valider('capacite')) &&
-                ($prive = valider('type')) &&
-                ($description = valider('description')) &&
                 ($coord = valider('coord'))
-            ){
-                $createur_id = valider('id_user','SESSION');
-                $coord = str_replace("\\",'',$coord);
-                $coord = json_decode($coord,true);
+            ) {
+                $createur_id = valider('id_user', 'SESSION');
+                $coord = str_replace("\\", '', $coord);
+                $coord = json_decode($coord, true);
+
                 $adresse = $coord['address'];
                 $lat = $coord['coordinates']['lat'];
                 $long = $coord['coordinates']['long'];
-
-                create_place($nom,$lat,$long,$sport,$prive,$createur_id,$prix,$capacite,$description,$adresse);
+                if (!($prive = valider('prive'))) {
+                    $prive = 0;
+                }
+                if (!($capacite = valider('capacite'))) {
+                    $capacite = 10;
+                }
+                if (!($prix = valider('prix'))) {
+                    $prix=0;
+                }
+                if (!($description = valider('description'))) {
+                    $description='';
+                }
+                create_place($nom,$lat,$long,$sport,$prive, $createur_id,$prix,$capacite,$description,$adresse);
                 $qs = "?view=mesTerrains";
+            } else {
+                $qs = "?view=mesTerrains&msg=Veuillez au moins remplir le nom, l'adresse et le sport";
             }
             break;
     }
