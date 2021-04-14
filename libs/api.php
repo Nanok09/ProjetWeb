@@ -218,7 +218,8 @@ if ($action = valider("action")) {
             }
             break;
         case "get_list_places":
-            $arg_array = array(
+            $hour = (int) date('h');
+            $arg_array = array( // valeurs par défauts
                 'sport' => false,
                 'private_only' => false,
                 'public_only' => false,
@@ -227,7 +228,8 @@ if ($action = valider("action")) {
                 'price_min' => 0,
                 'price_max' => 10000,
                 'max_distance' => 1000,
-                'max_results' => 10
+                'max_results' => 100,
+                'date' => date('Y-m-d')
             );
             if ($sport = valider('sport')) {
                 $arg_array['sport'] = $sport;
@@ -263,6 +265,19 @@ if ($action = valider("action")) {
             if ($max_results = valider("max_results")) {
                 $arg_array['max_results'] = $max_results;
             }
+            if ($debut = valider('start_time')) {
+                $arg_array['debut'] = $debut;
+            }
+            if ($fin = valider('end_time')) {
+                $arg_array['fin'] = $fin;
+            }
+            if ($date = valider('date')) {
+                $arg_array['date'] = $date;
+            }
+            if (!isset($arg_array['debut']) || !isset($arg_array['fin'])) { // ajouter une condition de vérification des données temporelles et sinon laisser les valeurs par défaut
+                $arg_array['debut'] = strval($hour + 2+1) . ':00'; // mettre au fuseau horraire français et prendre la prochine heure
+                $arg_array['fin']= strval($hour + 2 + 2) . ':00';
+            }
             $results = get_places($arg_array['sport'],$arg_array['private_only'],$arg_array['public_only'],$arg_array['lat'],$arg_array['long'],$arg_array['price_min'],$arg_array['price_max'],$arg_array['max_distance'],$arg_array['max_results']);
             $data['data']=array();
             foreach ($results as $result) {
@@ -280,11 +295,12 @@ if ($action = valider("action")) {
                 $place_data['address'] = $result['adresse'];
                 $place_data['photos']=get_photos_place($result['id']);
                 $place_data['note'] = get_note_place($result['id'])['mean'];
+                $place_data['distance_to_user'] = $result['distance_to_user'];
                 if ($result['prive'] == 0) {
                     $place_data['dispo']=false;
                 }
                 if ($result['prive'] == 1) {
-                    $place_data['dispo'] = $result['capacite']; // renseigner la capacité en temps réel 
+                    $place_data['dispo'] = get_capacite_restante_creneau($place_data['id'], $arg_array['date'], $arg_array['debut'], $arg_array['fin']); // renseigner la capacité en temps réel 
                 }
                 $data['data'][]=$place_data;
 
@@ -292,7 +308,24 @@ if ($action = valider("action")) {
             set_request_success();
             break;
         case 'get_place_info':
+            $hour = (int) date('h');
             if ($place_id = valider('terrain_id')){
+                $arg_array = array(
+                    'date' => date('Y-m-d')
+                );
+                if ($debut = valider('start_time')) {
+                    $arg_array['debut'] = $debut;
+                }
+                if ($fin = valider('end_time')) {
+                    $arg_array['fin'] = $fin;
+                }
+                if ($date = valider('date')) {
+                    $arg_array['date'] = $date;
+                }
+                if (!isset($arg_array['debut']) || !isset($arg_array['fin'])) { // ajouter une condition de vérification des données temporelles et sinon laisser les valeurs par défaut
+                    $arg_array['debut'] = strval($hour + 2+1) . ':00'; // mettre au fuseau horraire français et prendre la prochine heure
+                    $arg_array['fin']= strval($hour + 2 + 2) . ':00';
+                }
                 $result= get_place_info($place_id);
                 $place_data = array();
                 $place_data['id'] = $result['id'];
@@ -312,7 +345,7 @@ if ($action = valider("action")) {
                     $place_data['dispo']=false;
                 }
                 if ($result['prive'] == 1) {
-                    $place_data['dispo'] = $result['capacite']; // renseigner la capacité en temps réel 
+                    $place_data['dispo'] = get_capacite_restante_creneau($place_id, $arg_array['date'], $arg_array['debut'], $arg_array['fin']); // renseigner la capacité en temps réel 
                 }
                 $data['data'] = $place_data;
                 set_request_success();

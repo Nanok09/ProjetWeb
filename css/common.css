@@ -4,6 +4,14 @@ body {
   min-height: 100vh;
 }
 
+.body-color-blue {
+  color: #123455;
+}
+
+.body-color-yellow {
+  color: #fdedcf;
+}
+
 .bg-custom-beige {
   background-color: #fdedcf;
 }
@@ -25,6 +33,9 @@ body {
 .custom-rounded-corners {
   border-radius: 50px;
 }
+.custom-rounded-corners-small {
+  border-radius: 15px;
+}
 .bold {
   font-weight: bold;
 }
@@ -45,3 +56,5 @@ ul.navbar-nav a:hover {
   border-top: 5px solid black;
   left: 10%;
 }
+
+

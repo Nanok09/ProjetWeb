@@ -7,7 +7,7 @@ include_once "libs/libSecurisation.php";
 include_once "libs/modele.php";
 include_once "libs/upload_photo.php";
 
-
+tprint($_POST);
 
 $qs = "";
 
@@ -69,6 +69,8 @@ if ($action = valider("action")) {
             $qs = "?view=login-signIn";
             break;
 
+        // Création terrain //////////////////////////////////////////////////
+
         case 'Créer terrain':
             if (($nom = valider('nom')) &&
                 ($sport = valider('sport')) &&
@@ -105,6 +107,69 @@ if ($action = valider("action")) {
             } else {
                 $qs = "?view=mesTerrains&msg=Veuillez au moins remplir le nom, l'adresse et le sport";
             }
+            break;
+
+        // Ajout photo //////////////////////////////////////////////////
+
+        case 'ajouter photo':
+            if ($id_place = valider('id_place')){
+                $upload_done = upload($_FILES["fileToUpload"]);
+                echo $upload_done."</br>";
+                echo $id_place;
+                if ($upload_done){
+                    add_photo_place(intval($id_place), $_FILES["fileToUpload"]["name"]);
+                    $qs="?view=mesTerrains";
+                }else{
+                    $qs="?view=mesTerrains&msg3=Erreur lors de l upload.";
+                }
+            }
+            break;
+
+        // Modifier infos terrains //////////////////////////////////////////////////
+
+        case 'modif_place':
+            if ($id_place = valider('id_place')){
+                $user_id=valider('id_user', 'SESSION');
+                $modification=[];
+                if ($nom = valider('nom')){
+                    $modification['nom'] = $nom;
+                }
+                if ($description = valider('description')){
+                    $modification['description'] = $description;
+                }
+                if ($capacite = valider('capacite')){
+                    $modification['capacite'] = $capacite;
+                }
+                if ($prix = valider('prix')){
+                    $modification['prix'] = $prix;
+                }
+                if ($sport = valider('sport')){
+                    $modification['sport'] = $sport;
+                }
+                tprint($modification);
+                modify_place($id_place, $user_id, $modification);
+                $qs = "?view=mesTerrains";
+            }
+            break;
+
+        case "Recherche":
+
+
+            if($sports = valider("sports")){
+
+            }
+            $localisation=valider("maLocalisation");
+            $adresse=valider("adresse");
+            $horaireA=valider("horaireA");
+            $horaireD=valider("horaireD");
+            $prixMi=valider("prixMi");
+            $prixMa=valider("prixMa");
+            $lat=valider("lat");
+            $long=valider("long");
+
+            $qs = "?view=resultats&sports=".$sports."&localisation=".$localisation."&adresse=".$adresse.
+                "&horaireA=".$horaireA."&horaireD=".$horaireD."&prixMi=".$prixMi."&prixMa=".$prixMa.
+                "&lat=".$lat."&long=".$long;
             break;
     }
 }

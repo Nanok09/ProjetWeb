@@ -54,10 +54,16 @@ Chaque action peut/doit recevoir une liste de parametres optionels:
   + prix_min=5 -- str représentant le prix minimal (par défaut 0)
   + prix_max=6 -- str représentant le prix max (par défaut infini)
   + max_results= 4 -- str représentant le nombre maximal de lieux différents à fournir en retour
+  + start_time= hh:mm -str représentant l'heure et la minute du début de réservation (finir par :30 ou :00)
+  + end_time= hh:mm -- str représentant l'heure et la minute de fin de réservation (finir par :30 ou :00)
+  + date = yyyy-mm-dd  -- str représentant la date de recherche
 
 * action = get_place_info
 
   + terrain_id = id -- str de l'id du terrain (paramètre obligatoire!)
+  + start_time= hh:mm -str représentant l'heure et la minute du début de réservation (finir par :30 ou :00)
+  + end_time= hh:mm -- str représentant l'heure et la minute de fin de réservation (finir par :30 ou :00)
+  + date = yyyy-mm-dd  -- str représentant la date de recherche
 
 * action = get_recommandations (plus tard)
 
