@@ -102,13 +102,9 @@ $photos = get_photos();
             }
         });
 
-        //création form creneau
-        $("#ajout_creneaux").append("<input type='hidden' value='" +selected.data().id+ "' name='id_place'/>");
-        $("#ajout_creneaux").append("Date : <input id='date' type='date' name='date'/></br>");
-        $("#ajout_creneaux").append("Heure de début : <input id='début' type='time' name='debut'/></br>");
-        $("#ajout_creneaux").append("Heure de fin : <input id='fin' type='time' name='fin'/></br>");
-        $("#ajout_creneaux").append("Capacité : <input id='capacite' type='number' name='capacite'/></br>");
-        $("#ajout_creneaux").append("<input id='ajouter_creneau' type='submit' name='action' value='ajouter créneau'/>");
+
+        //bouton gérer créneaux
+        $("#gerer_creneaux").attr('onclick','window.location.href=\'index.php?view=ajouter_creneau&id='+selected.data().id+'\';');
 
         //création form photo
         $("#ajout_photo").append("<input type='hidden' value='" +selected.data().id+ "' name='id_place'/>");
@@ -300,14 +296,6 @@ $photos = get_photos();
 </div>
 <div id="map"></div>
 
-<form id="ajout_creneaux" action="controleur.php" style="display:none;">
-    <h3>Ajouter un créneau</h3>
-</form>
-<?php
-if ($msg = valider('msg2')) {
-    echo "<span style='color:red'>$msg</span>";
-}
-?>
 
 <form id="edition" action="controleur.php" method="post">
 </form>
@@ -332,3 +320,5 @@ if ($msg = valider('msg3')) {
 }
 
 ?>
+
+<input id="gerer_creneaux" type="button" value="Gérer mes créneaux"/></br>
