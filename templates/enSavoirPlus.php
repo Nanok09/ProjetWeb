@@ -80,7 +80,7 @@ $createur = get_user_info($createur_id);
             <input id="louer" type="button" value="Louer" class="btn col-12 my-3 custom-rounded-corners" style="background-color: #153455; color: #fdedcf;">
             <p class="mt-2 ml-2 body-color-blue">
                 <?php
-                echo "gérant du terrain : ".$createur[0]['pseudo'];
+                echo "gérant du terrain : ".$createur['pseudo'];
                 ?>
             </p>
             <input id="submitForm" type="submit" name="action" value="Discuter avec le gérant" class="btn col-12 mb-5 mt-3 custom-rounded-corners"

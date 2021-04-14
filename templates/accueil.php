@@ -549,18 +549,18 @@ function addKeyBoardEvent(e) {
                         <h5>Terrain de tennis du Triolo</h5>
                     </div>
                 </div>
-            </div>
+            </div>s
             <div class="carousel-item">
                 <div class="row justify-content-around pt-3">
-                    <div class="col-8 col-md-3 col-lg-2 col-xl-1 mb-2 text-center">
+                    <div class="col-8 col-md-4 mb-2 text-center">
                         <img src="./images/terrains/terrain4.jpg" class="d-block m-auto sportLogos2">
                         <h5>Stade Hunebelle - Clamart</h5>
                     </div>
-                    <div class="col-8 col-md-3 col-lg-2 col-xl-1 mb-2 text-center">
+                    <div class="col-8 col-md-4 mb-2 text-center">
                         <img src="./images/terrains/terrain5.png" class="d-block m-auto sportLogos2">
                         <h5>Parc Street Workout - Fontenay-Aux-Roses</h5>
                     </div>
-                    <div class="col-8 col-md-3 col-lg-2 col-xl-1 mb-2 text-center">
+                    <div class="col-8 col-md-4 mb-2 text-center">
                         <img src="./images/terrains/terrain6.jpg" class="d-block m-auto sportLogos2">
                         <h5>Salle de Musculation - Villeneuve d'Ascq</h5>
                     </div>
