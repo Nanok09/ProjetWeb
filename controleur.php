@@ -180,9 +180,11 @@ if ($action = valider("action")) {
             $acceptPrive=valider("prive");
             $nBMax=valider("nbResultats");
 
-            $qs = "?view=resultats&sports=".$sports."&localisation=".$localisation."&adresse=".$adresse.
-                "&horaireA=".$horaireA."&horaireD=".$horaireD."&prixMi=".$prixMi."&prixMa=".$prixMa.
-                "&lat=".$lat."&long=".$long."&dMax=".$distanceMax."&dateRes=".$dateReservation
+
+
+            $qs = "?view=resultats&sports=".$sports."&localisation=".$localisation."&adresse=".urlencode($adresse).
+                "&horaireA=".urlencode($horaireA)."&horaireD=".urlencode($horaireD)."&prixMi=".$prixMi."&prixMa=".$prixMa.
+                "&lat=".$lat."&long=".$long."&dMax=".$distanceMax."&dateRes=".urlencode($dateReservation)
                 ."&acceptPublic=".$acceptPublic."&acceptPrive=".$acceptPrive."&nBMax=".$nBMax;
             break;
     }
