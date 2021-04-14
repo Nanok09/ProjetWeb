@@ -376,17 +376,22 @@ function addKeyBoardEvent(e) {
                         </div>
                     </div>
                 </div>
+
+                <div class="col-12 mb-3">
+                    <input class="form-control custom-rounded-corners" type="text" name="distanceMax"
+                           placeholder="Rayon maximal">
+                </div>
                 <div class="col-12 mb-1 row justify-content-center">
                     <div class="form-group col-4">
                         <label for="publicTerrains" class="radio-container m-r-45"
-                            style="color: #153455; font-size: 1.1rem;">Terrains Public</label>
+                               style="color: #153455; font-size: 1.1rem;">Terrains Public</label>
                         <input id="publicTerrains" type="checkbox" checked="checked" name="public">
                         <span class="checkmark"></span>
                     </div>
 
                     <div class="form-group col-4">
                         <label for="priveTerrains" class="radio-container"
-                            style="color: #153455; font-size: 1.1rem;">Terrains Privés</label>
+                               style="color: #153455; font-size: 1.1rem;">Terrains Privés</label>
                         <input id="priveTerrains" type="checkbox" checked="checked" name="prive">
                         <span class="checkmark"></span>
                     </div>

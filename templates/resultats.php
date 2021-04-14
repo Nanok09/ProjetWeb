@@ -96,13 +96,14 @@ $long=valider("long");
         var isPrivate;
         var stars;
         var idTerrain;
+        var photoSrc
 
 
 
 
         oRep.data.forEach(function (item, index){
             idTerrain = "resultat"+item.id;
-
+            photoSrc = "./images/terrains/"+item.photos[0].nomFichier;
             if(item.private == 1){
                 isPrivate = "Contacter l\'Admin";
             } else {
@@ -124,7 +125,7 @@ $long=valider("long");
                 '</div>'+
                 '<div class="col-6">'+
                 '<div class="text-center">'+
-                '<img src="./images/terrains/terrain1.jpg" class="img-fluid">'+
+                '<img src='+photoSrc+' class="img-fluid">'+
                 '<h5>'+item.name+'</h5>'+
                 '</div>'+
                 '</div>'+
