@@ -108,31 +108,6 @@ if ($action = valider("action")) {
             }
             break;
 
-        // Ajout créneau //////////////////////////////////////////////////
-
-        case 'ajouter créneau':
-            if (($debut=valider('debut')) &&
-                ($fin=valider('fin')) &&
-                ($id_place=valider('id_place')) &&
-                ($capacite = valider('capacite')) &&
-                ($date = valider('date'))
-            ){
-                if($debut<$fin){
-                    add_creneau_dispo($id_place, $date, $debut, $fin, $capacite);
-                    $qs="?view=mesTerrains";
-                }else{
-                    $qs="?view=mesTerrains&msg2=Erreur : heure de debut > heure de fin";
-                }
-            }else{
-                $qs="?view=mesTerrains&msg2=Pour ajouter un créneau, veuillez remplir tous les champs.";
-            }
-            echo $debut;
-            echo $fin;
-            echo $date;
-            echo $capacite;
-            echo $id_place;
-            break;
-
         // Ajout photo //////////////////////////////////////////////////
 
         case 'ajouter photo':
