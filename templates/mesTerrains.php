@@ -121,8 +121,7 @@ $photos = get_photos();
 
 
 
-        $(document).on("change","#adresse",function () {
-            $("#adresse").attr('placeholder','oui');
+        $(document).on("keyup","#adresse",function () {
             var adress = $("#adresse")[0].value;
             console.log(adress);
             if (adress) {
@@ -219,9 +218,9 @@ $photos = get_photos();
 
         $("#creation_place").append("</br>");
         $("#creation_place").append($("<h5>").html("Description générale"));
-        $("#creation_place").append("<textarea id='description' class='crea' name='description'></textarea>");
-        $("#creation_place").append("<input id='action' type='hidden' name='action' value='create_place'/>");
-        $("#creation_place").append("<input id='creation' type='button' onClick='document.getElementById(\"creation_place\").submit();' value='Créer terrain'/>");
+        $("#creation_place").append("<textarea id='description' class='crea' name='description'></textarea></br>");$("#creation_place").append($("<span>").html("Photo de votre terrain :"));
+        $("#creation_place").append("<input id='fileToUpload' type='file' name='fileToUpload'/></br>");
+        $("#creation_place").append("<input id='creation' name='action' type='submit' value='Créer terrain'/>");
     }
 
     function add_markers(coord) {
@@ -286,7 +285,6 @@ $photos = get_photos();
                 }
             );
         });
-        console.log("add done");
     }
 
 
@@ -303,7 +301,7 @@ $photos = get_photos();
 <div id="edition">
 </div>
 
-<form id='creation_place' action='controleur.php' method="POST">
+<form id='creation_place' action='controleur.php' method="POST" enctype="multipart/form-data">
 </form>
 
 <?php

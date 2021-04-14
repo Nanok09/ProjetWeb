@@ -5,6 +5,9 @@ include_once "libs/libUtils.php";
 include_once "libs/libSQL.pdo.php";
 include_once "libs/libSecurisation.php";
 include_once "libs/modele.php";
+include_once "libs/upload_photo.php";
+
+
 
 $qs = "";
 
@@ -65,7 +68,7 @@ if ($action = valider("action")) {
             $qs = "?view=login-signIn";
             break;
 
-        case 'create_place':
+        case 'Créer terrain':
             if (($nom = valider('nom')) &&
                 ($sport = valider('sport')) &&
                 ($coord = valider('coord'))
@@ -73,6 +76,8 @@ if ($action = valider("action")) {
                 $createur_id = valider('id_user', 'SESSION');
                 $coord = str_replace("\\", '', $coord);
                 $coord = json_decode($coord, true);
+
+
 
                 $adresse = $coord['address'];
                 $lat = $coord['coordinates']['lat'];
@@ -84,12 +89,17 @@ if ($action = valider("action")) {
                     $capacite = 10;
                 }
                 if (!($prix = valider('prix'))) {
-                    $prix=0;
+                    $prix = 0;
                 }
                 if (!($description = valider('description'))) {
-                    $description='';
+                    $description = '';
                 }
-                create_place($nom,$lat,$long,$sport,$prive, $createur_id,$prix,$capacite,$description,$adresse);
+                $id_place=create_place($nom, $lat, $long, $sport, $prive, $createur_id, $prix, $capacite, $description, $adresse);
+                $upload_done = upload($_FILES["fileToUpload"]);
+                echo $id_place;
+                if ($upload_done){
+                    add_photo_place(intval($id_place), $_FILES["fileToUpload"]["name"]);
+                }
                 $qs = "?view=mesTerrains";
             } else {
                 $qs = "?view=mesTerrains&msg=Veuillez au moins remplir le nom, l'adresse et le sport";
@@ -114,3 +124,7 @@ header("Location:" . "index.php" . $qs);
 
 // On écrit seulement après cette entête
 ob_end_flush();
+
+
+
+?>
