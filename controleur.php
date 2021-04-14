@@ -160,16 +160,22 @@ if ($action = valider("action")) {
             }
             $localisation=valider("maLocalisation");
             $adresse=valider("adresse");
-            $horaireA=valider("horaireA");
-            $horaireD=valider("horaireD");
+            $horaireA=valider("heureFin");
+            $horaireD=valider("heureDebut");
             $prixMi=valider("prixMi");
             $prixMa=valider("prixMa");
             $lat=valider("lat");
             $long=valider("long");
+            $distanceMax=valider("distanceMax");
+            $dateReservation=valider("dateReservation");
+            $acceptPublic=valider("public");
+            $acceptPrive=valider("prive");
+            $nBMax=valider("nbResultats");
 
             $qs = "?view=resultats&sports=".$sports."&localisation=".$localisation."&adresse=".$adresse.
                 "&horaireA=".$horaireA."&horaireD=".$horaireD."&prixMi=".$prixMi."&prixMa=".$prixMa.
-                "&lat=".$lat."&long=".$long;
+                "&lat=".$lat."&long=".$long."&dMax=".$distanceMax."&dateRes=".$dateReservation
+                ."&acceptPublic=".$acceptPublic."&acceptPrive=".$acceptPrive."&nBMax=".$nBMax;
             break;
     }
 }
