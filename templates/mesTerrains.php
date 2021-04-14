@@ -77,69 +77,22 @@ $photos = get_photos();
         //On passe en mode édition lors du click sur un paragraphe
         $(document).on("click", "p", function () {
             var contenu = this.innerHTML;
+            if (this.id == "current_address") return ;
             console.log(contenu);
             if (this.id == "description") {
                 $(this).replaceWith(
-                    "<textarea>" + contenu + "</textarea>"
+                    "<textarea name='description'>" + contenu + "</textarea>"
                 );
             } else if (this.id == "capacite" || this.id == "prix") {
                 $(this).replaceWith(
-                    "<input type='number' value=\"" + contenu + "\" />"
+                    "<input name='"+this.id+"' type='number' value=\"" + contenu + "\" />"
                 );
             } else {
                 $(this).replaceWith(
-                    "<input type='text' value=\"" + contenu + "\" />"
+                    "<input name='"+this.id+"' type='text' value=\"" + contenu + "\" />"
                 );
             }
         });
-
-        $(document).on("click", "#nom", function () {
-            var contenu = this.innerHTML;
-            console.log(contenu);
-            if (this.id == "description") {
-                $(this).replaceWith(
-                    "<textarea>" + contenu + "</textarea>"
-                );
-            } else if (this.id == "capacite" || this.id == "prix") {
-                $(this).replaceWith(
-                    "<input type='number' value=\"" + contenu + "\" />"
-                );
-            } else {
-                $(this).replaceWith(
-                    "<input type='text' value=\"" + contenu + "\" />"
-                );
-            }
-        });
-
-
-        //appui sur entrée dans un textarea => validation
-        $(document).on("keyup", "textarea", function (contexte) {
-            if ($(this).val() == '') return;
-            if ($(this).hasClass('crea')) return;
-            if (contexte.key == "Enter") {
-                var newContenu = $(this).val();
-                $(this).replaceWith(
-                    $("<p>")
-                        .html(newContenu)
-                );
-
-            }
-        });
-
-        //appui sur entrée dans un input lors de l'édition => validation
-        $(document).on("keyup", "input", function (contexte) {
-            if ($(this).val() == '') return;
-            if ($(this).hasClass('crea')) return;
-            if (contexte.key == "Enter") {
-                var newContenu = $(this).val();
-                $(this).replaceWith(
-                    $("<p>")
-                        .html(newContenu)
-                );
-
-            }
-        });
-
 
         $(document).on("keyup", "#adresse", function () {
             var adress = $("#adresse")[0].value;
@@ -215,22 +168,28 @@ $photos = get_photos();
         }
         $("#edition").append($("<h3>").html("Infos Terrain : "));
         $("#edition").append($("<h4>").html("Nom : "));
-        $("#edition").append($("<p id='nom'>").html(terrain.nom));
+        $("#edition").append($("<p id='nom' name='nom'>").html(terrain.nom));
         $("#edition").append($("<h4>").html("Description : "));
         if (terrain.description == ''){
-            $("#edition").append($("<p id='description'>").html('Pas de description'));
+            $("#edition").append($("<p id='description' name='description'>").html('Pas de description'));
         }else{
-            $("#edition").append($("<p id='description'>").html(terrain.description));
+            $("#edition").append($("<p id='description' name='description'>").html(terrain.description));
         }
-        $("#edition").append($("<h4>").html("Adresse : "));
+        $("#edition").append($("<h4>").html("Adresse : (non modifiable)"));
         $("#edition").append($("<p id='current_address'>").html(terrain.adresse));
         $("#edition").append($("<h4>").html("Capacité : (nombre de personnes)"));
-        $("#edition").append($("<p id='capacite'>").html(terrain.capacite));
+        $("#edition").append($("<p id='capacite' name='capacite'>").html(terrain.capacite));
         $("#edition").append($("<h4>").html("prix : (horaire)"));
-        $("#edition").append($("<p id='prix' >").html(terrain.prix));
+        $("#edition").append($("<p id='prix' name='prix' >").html(terrain.prix));
         $("#edition").append($("<h4>").html("sport : "));
-        $("#edition").append($("<p id='sport'>").html(terrain.sport));
-        $("#edition").append("<input id='modif' type='button' value='Enregistrer Modifications'/>");
+        $("#edition").append($("<p id='sport' name='sport'>").html(terrain.sport));
+        $("#edition").append("<input name='action' type='hidden' value='modif_place'>");
+        $("#edition").append("<input name='id_place' type='hidden' value='" +terrain.id+ "'>");
+        $("#edition").append("</br><input type='button' value='Enregistrer modifications' onClick='submit();'>");
+    }
+
+    function modif_infos(){
+
     }
 
     //Structure html de la création d'un terrain
@@ -350,8 +309,8 @@ if ($msg = valider('msg2')) {
 }
 ?>
 
-<div id="edition">
-</div>
+<form id="edition" action="controleur.php" method="post">
+</form>
 
 <form id='creation_place' action='controleur.php' method="POST" enctype="multipart/form-data">
 </form>
@@ -367,3 +326,9 @@ if ($msg = valider('msg')) {
     <h3>Ajouter une photo</h3>
 </form>
 
+<?php
+if ($msg = valider('msg3')) {
+    echo "<span style='color:red'>$msg</span>";
+}
+
+?>
