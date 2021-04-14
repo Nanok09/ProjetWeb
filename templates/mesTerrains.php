@@ -121,8 +121,7 @@ $photos = get_photos();
 
 
 
-        $(document).on("change","#adresse",function () {
-            $("#adresse").attr('placeholder','oui');
+        $(document).on("keyup","#adresse",function () {
             var adress = $("#adresse")[0].value;
             console.log(adress);
             if (adress) {
@@ -286,7 +285,6 @@ $photos = get_photos();
                 }
             );
         });
-        console.log("add done");
     }
 
 

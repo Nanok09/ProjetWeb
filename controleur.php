@@ -7,7 +7,6 @@ include_once "libs/libSecurisation.php";
 include_once "libs/modele.php";
 include_once "libs/upload_photo.php";
 
-var_dump($_POST);
 
 
 $qs = "";
@@ -96,10 +95,11 @@ if ($action = valider("action")) {
                     $description = '';
                 }
                 $id_place=create_place($nom, $lat, $long, $sport, $prive, $createur_id, $prix, $capacite, $description, $adresse);
-                tprint($_FILES);
-                upload($_FILES["fileToUpload"]);
+                $upload_done = upload($_FILES["fileToUpload"]);
                 echo $id_place;
-                add_photo_place(intval($id_place), $_FILES["fileToUpload"]["name"]);
+                if ($upload_done){
+                    add_photo_place(intval($id_place), $_FILES["fileToUpload"]["name"]);
+                }
                 $qs = "?view=mesTerrains";
             } else {
                 $qs = "?view=mesTerrains&msg=Veuillez au moins remplir le nom, l'adresse et le sport";
@@ -117,7 +117,7 @@ if ($action = valider("action")) {
 // On redirige vers la page index avec les bons arguments
 
 
-//header("Location:" . "index.php" . $qs);
+header("Location:" . "index.php" . $qs);
 
 
 //qs doit contenir le symbole '?'
