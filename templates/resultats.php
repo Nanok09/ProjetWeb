@@ -4,13 +4,20 @@ include_once ("./libs/libUtils.php");
 
 $sports = valider("sports");
 $localisation= valider("localisation");
+$lat=valider("lat");
+$long=valider("long");
+
+
 $adresse=valider("adresse");
 $horaireA=valider("horaireA");
 $horaireD=valider("horaireD");
 $prixMi=valider("prixMi");
 $prixMa=valider("prixMa");
-$lat=valider("lat");
-$long=valider("long");
+$dateReservation=valider("dateRes");
+$distanceMax=valider("dMax");
+$acceptPublic=valider("acceptPublic");
+$acceptPrive=valider("acceptPrive");
+$nBMax=valider("nBMax");
 
 ?>
 <script>
@@ -19,7 +26,21 @@ $long=valider("long");
     var lat = "<?php echo $lat ?>";
     var long = "<?php echo $long ?>";
 
-    console.log(lat, long)
+    var horaireFin = "<?php echo $horaireA ?>";
+    var horaireDebut = "<?php echo $horaireD ?>";
+    var prixMi = "<?php echo $prixMi ?>";
+    var prixMa = "<?php echo $prixMa ?>";
+    var dateReservation = "<?php echo $dateReservation ?>";
+    var distanceMax = "<?php echo $distanceMax ?>";
+    var acceptPrive = "<?php echo $acceptPrive ?>";
+    var acceptPublic = "<?php echo $acceptPublic ?>";
+    var nBMax = "<?php echo $nBMax ?>";
+
+    var all_info = [sport, lat, long, distanceMax, acceptPublic, acceptPrive, prixMi, prixMa, nBMax, horaireDebut, horaireFin, dateReservation];
+
+    console.log(all_info);
+
+
     $("window").ready(function (){
 
         if(localisation === ""){
@@ -47,18 +68,66 @@ $long=valider("long");
     })
 
     function getListPlacesByCurrentPosition(position, sport){
+        let data={
+            "action": "get_list_places",
+            "sport":sport,
+            "user_location_lat":position["coords"]["latitude"],
+            "user_location_long":position["coords"]["longitude"],
+            "distance_max":distanceMax,
+            "accept_public":acceptPublic,
+            "accept_private":acceptPrive,
+            "prix_min":prixMi,
+            "prix_max":prixMa,
+            "max_results":nBMax,
+            "start_time":horaireDebut,
+            "end_time":horaireFin,
+            "date":dateReservation
+        };
+
+        if(acceptPrive === "on"){
+            console.log("Hi: 1");
+
+            delete data["accept_private"];
+        }
+        if(acceptPublic === "on"){
+            console.log("Hi: 2");
+
+            delete data["accept_public"];
+        }
+
+
+        if(acceptPrive === ""){
+            console.log("Hi: 3");
+
+            data["accept_private"]='no';
+        }
+        if(acceptPublic === ""){
+            console.log("Hi: 4");
+
+            data["accept_public"]='no';
+        }
+
+
+
+        for(key in data){
+            if(data[key] == ""){
+
+                delete data[key];
+            }
+        }
+
+
+        console.log(data);
+
+
+
         $.ajax({
             type: "POST",
             url: "libs/api.php",
             headers: {
                 "debug-data": true
             },
-            data: {
-                "action": "get_list_places",
-                "user_location_lat": position["coords"]["latitude"],
-                "user_location_long": position["coords"]["longitude"],
-                "sport": sport
-            },
+            data: data,
             success: function(oRep) {
                 console.log(oRep);
                 printPlaces(oRep);
