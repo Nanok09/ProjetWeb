@@ -1,12 +1,5 @@
 <!-- **** F O O T E R **** -->
-<?php
-// Si l'utilisateur est connecte, on affiche un lien de deconnexion
-if (valider("is_connected", "SESSION")) {
-    echo "Utilisateur <b>$_SESSION[pseudo]</b> connecté depuis <b>$_SESSION[heure_connexion]</b>";
-    echo "<a class=\"ml-2\" href=\"controleur.php?action=Logout\">Se Déconnecter</a>";
-}
-?>
-<footer class="text-light" style="background-color: #153455">
+<footer class="text-light mt-5" style="background-color: #153455">
     <div class="container-fluid">
         <div class="row mt-5 justify-content-center py-5">
             <div class="col-11">
