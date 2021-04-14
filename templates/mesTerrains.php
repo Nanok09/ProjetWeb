@@ -157,6 +157,11 @@ $photos = get_photos();
         $("#ajout_creneaux").append("Capacité : <input id='capacite' type='number' name='capacite'/></br>");
         $("#ajout_creneaux").append("<input id='ajouter_creneau' type='submit' name='action' value='ajouter créneau'/>");
 
+        //création form photo
+        $("#ajout_photo").append("<input type='hidden' value='" +selected.data().id+ "' name='id_place'/>");
+        $("#ajout_photo").append("<input type='file' name='fileToUpload'/></br>");
+        $("#ajout_photo").append("<input id='ajouter_photo' type='submit' name='action' value='ajouter photo'/>");
+
 
     });
 
@@ -197,13 +202,14 @@ $photos = get_photos();
     //Structure html de l'édition d'un terrain
     function print_place_edition(terrain) {
         $("#ajout_creneaux").css('display','block');
-        console.log(terrain);
+        $("#ajout_photo").css('display','block');
         $("#edition").empty();
         $("#creation_place").empty();
         $("#edition").append($("<h5>").html("Photos : "));
         $("#map").css('display', 'none');
         for (let i = 0; i < photos.length; i++) {
             if (photos[i].idLieu == terrain.id) {
+                console.log(photos[i]);
                 $("#edition").append("<img style='width : 300px;' src=\"images/terrains/" + photos[i].nomFichier + "\"/>");
             }
         }
@@ -232,6 +238,7 @@ $photos = get_photos();
         $("#creation_place").empty();
         $("#edition").empty();
         $("#ajout_creneaux").css('display','none');
+        $("#ajout_photo").css('display','none');
         $("#creation_place").append($("<h2>").html("Création d'un nouveau terrain"));
         $("#creation_place").append($("<span>").html("Nom :"));
         $("#creation_place").append("<input class='crea' id='nom' type='text' name='nom' placeholder='Nouveau Terrain'/></br>");
@@ -355,4 +362,8 @@ if ($msg = valider('msg')) {
 }
 
 ?>
+
+<form id="ajout_photo" action="controleur.php" method='post' style="display:none;" enctype="multipart/form-data">
+    <h3>Ajouter une photo</h3>
+</form>
 

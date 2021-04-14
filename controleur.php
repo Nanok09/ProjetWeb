@@ -132,6 +132,20 @@ if ($action = valider("action")) {
             echo $capacite;
             echo $id_place;
             break;
+
+        case 'ajouter photo':
+            if ($id_place = valider('id_place')){
+                $upload_done = upload($_FILES["fileToUpload"]);
+                echo $upload_done."</br>";
+                echo $id_place;
+                if ($upload_done){
+                    add_photo_place(intval($id_place), $_FILES["fileToUpload"]["name"]);
+                    $qs="?view=mesTerrains";
+                }else{
+                    $qs="?view=mesTerrains&msg3=Erreur lors de l upload.";
+                }
+            }
+            break;
     }
 
 }
