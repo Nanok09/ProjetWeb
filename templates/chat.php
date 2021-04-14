@@ -75,16 +75,33 @@
 
                 <div class="messages-box" >
                     <div class="list-group rounded-0" >
-                        <a class="list-group-item list-group-item-action rounded-0" style="color: #FFF7ED; background-color: #35516E">
-                            <div class="media"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
-                                <div class="media-body ml-4">
-                                    <div class="d-flex align-items-center justify-content-between mb-1">
-                                        <h6 class="mb-0" style="color: #FFF7ED">Prénom Nom</h6><small class="small font-weight-bold">Date du dernier message</small>
+                    <?php
+                    if ($listDestinataires = listerDestinataires($_SESSION['id'])) {
+
+                        $id_destinataireDefault = $listDestinataires[0]['id'];
+
+
+                        foreach ($listDestinataires as $destinataire) {
+
+                            echo ('
+                                <a class="list-group-item list-group-item-action rounded-0" style="color: #FFF7ED; background-color: #35516E">
+                                    <div class="media"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
+                                        <div class="media-body ml-4">
+                                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                                <h6 class="mb-0" style="color: #FFF7ED">'.$patient['nom'].' '.$patient['prenom'].'</h6><small class="small font-weight-bold">Date du dernier message</small>
+                                            </div>
+                                            <p class="font-italic mb-0 text-small" style="color: #FFF7ED">Dernier message affiché</p>
+                                        </div>
                                     </div>
-                                    <p class="font-italic mb-0 text-small" style="color: #FFF7ED">Dernier message affiché</p>
-                                </div>
-                            </div>
-                        </a>
+                                </a>
+                        ');
+
+                    //On sauvegarde l'id de l'interlocuteur
+                    if(!$id_destinataire = valider('id')) {
+                        $id_destinataire = $id_destinataireDefault;
+                    }
+
+                    ?>
 
                         <a href="#" class="list-group-item list-group-item-action list-group-item-light rounded-0">
                             <div class="media"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
@@ -171,24 +188,37 @@
         <div class="col-7 px-0">
             <div class="px-4 py-5 chat-box" style="background-color: #FFF7ED">
                 <!-- Sender Message-->
+                <?php
+                $conversation = listerConvChat($_SESSION['id'],$id_destinataire);
+                foreach ($conversation as $message) {
+                    if (!$message['isMedecin']) {
+                        echo ('
                 <div class="media w-50 mb-3"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
                     <div class="media-body ml-3">
                         <div class="bg-light rounded py-2 px-3 mb-2">
-                            <p class="text-small mb-0 ">Message échangé numéro 1</p>
+                            <p class="text-small mb-0 ">'.$message['msg'].'</p>
                         </div>
-                        <p class="small text-muted">12:00 PM | Aug 13</p>
+                        <p class="small text-muted">'.$message['date'].'</p>
                     </div>
                 </div>
+                ');
+                }else {
+                    echo ('
 
                 <!-- Reciever Message-->
                 <div class="media w-50 ml-auto mb-3">
                     <div class="media-body">
                         <div class=" rounded py-2 px-3 mb-2" style="background-color: #35516E">
-                            <p class="text-small-light mb-0">Message échangé numéro 2</p>
+                            <p class="text-small-light mb-0">'.$message['msg'].'</p>
                         </div>
-                        <p class="small text-muted">12:00 PM | Aug 13</p>
+                        <p class="small text-muted">'.$message['date'].'</p>
                     </div>
                 </div>
+                ');
+                    }
+
+                }
+                ?>
 
                 <!-- Sender Message-->
                 <div class="media w-50 mb-3"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">

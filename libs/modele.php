@@ -455,8 +455,9 @@ function get_photos()
     return parcoursRs(SQLSelect($SQL, $params));
 }
 
-// ============ CHAT ==========
+// ============ CHAT =============
 
+<<<<<<< Updated upstream
 /**
  * Envoyer un message
  * @param int id_user
@@ -476,6 +477,36 @@ function get_photos()
  * @param int id_user
  * @param int id_user2
  */
+=======
+function listerDestinataires($id_auteur)
+{
+    //Récupérer toutes les personnes avec qui quelqu'un a parlé
+
+    $SQL = "SELECT id,destinataire FROM messagesChat WHERE auteur=".$id_auteur;
+    return parcoursRs(SQLSelect($SQL));
+}
+
+function listerConvChat($id_auteur,$id_destinataire) {
+    //Récupérer tous les messages entre 2 personnes
+
+    $SQL = "SELECT id,timestamp,message FROM messagesChat WHERE (auteur=".$id_auteur." AND id_destinataire=".$id_destinataire.") OR (id_auteur=".$id_destinataire." AND id_destinataire=".$id_auteur.")";
+    return parcoursRs(SQLSelect($SQL));
+}
+
+function ajouterMsgChat($id_auteur,$id_destinataire,$msg) {
+    //Ajoute un nouveau message à la BDD
+
+    $SQL = "INSERT INTO messagesChat(auteur,destinateire,message) VALUES ('".$id_auteur."','".$id_destinataire."','".$msg."')";
+    return SQLInsert($SQL);
+}
+
+function findUserName($id) {
+
+    $SQL = "SELECT nom,prenom FROM utilisateurs WHERE id=".$id;
+    return ParcoursRs(SQLSelect($SQL));
+}
+//Envoyer un message
+>>>>>>> Stashed changes
 
 /**
  * Récupère les messages reçus par id_user après l'id du dernier message reçu
@@ -571,6 +602,7 @@ function get_capacite_restante_creneau($id_place, $date, $heure_debut, $heure_fi
     $params = array("id_place" => $id_place, "date" => $date, "heure_debut" => $heure_debut, "heure_fin" => $heure_fin);
     return SQLGetChamp($SQL, $params);
 }
+<<<<<<< Updated upstream
 // ============= SPORTS ===========
 
 /**
@@ -583,3 +615,6 @@ function get_all_sports()
     $params = array();
     return parcoursRs(SQLSelect($SQL, $params));
 }
+=======
+
+>>>>>>> Stashed changes
