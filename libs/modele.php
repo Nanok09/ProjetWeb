@@ -51,6 +51,15 @@ function get_user_info($id_user)
 }
 
 /**
+ * *Récupere une liste de tous les utilisateurs dans la bdd
+ */
+function get_users(){
+    $SQL = "SELECT * FROM utilisateurs";
+    $params = [];
+    return parcoursRs(SQLSelect($SQL, $params));
+}
+
+/**
  * Vérifie si un utilisateur est admin
  * @param int id_user
  * @return bool
@@ -469,27 +478,79 @@ function get_photos()
     return parcoursRs(SQLSelect($SQL, $params));
 }
 
-// ============ CHAT ==========
+// ============ CHAT =============
+
+
+
+
+
+
 
 /**
- * Envoyer un message
+ * Récupérer tous les messages entre 2 personnes
+ * @param int conv_id
+ */
+
+function get_messages_in_conv($conv_id){
+    $SQL = "SELECT auteur,messages FROM messageschat WHERE conv_id=?";
+    $param = array($conv_id);
+    return parcoursRs(SQLGetChamp($SQL,$param));
+}
+
+
+/**
+ * Récupérer toutes les conversations d'un utilisateur
+ * @param int id_user
+ */
+function get_conversations_user($id_user)
+{
+    //Récupérer tous ID des personnes avec qui la $id_auteur a parlé
+
+    $SQL = "SELECT id FROM conversations WHERE membre_1=:id_user OR membre_2=:id_user";
+    $params = array('id_user' => $id_user);
+    return parcoursRs(SQLSelect($SQL, $params));
+}
+
+
+
+
+/**
+ * Envoyer un message i.e ajouter un nouveau message dans la base de donnée
  * @param int id_user
  * @param int id_user_dest id du destinataire
  * @param string message
  */
-
-//
+function add_message_to_conv($id_conv,$id_auteur,$id_destinataire,$msg) {
+    //Ajoute un nouveau message à la BDD
+    //INSERT INTO `messageschat` (`id`, `auteur`, `destinataire`, `message`, `timestamp`, `id_conv`) VALUES (NULL, '6', '6', 'test', CURRENT_TIMESTAMP, '2');
+    $SQL = "SELECT id,membre_1,membre_2 FROM conversations WHERE id=?";
+    $param = array($id_conv);
+    if ($result = parcoursRs(SQLSelect($SQL,$param))) {
+        var_dump($result);
+        if ($result[0]['membre_1']==$id_auteur || $result[0]['membre_2']==$id_auteur) {
+            if ($result[0]['membre_1'] == $id_destinataire || $result[0]['membre_2'] == $id_destinataire) {
+                echo 'on est dans la partie insert into';
+                $SQL = "INSERT INTO messageschat (auteur,destinataire,message,timestamp,id_conv) VALUES ( :auteur , :destinataire , :message ,CURRENT_TIMESTAMP,:id_conv)";
+                $param= array('auteur' => $id_auteur , 'destinataire' => $id_destinataire, 'message' => $msg, 'id_conv' => $id_conv);
+                return SQLInsert($SQL,$param);
+            }
+        }
+    }
+    trigger_error("This conversation does not exist or you the peaple id in it are not those which where given",E_USER_WARNING);
+}
 
 /**
- * Récupérer toutes les personnes avec qui quelqu'un a parlé, les derniers messages, timestamps
+ * Trouver le nom et le prénom de l'utilisateur associé à un id 
  * @param int id_user
  */
 
-/**
- * Récupérer tous les messages entre 2 personnes
- * @param int id_user
- * @param int id_user2
- */
+function findUserName($id_user) {
+
+    $SQL = "SELECT nom,prenom FROM utilisateurs WHERE id= ?";
+    $param = array($id_user);
+    return parcoursRs(SQLSelect($SQL,$param));
+}
+
 
 /**
  * Récupère les messages reçus par id_user après l'id du dernier message reçu
@@ -610,3 +671,4 @@ function get_all_sports()
     $params = array();
     return parcoursRs(SQLSelect($SQL, $params));
 }
+

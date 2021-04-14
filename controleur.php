@@ -108,6 +108,14 @@ if ($action = valider("action")) {
                 $qs = "?view=mesTerrains&msg=Veuillez au moins remplir le nom, l'adresse et le sport";
             }
             break;
+        //case "AjouterChat":
+            //if($id_auteur=valider('id_auteur') && $id_destinataire=valider('id_destinataire') && $msg=valider('msg'))
+                //send_message($id_auteur,$id_destinataire,$msg);
+            //$qs = "?view=chat&id=".$id_auteur;
+           // break;
+    
+
+
 
         // Ajout photo //////////////////////////////////////////////////
 

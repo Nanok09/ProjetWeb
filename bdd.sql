@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 13, 2021 at 10:12 AM
+-- Generation Time: Apr 14, 2021 at 11:23 PM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.0
 
@@ -48,6 +48,18 @@ INSERT INTO `commentaires` (`id`, `idLieu`, `idUtilisateur`, `message`, `timesta
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `conversations`
+--
+
+CREATE TABLE `conversations` (
+  `id` int(11) NOT NULL,
+  `membre_1` int(11) NOT NULL,
+  `membre_2` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `creneauxDispo`
 --
 
@@ -77,7 +89,8 @@ INSERT INTO `creneauxDispo` (`id`, `idLieu`, `date`, `heureDebut`, `heureFin`, `
 (16, 1, '2021-04-14', '16:00:00', '17:00:00', 10),
 (17, 1, '2021-04-13', '16:00:00', '17:00:00', 10),
 (18, 1, '2021-04-14', '13:00:00', '14:30:00', 10),
-(19, 1, '2021-04-13', '16:30:00', '17:30:00', 10);
+(19, 1, '2021-04-13', '16:30:00', '17:30:00', 10),
+(20, 1, '2021-04-14', '06:00:00', '07:00:00', 10);
 
 -- --------------------------------------------------------
 
@@ -184,8 +197,19 @@ CREATE TABLE `messagesChat` (
   `auteur` int(11) NOT NULL,
   `destinataire` int(11) NOT NULL,
   `message` text NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `id_conv` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `messagesChat`
+--
+
+INSERT INTO `messagesChat` (`id`, `auteur`, `destinataire`, `message`, `timestamp`, `id_conv`) VALUES
+(1, 4, 5, 'mess1', '2021-04-13 10:20:02', 0),
+(2, 5, 4, 'mess2', '2021-04-13 10:20:30', 0),
+(3, 6, 5, 'mess3', '2021-04-13 10:21:21', 0),
+(4, 4, 5, 'mess4', '2021-04-13 10:45:46', 0);
 
 -- --------------------------------------------------------
 
@@ -219,6 +243,13 @@ CREATE TABLE `photosLieux` (
   `nomFichier` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `photosLieux`
+--
+
+INSERT INTO `photosLieux` (`id`, `idLieu`, `nomFichier`) VALUES
+(1, 1, 'terrain1.jpg');
+
 -- --------------------------------------------------------
 
 --
@@ -240,17 +271,7 @@ CREATE TABLE `reservations` (
 --
 
 INSERT INTO `reservations` (`id`, `idUtilisateur`, `date`, `heureDebut`, `heureFin`, `nbPersonnes`, `idLieu`) VALUES
-(1, 5, '2021-04-15', '02:00:00', '03:30:00', 3, 1),
-(3, 4, '2021-04-15', '12:00:00', '13:00:00', 1, 1),
-(4, 4, '2021-04-15', '01:30:00', '02:30:00', 1, 1),
-(5, 4, '2021-04-15', '01:30:00', '02:30:00', 1, 1),
-(7, 4, '2021-04-15', '01:30:00', '02:00:00', 3, 1),
-(8, 4, '2021-04-17', '18:00:00', '19:00:00', 10, 1),
-(9, 4, '2021-04-17', '17:00:00', '19:00:00', 10, 1),
-(10, 4, '2021-04-16', '19:00:00', '23:30:00', 10, 1),
-(11, 4, '2021-04-16', '15:00:00', '16:30:00', 10, 1),
-(12, 4, '2021-04-14', '16:00:00', '17:00:00', 5, 1),
-(13, 4, '2021-04-14', '13:00:00', '13:30:00', 10, 1);
+(1, 5, '2021-04-15', '02:00:00', '03:30:00', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -270,6 +291,10 @@ CREATE TABLE `sports` (
 
 INSERT INTO `sports` (`id`, `nom`, `logo`) VALUES
 ('basket', 'Basket', 'basketball-ball.png'),
+('escalade', 'Escalade', 'climbing.png'),
+('football', 'Football', 'football.png'),
+('muscu', 'Musculation', 'dumbbell.png'),
+('rugby', 'Rugby', 'rugby-ball.png'),
 ('tennis', 'Tennis', 'tennis-racket.png');
 
 -- --------------------------------------------------------
@@ -294,8 +319,9 @@ CREATE TABLE `utilisateurs` (
 --
 
 INSERT INTO `utilisateurs` (`id`, `pseudo`, `password`, `nom`, `prenom`, `email`, `timeInscription`, `admin`) VALUES
-(4, 'matt', 'test', 'nom', 'pre', 'test1@gmail.com', '2021-04-12 16:46:09', 0),
-(5, 'pseudo', 'motdepasse', 'nom', 'prenom', 'test@gmail.com', '2021-04-11 08:28:03', 0);
+(4, 'matt', 'test', 'noma', 'prenom', 'test1@dd', '2021-04-14 21:08:11', 0),
+(5, 'pseudo', 'motdepasse', 'nom', 'prenom', 'test@gmail.com', '2021-04-11 08:28:03', 0),
+(6, 'test2', 'pass', '', '', '', '2021-04-13 10:19:39', 0);
 
 --
 -- Indexes for dumped tables
@@ -308,6 +334,14 @@ ALTER TABLE `commentaires`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idLieu` (`idLieu`),
   ADD KEY `idUtilisateur` (`idUtilisateur`);
+
+--
+-- Indexes for table `conversations`
+--
+ALTER TABLE `conversations`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `membre_1` (`membre_1`),
+  ADD KEY `membre_2` (`membre_2`);
 
 --
 -- Indexes for table `creneauxDispo`
@@ -336,7 +370,8 @@ ALTER TABLE `lieux`
 ALTER TABLE `messagesChat`
   ADD PRIMARY KEY (`id`),
   ADD KEY `auteur` (`auteur`),
-  ADD KEY `destinataire` (`destinataire`);
+  ADD KEY `destinataire` (`destinataire`),
+  ADD KEY `id_conv` (`id_conv`);
 
 --
 -- Indexes for table `notes`
@@ -390,7 +425,7 @@ ALTER TABLE `commentaires`
 -- AUTO_INCREMENT for table `creneauxDispo`
 --
 ALTER TABLE `creneauxDispo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `creneauxValides`
@@ -408,25 +443,25 @@ ALTER TABLE `lieux`
 -- AUTO_INCREMENT for table `messagesChat`
 --
 ALTER TABLE `messagesChat`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `photosLieux`
 --
 ALTER TABLE `photosLieux`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `utilisateurs`
 --
 ALTER TABLE `utilisateurs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
@@ -438,6 +473,13 @@ ALTER TABLE `utilisateurs`
 ALTER TABLE `commentaires`
   ADD CONSTRAINT `commentaires_ibfk_1` FOREIGN KEY (`idLieu`) REFERENCES `lieux` (`id`),
   ADD CONSTRAINT `commentaires_ibfk_2` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateurs` (`id`);
+
+--
+-- Constraints for table `conversations`
+--
+ALTER TABLE `conversations`
+  ADD CONSTRAINT `conversations_ibfk_1` FOREIGN KEY (`membre_1`) REFERENCES `utilisateurs` (`id`),
+  ADD CONSTRAINT `conversations_ibfk_2` FOREIGN KEY (`membre_2`) REFERENCES `utilisateurs` (`id`);
 
 --
 -- Constraints for table `creneauxDispo`
@@ -457,7 +499,8 @@ ALTER TABLE `lieux`
 --
 ALTER TABLE `messagesChat`
   ADD CONSTRAINT `messagesChat_ibfk_1` FOREIGN KEY (`auteur`) REFERENCES `utilisateurs` (`id`),
-  ADD CONSTRAINT `messagesChat_ibfk_2` FOREIGN KEY (`destinataire`) REFERENCES `utilisateurs` (`id`);
+  ADD CONSTRAINT `messagesChat_ibfk_2` FOREIGN KEY (`destinataire`) REFERENCES `utilisateurs` (`id`),
+  ADD CONSTRAINT `messagesChat_ibfk_3` FOREIGN KEY (`id_conv`) REFERENCES `conversations` (`id`);
 
 --
 -- Constraints for table `notes`
