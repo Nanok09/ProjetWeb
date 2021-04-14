@@ -106,8 +106,8 @@ if ($action = valider("action")) {
             }
             break;
         case "AjouterChat":
-            if($id_auteur=valider('id_auteur') AND $id_destinataire=valider('id_destinataire') AND $msg=valider('msg'))
-                send_message($id_auteur,$id_destinataire,$msg);
+            if($id_auteur=valider('id_auteur') && $id_destinataire=valider('id_destinataire') && $msg=valider('msg'))
+                //send_message($id_auteur,$id_destinataire,$msg);
             $qs = "?view=chat&id=".$id_auteur;
             break;
     }
