@@ -186,7 +186,7 @@ $(window).ready(function() {
     <div class="my-5"></div>
     <div id="recherche" class="row justify-content-center d-none">
         <div class="col-8 bg-custom-grey text-center custom-rounded-corners">
-            <div id="containerCroix" class="position-absolute"> <img id="imageCroix" src="../images/croix.png"
+            <div id="containerCroix" class="position-absolute"> <img id="imageCroix" src="./images/croix.png"
                     class="d-block"> </div>
             <svg id="svg">
                 <circle r="30" cx="50%" cy="30" fill="#35516E">

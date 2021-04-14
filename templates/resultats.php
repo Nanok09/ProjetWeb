@@ -211,12 +211,12 @@ $(document).ready(function () {
                 <div class="col-12 row bg-custom-grey pt-4">
                     <div class="col-6">
                         <h2>Resultat 1:</h2>
-                        <img src="../images/Icon%20étoile.svg"><img src="../images/Icon%20étoile.svg"><img src="../images/Icon%20étoile.svg"><img src="../images/Icon%20étoile.svg"><img src="../images/Icon%20étoile.svg">
+                        <img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg">
                         <div class="position-absolute" style="bottom: 0"><h5>Contacter l'Admin</h5></div>
                     </div>
                     <div class="col-6">
                         <div class="text-center">
-                            <img src="../images/terrains/terrain1.jpg" class="img-fluid">
+                            <img src="./images/terrains/terrain1.jpg" class="img-fluid">
                             <h5>Hoops Facory Lille</h5>
                         </div>
                     </div>
@@ -231,12 +231,12 @@ $(document).ready(function () {
                 <div class="col-12 row bg-custom-grey pt-4">
                     <div class="col-6">
                         <h2>Resultat 2</h2>
-                        <img src="../images/Icon%20étoile.svg"><img src="../images/Icon%20étoile.svg"><img src="../images/Icon%20étoile.svg"><img src="../images/Icon%20étoile.svg">
+                        <img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg">
                         <div class="position-absolute" style="bottom: 0"> <h5>Terrain Public</h5></div>
                     </div>
                     <div class="col-6">
                         <div class="text-center">
-                            <img src="../images/terrains/terrain2.jpg" class="img-fluid">
+                            <img src="./images/terrains/terrain2.jpg" class="img-fluid">
                             <h5>Playground de la Porte Dorée</h5>
                         </div>
                     </div>
