@@ -126,16 +126,7 @@ $photos = get_photos();
             var adress = $("#adresse")[0].value;
             console.log(adress);
             if (adress) {
-                console.log("Adresse écrite : " + adress);
-                //var coord = get_coord(adress);
-                var coord = [{
-                    coordinates: {'lat': 47, 'long': 3},
-                    address: 'Adresse1',
-                }, {
-                    coordinates: {'lat': 48, 'long': 5},
-                    address: 'Adresse2',
-                }]
-                print_choix(coord);
+                get_coord(adress);
             }
         });
 
@@ -146,9 +137,11 @@ $photos = get_photos();
         add_markers(coord);
         $("#choice").empty();
         for (let i = 0; i < coord.length; i++) {
-            console.log(JSON.stringify(coord));
+            var str = JSON.stringify(coord[i]);
+            console.log(str);
             $("#choice").append(
-                "<option value="+JSON.stringify(coord[i])+" >"+coord[i].address+"</option>"
+                $("<option>").html(coord[i].address)
+                        .attr('value',str)
             )
         }
         $("#choice").css('display','inline');
@@ -169,7 +162,7 @@ $photos = get_photos();
             },
             success: function (oRep) {
                 console.log("réponse requête :" + oRep);
-                return oRep;
+                print_choix(JSON.parse(oRep).data);
             }
         })
     }
@@ -221,7 +214,7 @@ $photos = get_photos();
         $("#creation_place").append("</br>");
         $("#creation_place").append("<input id='publique' type='radio' name='type' value=0 checked/>" +
             "<label for='publique'>Publique</label>");
-        $("#creation_place").append("<input id='prive' type='radio' name='type' value=1/>" +
+        $("#creation_place").append("<input id='prive' type='radio' name='type' value=1 />" +
             "<label for='prive'>Privé</label>");
 
         $("#creation_place").append("</br>");
@@ -312,4 +305,11 @@ $photos = get_photos();
 
 <form id='creation_place' action='controleur.php' method="POST">
 </form>
+
+<?php
+if ($msg = valider('msg')) {
+echo "<span style='color:red'>$msg</span>";
+}
+
+?>
 
