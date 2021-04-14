@@ -1,12 +1,120 @@
 <?php
-?>
+//TODO: Suggestions
+//1) Quand tu commences a tapper et jusqu'a ce que tu finisses on fait des appel a l'API tous les x secondes
+//2) On récuperes la liste de suggestions et on affiche les 10 premiers.
+//3) Quand on clique sur une suggestion cela remplit automatiquement la barre de recherche avec les suggestions
 
+//abandon
+//4) Quand on descend avec la touche en bas cela sélectionne la suggestion qui complete le mot. Si on appuie sur ENTREe ca remplit automatiquement la barre de
+//recherche avec la suggestion et ca ferme les suggestions
+//5) Quand on appuie sur TAB cela remplie automatiquement la barre de recherche avec la premiere réponse
+
+?>
+<style>
+
+#suggestList {
+    display: none;
+    padding-left: 0;
+    border-top: none;
+    left: 0px;
+    top: 10px;
+    right: 0px;
+    text-decoration: none;
+}
+#suggestList>li{
+    display: block;
+    border: 1px solid black;
+    padding: 2px;
+    border-radius: 50px;
+}
+#suggestList>li:hover{
+    cursor: pointer;
+    background-color: lightgrey;
+}
+.hovered{
+    background-color: lightgrey;
+}
+#ajaxLoader{
+    display: none;
+    position: absolute;
+    right: 30px;
+    top: 10px;
+}
+
+</style>
 <script>
 
+    //setup before functions
+    var typingTimer;                //timer identifier
+    var doneTypingInterval = 4000;  //time in ms (5 seconds)
+    var $adresseInput = $("#adresseInput");
+    var intervalle;
+    var suggestions = ["1 Rue Béranger", "12 Rue d'Esquermes", "30 Rue Léon Gambetta", "4 Rue des Pyramides", "12 Rue Solférino",
+                        "16 Rue d'Arras", "27 Rue de Trévise","63 Rue de Cambrai","Porte des Postes"];
+    suggestions.forEach(function (item, index){
+        suggestions[index] = {"address": item, "coordinates": {"lat":50, "long":3}}
+    })
+    console.log(suggestions);
+    var donetyping = true;
+
     $("window").ready(function (){
-        $("#adresseInput").keyup(function (){
-            $('#maLocalisation').attr("disabled","disabled");
+
+
+
+        //on keyup, start the countdown
+        $("#adresseInput").keyup(function(event){
+            addKeyBoardEvent(event);
+            clearTimeout(typingTimer);
+            if (donetyping){
+                setTimeout(function (){
+                    let adresse = $("#adresseInput").val();
+                    appelAdresseResearch(adresse, 6);
+                    // addLi(adresse, 6);
+
+                }, 1000);
+                intervalle = setInterval(function (){
+                    let adresse = $("#adresseInput").val();
+                    appelAdresseResearch(adresse, 6);
+                    // addLi(adresse, 6);
+                }, 2000);
+            }
+            donetyping = false;
+            typingTimer = setTimeout(doneTyping, doneTypingInterval);
         });
+
+        //user is "finished typing," do something
+        function doneTyping () {
+            console.log("donetyping appelé");
+            clearInterval(intervalle);
+            donetyping = true;
+            $("#ajaxLoader").hide();
+
+        }
+
+
+
+
+
+
+
+        $("#adresseInput").keydown(function (){
+            $('#maLocalisation').attr("disabled","disabled");
+            $("#suggestList").show();
+            $("#ajaxLoader").show();
+        });
+
+
+        $("#suggestList").click(function (event){
+            $("#adresseInput").val(event.target.innerHTML);
+            window.adressePosition = $("#adresseInput").data();
+            console.log($("#adresseInput").data("coordinates"));
+            $("#suggestList").hide();
+            $("#ajaxLoader").hide();
+        })
+
+
+
+
 
         $("#maLocalisation").click(function (){
             if($("#maLocalisation").prop("checked")){
@@ -21,11 +129,135 @@
         setInterval(function(){
             if($("#adresseInput").val() == ""){
                 $("#maLocalisation").removeAttr("disabled");
+                $("#suggestList").hide();
+                $("#ajaxLoader").hide();
             };
         }, 1000);
 
+        $("#maLocalisation").click(function (){
+            if($("#maLocalisation").prop("checked")) {
+                var geolocation = null;
 
-    })
+                if (window.navigator && window.navigator.geolocation) {
+                    geolocation = window.navigator.geolocation;
+                }
+
+                if (geolocation) {
+                    geolocation.getCurrentPosition(function(position) {
+
+                        window.position = position;
+                    });
+                }
+            }
+        })
+
+        $("#submitForm").click(function (){
+
+            let selectedSport = $("#selectSport").children("option:selected").val();
+
+            if($("#maLocalisation").prop("disabled")){
+                console.log("Recherche par adresse");
+                console.log(window.adressePosition);
+            } else if ($("#adresseInput").prop("disabled")){
+                $.ajax({
+                    type: "POST",
+                    url: "libs/api.php",
+                    headers: {"debug-data":true},
+                    data: {"action": "get_list_places","user_location_lat":window.position["coords"]["latitude"],
+                        "user_location_long": window.position["coords"]["longitude"], "sport":selectedSport
+                    },
+                    success: function(oRep){
+                        console.log(oRep);
+
+                    },
+                    dataType: "json"
+                });
+            }
+
+
+        })
+        $("#rechercheForm").submit(function (event){
+            event.preventDefault();
+        })
+
+
+    }) //end window.ready()
+
+    function addLi(val, maxListSize) {
+        console.log(val);
+        $("#suggestList").empty();
+        if (val == "") {
+            $("#suggestList").html("");
+        }
+        if (val.length >= maxListSize) {
+            val.slice(0, maxListSize).map(function (suggestion, index)  {
+                $("#suggestList").append(
+                    $("<li>")
+                        .html(suggestion.address)
+                        .data("coordinates", suggestion.coordinates)
+                        .attr("id", "element".concat(index+1))
+
+                )
+            })
+        } else {
+            val.forEach(function (suggestion, index) {
+                console.log("Suggestion:" + suggestion.address);
+                $("#suggestList").append(
+                    $("<li>")
+                        .html(suggestion.address)
+                        .data("coordinates", suggestion.coordinates)
+                        .attr("id", index+1)
+                )
+            })
+        }
+    }
+    function appelAdresseResearch(adresse, max_results){
+        console.log("JE suis appelé oyé")
+
+        if(adresse != ""){
+            $.ajax({
+                type: "POST",
+                url: "libs/api.php",
+                headers: {"debug-data":true},
+                data: {"action": "address_research","address": adresse, "max_results":max_results},
+                success: function(oRep){
+                    console.log(oRep);
+                    addLi(oRep.data)
+                },
+                dataType: "json"
+            });
+        }
+    }
+    function addKeyBoardEvent(e){
+        var selectedId = 0;
+        var elementId;
+        var previousElementId;
+        if(e.key == "ArrowDown"){
+            console.log(e.key);
+            selectedId += 1;
+            elementId = "element".concat(selectedId);
+            previousElementId = "element".concat(selectedId-1);
+            if($(previousElementId).hasClass("hovered")){
+                $(previousElementId).toggleClass("hovered");
+            }
+            $(elementId).addClass("hovered");
+        } if (e.key == "ArrowUp"){
+            console.log(e.key);
+            selectedId -= 1;
+            elementId = "element".concat(selectedId);
+            previousElementId = "element".concat(selectedId+1);
+            if($(previousElementId).hasClass("hovered")){
+                $(previousElementId).toggleClass("hovered");
+            }
+            $(elementId).toggleClass("hovered");
+        } if(e.key == "ArrowRight"){
+            console.log(e.key); //tab
+        }
+
+
+    }
+
+
 
 
 </script>
@@ -38,7 +270,7 @@
     Rechercher
 </h1>
 <div class="container">
-<form id="rechercheForm" action="../controleur.php" name="recherche" method="get">
+<form id="rechercheForm" name="recherche" method="get">
     <div class="form-row justify-content-center">
         <div class="col-12">
             <div class="form-group">
@@ -63,7 +295,12 @@
         <p class="col-1"> ou </p>
 
         <div class="col-12 mb-3">
+            <img id="ajaxLoader" src="./images/ajaxLoader.gif">
             <input id="adresseInput" class="form-control custom-rounded-corners" type="text" name="adresse" placeholder="Adresse" required>
+            <input id="latContainer" type="text" class="d-none">
+            <input id="longContainer" type="text" class="d-none">
+            <ul id="suggestList">
+            </ul>
         </div>
         <div class="w-100"></div>
         <div class="col-12 mb-3">
@@ -95,7 +332,8 @@
                 <span class="checkmark"></span>
             </div>
         </div>
-        <input type="submit" name="action" value="Recherche" class="btn col-3 my-2" style="background-color: #153455; color: #fdedcf;">
+<!--        <button id="submitForm" class="btn col-3 my-2" style="background-color: #153455; color: #fdedcf;">Rechercher</button>-->
+        <input id="submitForm" type="submit" name="action" value="Recherche" class="btn col-3 my-2" style="background-color: #153455; color: #fdedcf;">
     </div>
 </form>
 
