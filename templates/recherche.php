@@ -160,12 +160,8 @@ $("window").ready(function() {
         }
     })
 
-    $("#submitForm").click(function(){
+    $('#dateReservation').val(new Date().toDateInputValue());
 
-
-
-
-    })
 
 
     /*
@@ -310,6 +306,12 @@ function addKeyBoardEvent(e) {
 
 
 }
+
+Date.prototype.toDateInputValue = (function() {
+    var local = new Date(this);
+    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+    return local.toJSON().slice(0,10);
+});
 </script>
 
 
@@ -357,20 +359,12 @@ function addKeyBoardEvent(e) {
                 </div>
                 <div class="w-100"></div>
                 <div class="col-12 mb-3">
-                    <div class="row mb-2">
-                        <div class="col-md-3 col-6 mb-2">
-                            <input class="form-control custom-rounded-corners" type="text" name="horaireA"
-                                placeholder="Heure de début">
-                        </div>
-                        <div class="col-md-3 col-6 mb-2">
-                            <input class="form-control custom-rounded-corners" type="text" name="horaireD"
-                                placeholder="Heure de fin">
-                        </div>
-                        <div class="col-md-3 col-6 mb-2">
+                    <div class="row mb-2 justify-content-around">
+                        <div class="col-md-3 col-6">
                             <input class="form-control custom-rounded-corners" type="text" name="prixMi"
                                 placeholder="Prix Minimal">
                         </div>
-                        <div class="col-md-3 col-6 mb-2">
+                        <div class="col-md-3 col-6">
                             <input class="form-control custom-rounded-corners" type="text" name="prixMa"
                                 placeholder="Prix Maximal">
                         </div>
@@ -380,6 +374,36 @@ function addKeyBoardEvent(e) {
                 <div class="col-12 mb-3">
                     <input class="form-control custom-rounded-corners" type="text" name="distanceMax"
                            placeholder="Rayon maximal">
+                </div>
+                <div class="col-12 mb-3">
+                    <div class="row mb-2 justify-content-around">
+                        <div class="col-3">
+                            <label for="dateReservation">Date réservation</label>
+                            <input id="dateReservation" type="date" name="date" name="dateReservation">
+                        </div>
+                        <div class="col-3">
+                            <label for="dateReservation">Date réservation</label>
+                            <input type="time" name="time_start" step="1800" name="heureDebut" value="15:30:00">
+                        </div>
+
+                        <div class="col-3">
+                            <label for="dateReservation">Date réservation</label>
+                            <input type="time" name="time_end" step="1800" name="heureFin" value="16:30:00">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-12 mb-3">
+                    <div class="row justify-content-center">
+                        <div class="form-group col-4">
+                            <label for="nbResultats" class="radio-container"
+                                   style="color: #153455; font-size: 1.1rem;">Nombre de Résultats Max?</label>
+                            <input id="nbResultats" type="number" name="nbResultats">
+                        </div>
+
+                    </div>
                 </div>
                 <div class="col-12 mb-1 row justify-content-center">
                     <div class="form-group col-4">
