@@ -46,6 +46,15 @@ function get_user_info($id_user)
 }
 
 /**
+ * *Récupere une liste de tous les utilisateurs dans la bdd
+ */
+function get_users(){
+    $SQL = "SELECT * FROM utilisateurs";
+    $params = [];
+    return parcoursRs(SQLSelect($SQL, $params));
+}
+
+/**
  * Vérifie si un utilisateur est admin
  * @param int id_user
  * @return bool
@@ -457,33 +466,31 @@ function get_photos()
 
 // ============ CHAT =============
 
-<<<<<<< Updated upstream
-/**
- * Envoyer un message
- * @param int id_user
- * @param int id_user_dest id du destinataire
- * @param string message
- */
+
 
 //
 
-/**
- * Récupérer toutes les personnes avec qui quelqu'un a parlé, les derniers messages, timestamps
- * @param int id_user
- */
+
 
 /**
  * Récupérer tous les messages entre 2 personnes
  * @param int id_user
  * @param int id_user2
  */
-=======
+
+
+/**
+ * Récupérer toutes les personnes avec qui quelqu'un a parlé, les derniers messages, timestamps
+ * @param int id_user
+ */
 function listerDestinataires($id_auteur)
 {
     //Récupérer toutes les personnes avec qui quelqu'un a parlé
 
-    $SQL = "SELECT id,destinataire FROM messagesChat WHERE auteur=".$id_auteur;
-    return parcoursRs(SQLSelect($SQL));
+    $SQL = "SELECT id,destinataire FROM messagesChat WHERE auteur=?";
+    $params = array($id_auteur);
+
+    return parcoursRs(SQLSelect($SQL, $params));
 }
 
 function listerConvChat($id_auteur,$id_destinataire) {
@@ -492,7 +499,12 @@ function listerConvChat($id_auteur,$id_destinataire) {
     $SQL = "SELECT id,timestamp,message FROM messagesChat WHERE (auteur=".$id_auteur." AND id_destinataire=".$id_destinataire.") OR (id_auteur=".$id_destinataire." AND id_destinataire=".$id_auteur.")";
     return parcoursRs(SQLSelect($SQL));
 }
-
+/**
+ * Envoyer un message
+ * @param int id_user
+ * @param int id_user_dest id du destinataire
+ * @param string message
+ */
 function ajouterMsgChat($id_auteur,$id_destinataire,$msg) {
     //Ajoute un nouveau message à la BDD
 
@@ -506,7 +518,6 @@ function findUserName($id) {
     return ParcoursRs(SQLSelect($SQL));
 }
 //Envoyer un message
->>>>>>> Stashed changes
 
 /**
  * Récupère les messages reçus par id_user après l'id du dernier message reçu
@@ -602,7 +613,6 @@ function get_capacite_restante_creneau($id_place, $date, $heure_debut, $heure_fi
     $params = array("id_place" => $id_place, "date" => $date, "heure_debut" => $heure_debut, "heure_fin" => $heure_fin);
     return SQLGetChamp($SQL, $params);
 }
-<<<<<<< Updated upstream
 // ============= SPORTS ===========
 
 /**
@@ -615,6 +625,4 @@ function get_all_sports()
     $params = array();
     return parcoursRs(SQLSelect($SQL, $params));
 }
-=======
 
->>>>>>> Stashed changes

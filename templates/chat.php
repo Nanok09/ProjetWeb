@@ -1,5 +1,9 @@
 <?php
+include_once("./libs/modele.php");
 
+$id_user = $_SESSION['id_user'];
+$listDestinataires = listerDestinataires($id_user);
+$users = get_users();
 
 ?>
 
@@ -76,25 +80,25 @@
                 <div class="messages-box" >
                     <div class="list-group rounded-0" >
                     <?php
-                    if ($listDestinataires = listerDestinataires($_SESSION['id'])) {
 
-                        $id_destinataireDefault = $listDestinataires[0]['id'];
+                        $id_destinataireDefault = $listDestinataires[0]['id_user'];
 
 
-                        foreach ($listDestinataires as $destinataire) {
-
-                            echo ('
+                        foreach ($listDestinataires as $idDestinataire) {
+                            $user_info = get_user_info($idDestinataire);
+                            echo('
                                 <a class="list-group-item list-group-item-action rounded-0" style="color: #FFF7ED; background-color: #35516E">
                                     <div class="media"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
                                         <div class="media-body ml-4">
                                             <div class="d-flex align-items-center justify-content-between mb-1">
-                                                <h6 class="mb-0" style="color: #FFF7ED">'.$patient['nom'].' '.$patient['prenom'].'</h6><small class="small font-weight-bold">Date du dernier message</small>
+                                                <h6 class="mb-0" style="color: #FFF7ED">' . $user_info['nom'] . ' ' . $user_info['prenom'] . '</h6><small class="small font-weight-bold">Date du dernier message</small>
                                             </div>
                                             <p class="font-italic mb-0 text-small" style="color: #FFF7ED">Dernier message affiché</p>
                                         </div>
                                     </div>
                                 </a>
                         ');
+                        }
 
                     //On sauvegarde l'id de l'interlocuteur
                     if(!$id_destinataire = valider('id')) {
@@ -189,7 +193,7 @@
             <div class="px-4 py-5 chat-box" style="background-color: #FFF7ED">
                 <!-- Sender Message-->
                 <?php
-                $conversation = listerConvChat($_SESSION['id'],$id_destinataire);
+                $conversation = listerConvChat($_SESSION['id_user'],$id_destinataire);
                 foreach ($conversation as $message) {
                     if (!$message['isMedecin']) {
                         echo ('
