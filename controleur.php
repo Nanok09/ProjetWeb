@@ -18,15 +18,16 @@ if ($action = valider("action")) {
 
     switch ($action) {
 
-        // Connexion //////////////////////////////////////////////////
+            // Connexion //////////////////////////////////////////////////
 
         case 'Se connecter':
-            echo "j'ai compris que tu veux te connecter";
+            // echo "j'ai compris que tu veux te connecter";
             if (($pseudo = valider('pseudo')) &&
                 ($password = valider('password'))
             ) {
                 if (!verif_user($pseudo, $password)) {
-                    $qs = "?view=login-signIn&msg=Mauvais identifiants de connexion, si vous n'avez pas de compte inscrivez vous!";
+                    $msg = "Mauvais identifiants de connexion, si vous n'avez pas de compte inscrivez vous!";
+                    $qs = "?view=login-signIn&msg=" . urlencode($msg);
                 } else {
                     $qs = "?view=accueil";
                 }
@@ -39,7 +40,7 @@ if ($action = valider("action")) {
             }
             break;
 
-        // Inscription //////////////////////////////////////////////////
+            // Inscription //////////////////////////////////////////////////
 
         case 'Inscription':
             if (($pseudo = valider('pseudo')) &&
@@ -52,12 +53,12 @@ if ($action = valider("action")) {
                 verif_user($pseudo, $password);
                 $qs = "?view=accueil";
             } else {
-                $msg = "Veuillez remplir toutes les informations nécessaires à l%E2%80%99inscription";
-                $qs = "?view=login-signIn&msg=" . $msg;
+                $msg = "Veuillez remplir toutes les informations nécessaires à l'inscription";
+                $qs = "?view=login-signIn&msg=" . urlencode($msg);
             }
             break;
 
-        // Déconnexion //////////////////////////////////////////////////
+            // Déconnexion //////////////////////////////////////////////////
 
         case 'Logout':
             session_destroy();
@@ -96,10 +97,10 @@ if ($action = valider("action")) {
                 if (!($description = valider('description'))) {
                     $description = '';
                 }
-                $id_place=create_place($nom, $lat, $long, $sport, $prive, $createur_id, $prix, $capacite, $description, $adresse);
+                $id_place = create_place($nom, $lat, $long, $sport, $prive, $createur_id, $prix, $capacite, $description, $adresse);
                 $upload_done = upload($_FILES["fileToUpload"]);
                 echo $id_place;
-                if ($upload_done){
+                if ($upload_done) {
                     add_photo_place(intval($id_place), $_FILES["fileToUpload"]["name"]);
                 }
                 $qs = "?view=mesTerrains";
@@ -171,7 +172,6 @@ if ($action = valider("action")) {
                 "&lat=".$lat."&long=".$long;
             break;
     }
-
 }
 
 // On redirige toujours vers la page index, mais on ne connait pas le répertoire de base
@@ -189,7 +189,3 @@ header("Location:" . "index.php" . $qs);
 
 // On écrit seulement après cette entête
 ob_end_flush();
-
-
-
-?>

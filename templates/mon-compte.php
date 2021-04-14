@@ -6,117 +6,100 @@ include_once("./libs/libSecurisation.php");
 // Si l'utilisateur est connecte, on affiche un lien de deconnexion
 securiser("?view=accueil");
 
-
-
 $idUser = $_SESSION["id_user"];
-
 $user_info = get_user_info($idUser);
-$user_info = $user_info[0];
-$terrains_associes = get_places_created_by($idUser);
-if (empty($terrains_associes)) {
-    $terrains_associes["nom"] = "Vous n'avez pas encore crée de terrain";
-}
-
-
+$reservations = get_current_reservations($idUser);
 ?>
 
-<style>
-body {
-    background-color: #fdedcf;
-    font-family: "Avenir Next";
-}
-
-.padding {
-    padding: 3rem !important
-}
-
-.user-card-full {
-    overflow: hidden
-}
-
-.card {
-    border-radius: 15px;
-    border: none;
-    margin-bottom: 30px
-}
-
-.card-block {
-    color: #fdedcf;
-}
-
-.m-r-0 {
-    margin-top: 6px;
-    margin-right: 0px
-}
-
-.m-l-0 {
-    margin-top: 6px;
-    margin-left: 0%
-}
-
-.m-b-20 {
-    margin-top: 30px;
-    margin-bottom: 30px;
-}
-</style>
-</head>
-
-<body>
-    <h1 style="color: #123455; text-align: center; margin-top: 40px;">Mon Compte</h1>
-    <div class="page-content page-container" id="page-content">
-        <div class="container padding">
-            <div class="row justify-content-center">
-                <div class="col-xl-6 col-md-12">
-                    <div class="card user-card-full" style="background-color:#123455">
-                        <div class="row m-l-0 m-r-0 ">
-                            <div class="col-sm-12">
-                                <div class="card-block">
-                                    <h3 class="mt-3 ml-3 b-b-default f-w-600">Information</h3>
-                                    <div class="row justify-content-center">
-                                        <div class="col-sm-3 text-center">
-                                            <p class="m-b-10 f-w-600"><u>Pseudo</u></p>
-                                            <h6 class=" f-w-400 text-danger">
-                                                <?php echo $user_info["pseudo"] ?>
-                                            </h6>
-                                        </div>
-                                        <div class="col-sm-3 text-center">
-                                            <p class="m-b-10 f-w-600"><u>Prénom</u></p>
-                                            <h6 class=" f-w-400 text-danger">
-                                                <?php echo $user_info["prenom"] ?>
-                                            </h6>
-                                        </div>
-                                        <div class="col-sm-3 text-center">
-                                            <p class="m-b-10 f-w-600"><u>Nom</u></p>
-                                            <h6 class=" f-w-400 text-danger">
-                                                <?php echo $user_info["nom"] ?>
-                                            </h6>
-                                        </div>
-                                        <div class="col-sm-3 text-center">
-                                            <p class="m-b-10 f-w-600"><u>Email</u></p>
-                                            <h6 class=" f-w-400 text-danger">
-                                                <?php echo $user_info["email"] ?>
-                                            </h6>
-                                        </div>
-                                    </div>
-                                    <h3 class="mt-2 ml-3 b-b-default f-w-600">Locations</h3>
-                                    <div class="row">
-                                        <div class="col-sm-5 text-center">
-                                            <p class="m-b-10 f-w-600"><u>Location 1</u></p>
-                                            <h6 class=" f-w-400 text-danger">
-                                                <?php echo $terrains_associes["nom"] ?>
-                                            </h6>
-                                        </div>
-                                        <div class="col-sm-6 text-center">
-                                            <p class="m-b-10 f-w-600 ">Photo Location</p>
-                                        </div>
-                                    </div>
+<script>
+$(document).ready(function() {
+    $(document).on("click", "div.cancel-reservation", function() {
+        var id = $(this).data("id-reservation");
+        var that = this;
+        console.log(id);
+        $.post("libs/api.php", {
+            action: "delete_reservation",
+            id_reservation: id
+        }, function(res) {
+            if (!res.success) {
+                console.log("La réservation n'a pas pu être annulée");
+            } else {
+                console.log($(that));
+                console.log($(that).closest('.card'));
+                $(that).closest(".card").hide();
+            }
+        }, "json");
+    });
+});
+</script>
+<h1 class="text-center font-custom-blue">Mon Compte</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-md-12">
+            <div class="card rounded bg-custom-blue font-custom-light">
+                <div class="card-body">
+                    <h2>Mes informations personnelles</h2>
+                    <label class="mr-2">Mon pseudo : </label><span><?php echo $user_info["pseudo"] ?></span>
+                    <form id="personal_info">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="inputPseudo">Nom</label>
+                                    <input type="text" class="form-control" name="nom" placeholder="Mon nom"
+                                        value="<?php echo $user_info["nom"] ?>" required>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="inputPseudo">Prénom</label>
+                                    <input type="text" class="form-control" name="prenom" placeholder="Mon prénom"
+                                        value="<?php echo $user_info["prenom"] ?>" required>
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="inputPseudo">Email</label>
+                            <input type="email" class="form-control" name="email" placeholder="Mon email"
+                                value="<?php echo $user_info["email"] ?>" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Modifier</button>
+                    </form>
+                    <h2 class="mt-4">Mes réservations en cours</h2>
+
+                    <div class="row">
+                        <?php foreach ($reservations as $reservation) { ?>
+
+                        <div class="p-2 col-12 col-sm-6 col-lg-4">
+                            <div class="card p-0 m-2 d-inline-block font-custom-blue bg-custom-light ">
+                                <img class="card-img-top w-100"
+                                    src="images/terrains/<?php echo $reservation["nomFichier"] ?>" alt="Photo du lieu">
+                                <div class="card-body">
+                                    <h5><?php echo $reservation["nomTerrain"] ?></h5>
+                                    <p class="card-text mb-0"><i class="far fa-fw fa-calendar-alt"></i> Date :
+                                        <?php echo $reservation["date"] ?>
+                                    </p>
+                                    <p class="card-text mb-0"><i class="far fa-fw fa-clock"></i> Début :
+                                        <?php echo $reservation["heureDebut"] ?>
+                                    </p>
+                                    <p class="card-text mb-0"><i class="far fa-fw fa-clock"></i> Fin :
+                                        <?php echo $reservation["heureFin"] ?>
+                                    </p>
+                                    <p class="card-text"><i class="fas fa-fw fa-user-friends"></i>
+                                        <?php echo $reservation["nbPersonnes"] ?> personnes
+                                    </p>
+                                    <div data-id-reservation="<?php echo $reservation["id"] ?>"
+                                        class="btn btn-sm btn-danger cancel-reservation"><i
+                                            class="fas fa-fw fa-trash"></i>Annuler</div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php } ?>
+
+
                     </div>
                 </div>
             </div>
         </div>
-</body>
+    </div>
 
-</html>
+</div>

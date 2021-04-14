@@ -42,7 +42,12 @@ function get_user_info($id_user)
 {
     $SQL = "SELECT pseudo, email, nom, prenom FROM utilisateurs WHERE id=?;";
     $params = array($id_user);
-    return parcoursRs(SQLSelect($SQL, $params));
+    $res = parcoursRs(SQLSelect($SQL, $params));
+    if (!$res) {
+        return $res;
+    } else {
+        return $res[0];
+    }
 }
 
 /**
@@ -294,8 +299,12 @@ function get_place_info(int $place_id)
 
     $SQL = "SELECT * FROM lieux WHERE id=?";
     $param = array($place_id);
-    $result = parcoursRs(SQLSelect($SQL, $param));
-    return $result[0];
+    $res = parcoursRs(SQLSelect($SQL, $param));
+    if (!$res) {
+        return $res;
+    } else {
+        return $res[0];
+    }
 }
 /**
  * Récupère le créateur d'un lieu
@@ -344,7 +353,12 @@ function get_note_place($id_place)
 {
     $SQL = "SELECT avg(note) mean, count(note) nb_notes FROM notes WHERE idLieu = ?";
     $params = array($id_place);
-    return parcoursRs(SQLSelect($SQL, $params))[0];
+    $res = parcoursRs(SQLSelect($SQL, $params));
+    if (!$res) {
+        return $res;
+    } else {
+        return $res[0];
+    }
 }
 
 /**
@@ -504,6 +518,19 @@ function add_creneau_dispo($id_place, $date, $heure_debut, $heure_fin, $capacite
 
 // ============= RESERVATIONS ============
 
+/**
+ * Récupère les réservations qui ne sont pas encore terminées
+ * @param int id_user
+ */
+function get_current_reservations($id_user)
+{
+    $SQL = "SELECT p.nomFichier, l.nom as nomTerrain, r.* FROM reservations r ";
+    $SQL .= "INNER JOIN lieux l ON l.id = r.idLieu ";
+    $SQL .= "INNER JOIN (SELECT idLieu,nomFichier FROM photosLieux GROUP BY idLieu) p ON p.idLieu = r.idLieu ";
+    $SQL .= "WHERE r.idUtilisateur=:id_user AND r.date>=DATE(NOW())";
+    $params = array("id_user" => $id_user);
+    return parcoursRs(SQLSelect($SQL, $params));
+}
 /**
  * Réserver un créneau
  * pre vérifier qu'il y a au minimum nb_personnes en capacité restante sur le créneau ciblé
