@@ -7,7 +7,7 @@ include_once "libs/libSecurisation.php";
 include_once "libs/modele.php";
 include_once "libs/upload_photo.php";
 
-
+tprint($_POST);
 
 $qs = "";
 
@@ -133,6 +133,8 @@ if ($action = valider("action")) {
             echo $id_place;
             break;
 
+        // Ajout photo //////////////////////////////////////////////////
+
         case 'ajouter photo':
             if ($id_place = valider('id_place')){
                 $upload_done = upload($_FILES["fileToUpload"]);
@@ -146,6 +148,34 @@ if ($action = valider("action")) {
                 }
             }
             break;
+
+        // Modifier infos terrains //////////////////////////////////////////////////
+
+        case 'modif_place':
+            if ($id_place = valider('id_place')){
+                $user_id=valider('id_user', 'SESSION');
+                $modification=[];
+                if ($nom = valider('nom')){
+                    $modification['nom'] = $nom;
+                }
+                if ($description = valider('description')){
+                    $modification['description'] = $description;
+                }
+                if ($capacite = valider('capacite')){
+                    $modification['capacite'] = $capacite;
+                }
+                if ($prix = valider('prix')){
+                    $modification['prix'] = $prix;
+                }
+                if ($sport = valider('sport')){
+                    $modification['sport'] = $sport;
+                }
+                tprint($modification);
+                modify_place($id_place, $user_id, $modification);
+                $qs = "?view=mesTerrains";
+            }
+            break;
+
     }
 
 }
