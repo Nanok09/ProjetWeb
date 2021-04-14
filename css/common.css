@@ -2,6 +2,14 @@ body {
   background-color: #fdedcf;
 }
 
+.body-color-blue {
+  color: #123455;
+}
+
+.body-color-yellow {
+  color: #fdedcf;
+}
+
 .bg-custom-beige {
   background-color: #fdedcf;
 }
@@ -20,4 +28,8 @@ body {
 
 .custom-rounded-corners {
   border-radius: 50px;
+}
+
+.custom-rounded-corners-small {
+  border-radius: 15px;
 }
