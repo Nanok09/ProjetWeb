@@ -1,6 +1,5 @@
 <!-- **** F O O T E R **** -->
-
-<footer class="text-light" style="background-color: #153455">
+<footer class="text-light mt-5" style="background-color: #153455">
     <div class="container-fluid">
         <div class="row mt-5 justify-content-center py-5">
             <div class="col-11">
