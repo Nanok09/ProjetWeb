@@ -173,8 +173,8 @@ $("window").ready(function() {
                 },
                 data: {
                     "action": "get_list_places",
-                    "user_location_lat": window.adressePosition["latitude"],
-                    "user_location_long": window.adressePosition["longitude"],
+                    "user_location_lat": window.adressePosition["lat"],
+                    "user_location_long": window.adressePosition["long"],
                     "sport": selectedSport
                 },
                 success: function(oRep) {

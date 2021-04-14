@@ -280,6 +280,7 @@ if ($action = valider("action")) {
                 $place_data['address'] = $result['adresse'];
                 $place_data['photos']=get_photos_place($result['id']);
                 $place_data['note'] = get_note_place($result['id'])['mean'];
+                $place_data['distance_to_user'] = $result['distance_to_user'];
                 if ($result['prive'] == 0) {
                     $place_data['dispo']=false;
                 }
