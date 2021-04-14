@@ -33,9 +33,7 @@
     background-color: lightgrey;
 }
 
-.hovered {
-    background-color: lightgrey;
-}
+
 
 #ajaxLoader {
     display: none;
@@ -48,7 +46,6 @@
 //setup before functions
 var typingTimer; //timer identifier
 var doneTypingInterval = 4000; //time in ms (5 seconds)
-var $adresseInput = $("#adresseInput");
 var intervalle;
 var suggestions = ["1 Rue Béranger", "12 Rue d'Esquermes", "30 Rue Léon Gambetta", "4 Rue des Pyramides",
     "12 Rue Solférino",
