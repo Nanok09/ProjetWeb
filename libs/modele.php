@@ -91,6 +91,12 @@ function get_place_creator($place_id)
  * @param string prenom
  * @param
  */
+function update_user($id_user, $email, $nom, $prenom)
+{
+    $SQL = "UPDATE utilisateurs SET email=:email, nom=:nom, prenom=:prenom, timestamp=timestamp WHERE id =:id_user";
+    $params = array("id_user" => $id_user, "nom" => $nom, "prenom" => $prenom, "email" => $email);
+    return SQLUpdate($SQL, $params);
+}
 
 // ================== LIEUX ===================
 

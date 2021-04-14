@@ -24,11 +24,18 @@ $(document).ready(function() {
             if (!res.success) {
                 console.log("La réservation n'a pas pu être annulée");
             } else {
-                console.log($(that));
-                console.log($(that).closest('.card'));
-                $(that).closest(".card").hide();
+                //cacher la réservation
+                $(that).closest(".card").parent().slideUp();
             }
         }, "json");
+    });
+    $("form#personal_info").on("submit", function(event) {
+        var data = formToJson(this);
+        data.action = "update_user";
+        $.post("libs/api.php", data, function(res) {
+            console.log(res);
+        }, "json");
+        event.preventDefault();
     });
 });
 </script>
@@ -66,9 +73,12 @@ $(document).ready(function() {
                     </form>
                     <h2 class="mt-4">Mes réservations en cours</h2>
 
+                    <?php
+                    if (count($reservations) == 0) {
+                        echo "<div>Aucune réservation en cours</div>";
+                    }
+                    foreach ($reservations as $reservation) { ?>
                     <div class="row">
-                        <?php foreach ($reservations as $reservation) { ?>
-
                         <div class="p-2 col-12 col-sm-6 col-lg-4">
                             <div class="card p-0 m-2 d-inline-block font-custom-blue bg-custom-light ">
                                 <img class="card-img-top w-100"

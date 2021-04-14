@@ -39,6 +39,10 @@ ___
 * get_conversation : récupére les messages d'une conversation avec un autre utilisateur
 * get_new_messages : récupère d'éventuels nouveaux messages reçus
 
+___
+
+* update_user : modifie les infos personelles de l'utilisateur
+
 # Partie requete à l'API
 
 Chaque action peut/doit recevoir une liste de parametres optionels:
@@ -132,6 +136,11 @@ Chaque action peut/doit recevoir une liste de parametres optionels:
   + date = string(yyyy-mm-dd)
   + time_start = hh:mm
   + time_end = hh:mm
+
+* action = update_user
+  + email
+  + nom
+  + prenom
 
 # Partie réponse de l'API
 

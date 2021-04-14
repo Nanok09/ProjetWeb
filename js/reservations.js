@@ -41,14 +41,6 @@ $(document).ready(function () {
   });
   calendar.render();
 
-  function formToJson(form) {
-    var serializedArray = $(form).serializeArray();
-    var json = {};
-    for (var i = 0; i < serializedArray.length; i++) {
-      json[serializedArray[i].name] = serializedArray[i].value;
-    }
-    return json;
-  }
   $("form#add_creneau").submit(function (event) {
     // console.log('form add creneau');
     var data = formToJson(this);
