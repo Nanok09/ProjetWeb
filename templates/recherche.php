@@ -116,7 +116,6 @@ $("window").ready(function() {
     $(document).on("click", "#suggestList li", function(event) {
         $("#adresseInput").val(event.target.innerHTML);
         window.adressePosition = $(this).data("coordinates");
-        console.log($(this).data("coordinates"));
         $("#suggestList").hide();
         $("#ajaxLoader").hide();
     })
@@ -166,6 +165,25 @@ $("window").ready(function() {
         if ($("#maLocalisation").prop("disabled")) {
             console.log("Recherche par adresse");
             console.log(window.adressePosition);
+            $.ajax({
+                type: "POST",
+                url: "libs/api.php",
+                headers: {
+                    "debug-data": true
+                },
+                data: {
+                    "action": "get_list_places",
+                    "user_location_lat": window.adressePosition["latitude"],
+                    "user_location_long": window.adressePosition["longitude"],
+                    "sport": selectedSport
+                },
+                success: function(oRep) {
+                    console.log(oRep);
+
+                },
+                dataType: "json"
+            });
+
         } else if ($("#adresseInput").prop("disabled")) {
             $.ajax({
                 type: "POST",
