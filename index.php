@@ -2,10 +2,10 @@
 session_start();
 
 
-if(empty($_SESSION['id_user'])){
-   if(!empty($_COOKIE['pseudo'])){
-       verif_user($_COOKIE['pseudo'],$_COOKIE['password']);
-   }
+if (empty($_SESSION['id_user'])) {
+    if (!empty($_COOKIE['pseudo'])) {
+        verif_user($_COOKIE['pseudo'], $_COOKIE['password']);
+    }
 }
 
 include_once "libs/libUtils.php";
@@ -22,20 +22,11 @@ $view = valider("view");
 // S'il est vide, on charge la vue accueil par défaut
 if (!$view) {
     $view = "accueil";
-}else{
-    if (!(valider('is_connected','SESSION'))){
-        if ($view != "accueil"
-            && $view != "recherche"
-            && $view != "resultats"
-        ){
-            $view="login-signIn";
-        }
-    }
 }
 
 // En fonction de la vue à afficher, on appelle tel ou tel template
 switch ($view) {
-    /*
+        /*
     case "accueil" :
     include("templates/accueil.php");
     break;
@@ -54,7 +45,6 @@ switch ($view) {
         } else {
             include "templates/error.php";
         }
-
 }
 
 // Dans tous les cas, on affiche le pied de page
