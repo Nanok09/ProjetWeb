@@ -92,6 +92,7 @@ Chaque action peut/doit recevoir une liste de parametres optionels:
 
   + id_place = id -- str représentant l'id du terrain auquel la note est rattachée
   + comment= comment -- str représentant le commentaire
+  + pseudo = --str pseudo de l'utilisateur qui a posé le commentaire
 
 * action = modify_comment
 
