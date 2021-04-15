@@ -10,7 +10,7 @@ if (basename($_SERVER["PHP_SELF"]) != "index.php") {
 
 ?>
 
-<div class="container-fluid">
+<div class="container">
     <h1>Erreur</h1>
 
     <div>La vue sélectionnée n'existe pas.</div>

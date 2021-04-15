@@ -413,7 +413,7 @@ function modify_comment($id_user, $id_comment, $message, $timestamp)
 // TODO: limiter le nb de commentaires récupérés ?
 function get_comments($id_place)
 {
-    $SQL = "SELECT u.nom nomUtilisateur, c.id, c.message, c.timestamp FROM commentaires as c INNER JOIN utilisateurs as u ON c.idUtilisateur=u.id";
+    $SQL = "SELECT u.pseudo nomUtilisateur, u.id idUtilisateur , c.id, c.message, c.timestamp FROM commentaires as c INNER JOIN utilisateurs as u ON c.idUtilisateur=u.id";
     $SQL .= " WHERE c.idLieu = :id_place ORDER BY c.timestamp DESC";
     $params = array("id_place" => $id_place);
     return parcoursRs(SQLSelect($SQL, $params));
