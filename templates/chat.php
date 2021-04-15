@@ -98,7 +98,7 @@ $list_id_conversation = get_conversations_user( $connected_user);
                         //var_dump($destinataire_id);
                         $destinataire_info = find_user_name($destinataire_id);
                         //var_dump($destinataire_info);
-                        display_conv($last_msg_info,$destinataire_info[0]);
+                        display_conv($last_msg_info,$destinataire_info[0],$id_conv);
                     }  
                     ?>
                     </div>
