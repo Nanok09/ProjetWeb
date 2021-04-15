@@ -53,7 +53,8 @@ function get_user_info($id_user)
 /**
  * *Récupere une liste de tous les utilisateurs dans la bdd
  */
-function get_users(){
+function get_users()
+{
     $SQL = "SELECT * FROM utilisateurs";
     $params = [];
     return parcoursRs(SQLSelect($SQL, $params));
@@ -497,10 +498,11 @@ function get_photos()
  * @param int conv_id
  */
 
-function get_messages_in_conv($conv_id){
-    $SQL = "SELECT auteur,destinataire,message,timestamp FROM messageschat WHERE id_conv=?";
+function get_messages_in_conv($conv_id)
+{
+    $SQL = "SELECT auteur,destinataire,message,timestamp FROM messagesChat WHERE id_conv=?";
     $param = array($conv_id);
-    return parcoursRs(SQLSelect($SQL,$param));
+    return parcoursRs(SQLSelect($SQL, $param));
 }
 
 
@@ -526,19 +528,20 @@ function get_conversations_user($id_user)
  * @param int id_user_dest id du destinataire
  * @param string message
  */
-function add_message_to_conv($id_conv,$id_auteur,$id_destinataire,$msg) {
+function add_message_to_conv($id_conv, $id_auteur, $id_destinataire, $msg)
+{
     //Ajoute un nouveau message à la BDD
     //INSERT INTO `messageschat` (`id`, `auteur`, `destinataire`, `message`, `timestamp`, `id_conv`) VALUES (NULL, '6', '6', 'test', CURRENT_TIMESTAMP, '2');
     $SQL = "SELECT id,membre_1,membre_2 FROM conversations WHERE id=?";
     $param = array($id_conv);
-    if ($result = parcoursRs(SQLSelect($SQL,$param))) {
+    if ($result = parcoursRs(SQLSelect($SQL, $param))) {
         //var_dump($result);
-        if ($result[0]['membre_1']==$id_auteur || $result[0]['membre_2']==$id_auteur) {
+        if ($result[0]['membre_1'] == $id_auteur || $result[0]['membre_2'] == $id_auteur) {
             if ($result[0]['membre_1'] == $id_destinataire || $result[0]['membre_2'] == $id_destinataire) {
                 //echo 'on est dans la partie insert into';
-                $SQL = "INSERT INTO messageschat (auteur,destinataire,message,timestamp,id_conv) VALUES ( :auteur , :destinataire , :message ,CURRENT_TIMESTAMP,:id_conv)";
-                $param= array('auteur' => $id_auteur , 'destinataire' => $id_destinataire, 'message' => $msg, 'id_conv' => $id_conv);
-                return SQLInsert($SQL,$param);
+                $SQL = "INSERT INTO messagesChat (auteur,destinataire,message,timestamp,id_conv) VALUES ( :auteur , :destinataire , :message ,CURRENT_TIMESTAMP,:id_conv)";
+                $param = array('auteur' => $id_auteur, 'destinataire' => $id_destinataire, 'message' => $msg, 'id_conv' => $id_conv);
+                return SQLInsert($SQL, $param);
             }
         }
     }
@@ -550,17 +553,19 @@ function add_message_to_conv($id_conv,$id_auteur,$id_destinataire,$msg) {
  * @param int id_user
  */
 
-function find_user_name($id_user) {
+function find_user_name($id_user)
+{
 
     $SQL = "SELECT nom,prenom FROM utilisateurs WHERE id= ?";
     $param = array($id_user);
-    return parcoursRs(SQLSelect($SQL,$param));
+    return parcoursRs(SQLSelect($SQL, $param));
 }
 
-function get_last_msg_info($id_conv) {
-    $SQL = "SELECT message,timestamp,auteur,destinataire FROM messageschat WHERE id_conv=?";
-    $param= array($id_conv);
-    $result=parcoursRs(SQLSelect($SQL,$param));
+function get_last_msg_info($id_conv)
+{
+    $SQL = "SELECT message,timestamp,auteur,destinataire FROM messagesChat WHERE id_conv=?";
+    $param = array($id_conv);
+    $result = parcoursRs(SQLSelect($SQL, $param));
     return end($result);
 }
 
@@ -683,4 +688,3 @@ function get_all_sports()
     $params = array();
     return parcoursRs(SQLSelect($SQL, $params));
 }
-
