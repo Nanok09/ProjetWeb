@@ -1,6 +1,8 @@
 <?php
 include_once ("./libs/libUtils.php");
+include_once "libs/modele.php";
 
+$all_sports = get_all_sports();
 
 $sports = valider("sports");
 $localisation= valider("localisation");
@@ -18,6 +20,7 @@ $distanceMax=valider("dMax");
 $acceptPublic=valider("acceptPublic");
 $acceptPrive=valider("acceptPrive");
 $nBMax=valider("nBMax");
+
 
 ?>
 <script>
@@ -39,6 +42,14 @@ $nBMax=valider("nBMax");
     var all_info = [sport, lat, long, distanceMax, acceptPublic, acceptPrive, prixMi, prixMa, nBMax, horaireDebut, horaireFin, dateReservation];
 
     console.log(all_info);
+
+
+
+    //setup before functions
+    var typingTimer; //timer identifier
+    var doneTypingInterval = 4000; //time in ms (5 seconds)
+    var intervalle;
+    var donetyping = true;
 
 
     $("window").ready(function (){
@@ -65,6 +76,159 @@ $nBMax=valider("nBMax");
 
 
         }
+
+
+        //on keyup, start the countdown
+        $("#adresseInput").keyup(function(event) {
+            addKeyBoardEvent(event);
+            clearTimeout(typingTimer);
+            if (donetyping) {
+                setTimeout(function() {
+                    let adresse = $("#adresseInput").val();
+                    appelAdresseResearch(adresse, 6);
+                    // addLi(adresse, 6);
+
+                }, 1000);
+                intervalle = setInterval(function() {
+                    let adresse = $("#adresseInput").val();
+                    appelAdresseResearch(adresse, 6);
+                    // addLi(adresse, 6);
+                }, 2000);
+            }
+            donetyping = false;
+            typingTimer = setTimeout(doneTyping, doneTypingInterval);
+        });
+
+        //user is "finished typing," do something
+        function doneTyping() {
+            console.log("donetyping appelé");
+            clearInterval(intervalle);
+            donetyping = true;
+            $("#ajaxLoader").hide();
+
+        }
+
+
+
+
+
+
+
+        $("#adresseInput").keydown(function() {
+            $('#maLocalisation').attr("disabled", "disabled");
+            $("#suggestList").show();
+            $("#ajaxLoader").show();
+        });
+
+
+        $(document).on("click", "#suggestList li", function(event) {
+            $("#adresseInput").val(event.target.innerHTML);
+            window.adressePosition = $(this).data("coordinates");
+            $("#suggestList").hide();
+            $("#ajaxLoader").hide();
+            $("#adresseLat").val(window.adressePosition.lat);
+            $("#adresseLong").val(window.adressePosition.long);
+        })
+
+
+
+
+
+        $("#maLocalisation").click(function() {
+            if ($("#maLocalisation").prop("checked")) {
+                $('#adresseInput').attr("disabled", "disabled");
+            } else {
+                $("#adresseInput").removeAttr("disabled");
+            };
+        })
+
+
+        setInterval(function() {
+            if ($("#adresseInput").val() == "") {
+                $("#maLocalisation").removeAttr("disabled");
+                $("#suggestList").hide();
+                $("#ajaxLoader").hide();
+            };
+        }, 1000);
+
+        $("#maLocalisation").click(function() {
+            if ($("#maLocalisation").prop("checked")) {
+                var geolocation = null;
+
+                if (window.navigator && window.navigator.geolocation) {
+                    geolocation = window.navigator.geolocation;
+                }
+
+                if (geolocation) {
+                    geolocation.getCurrentPosition(function(position) {
+
+                        window.position = position;
+                    });
+                }
+            }
+        })
+
+        $('#dateReservation').val(new Date().toDateInputValue());
+
+
+
+
+
+            $("#submitForm").click(function() {
+
+                let selectedSport = $("#selectSport").children("option:selected").val();
+
+                if ($("#maLocalisation").prop("disabled")) {
+                    console.log("Recherche par adresse");
+                    console.log(window.adressePosition);
+                    $.ajax({
+                        type: "POST",
+                        url: "libs/api.php",
+                        headers: {
+                            "debug-data": true
+                        },
+                        data: {
+                            "action": "get_list_places",
+                            "user_location_lat": window.adressePosition["lat"],
+                            "user_location_long": window.adressePosition["long"],
+                            "sport": selectedSport
+                        },
+                        success: function(oRep) {
+                            printPlaces(oRep);
+
+                        },
+                        dataType: "json"
+                    });
+
+                } else if ($("#adresseInput").prop("disabled")) {
+                    $.ajax({
+                        type: "POST",
+                        url: "libs/api.php",
+                        headers: {
+                            "debug-data": true
+                        },
+                        data: {
+                            "action": "get_list_places",
+                            "user_location_lat": window.position["coords"]["latitude"],
+                            "user_location_long": window.position["coords"]["longitude"],
+                            "sport": selectedSport
+                        },
+                        success: function(oRep) {
+                            printPlaces(oRep);
+                        },
+                        dataType: "json"
+                    });
+                }
+
+
+            })
+
+
+        $("#rechercheForm").submit(function(event) {
+            event.preventDefault();
+        })
+
+
     })
 
     function getListPlacesByCurrentPosition(position, sport){
@@ -138,18 +302,63 @@ $nBMax=valider("nBMax");
     }
 
     function getListPlacesByAddress(sport){
+        let data={
+            "action": "get_list_places",
+            "sport":sport,
+            "user_location_lat":lat,
+            "user_location_long":long,
+            "distance_max":distanceMax,
+            "accept_public":acceptPublic,
+            "accept_private":acceptPrive,
+            "prix_min":prixMi,
+            "prix_max":prixMa,
+            "max_results":nBMax,
+            "start_time":horaireDebut,
+            "end_time":horaireFin,
+            "date":dateReservation
+        };
+
+        if(acceptPrive === "on"){
+            console.log("Hi: 1");
+
+            delete data["accept_private"];
+        }
+        if(acceptPublic === "on"){
+            console.log("Hi: 2");
+
+            delete data["accept_public"];
+        }
+
+
+        if(acceptPrive === ""){
+            console.log("Hi: 3");
+
+            data["accept_private"]='no';
+        }
+        if(acceptPublic === ""){
+            console.log("Hi: 4");
+
+            data["accept_public"]='no';
+        }
+
+
+
+        for(key in data){
+            if(data[key] == ""){
+
+                delete data[key];
+            }
+        }
+
+
+
         $.ajax({
             type: "POST",
             url: "libs/api.php",
             headers: {
                 "debug-data": true
             },
-            data: {
-                "action": "get_list_places",
-                "user_location_lat": lat,
-                "user_location_long": long,
-                "sport": sport
-            },
+            data: data,
             success: function(oRep) {
                 console.log(oRep);
                 printPlaces(oRep);
@@ -160,6 +369,8 @@ $nBMax=valider("nBMax");
         });
     }
     function printPlaces(oRep){
+
+        $("#content").empty();
         var content;
         console.log(oRep.data);
         var isPrivate;
@@ -184,7 +395,8 @@ $nBMax=valider("nBMax");
             }
 
 
-            content = '<div class="container-fluid" id='+idTerrain+'>' +
+            content = '<a href=index.php?view=enSavoirPlus&id='+item.id+'>'+
+                '<div class="container-fluid" id='+idTerrain+'>' +
                 '<div class="row justify-content-center">'+
                 '<div class="col-12 row bg-custom-grey pt-4">'+
                 '<div class="col-6">'+
@@ -200,13 +412,112 @@ $nBMax=valider("nBMax");
                 '</div>'+
                 '</div>'+
                 '</div>'+
-                '</div>';
+                '</div>'+
+                '</a>';
 
             $("#content").append(content);
 
         })
 
     }
+
+
+
+
+
+
+
+
+    function addLi(val, maxListSize) {
+        console.log(val);
+        $("#suggestList").empty();
+        if (val == "") {
+            $("#suggestList").html("");
+        }
+        if (val.length >= maxListSize) {
+            val.slice(0, maxListSize).map(function(suggestion, index) {
+                $("#suggestList").append(
+                    $("<li>")
+                        .html(suggestion.address)
+                        .data("coordinates", suggestion.coordinates)
+                        .attr("id", "element".concat(index + 1))
+
+                )
+            })
+        } else {
+            val.forEach(function(suggestion, index) {
+                console.log("Suggestion:" + suggestion.address);
+                $("#suggestList").append(
+                    $("<li>")
+                        .html(suggestion.address)
+                        .data("coordinates", suggestion.coordinates)
+                        .attr("id", index + 1)
+                )
+            })
+        }
+    }
+
+    function appelAdresseResearch(adresse, max_results) {
+        console.log("JE suis appelé oyé")
+
+        if (adresse != "") {
+            $.ajax({
+                type: "POST",
+                url: "libs/api.php",
+                headers: {
+                    "debug-data": true
+                },
+                data: {
+                    "action": "address_research",
+                    "address": adresse,
+                    "max_results": max_results
+                },
+                success: function(oRep) {
+                    console.log(oRep);
+                    addLi(oRep.data)
+                },
+                dataType: "json"
+            });
+        }
+    }
+
+    function addKeyBoardEvent(e) {
+        var selectedId = 0;
+        var elementId;
+        var previousElementId;
+        if (e.key == "ArrowDown") {
+            console.log(e.key);
+            selectedId += 1;
+            elementId = "element".concat(selectedId);
+            previousElementId = "element".concat(selectedId - 1);
+            if ($(previousElementId).hasClass("hovered")) {
+                $(previousElementId).toggleClass("hovered");
+            }
+            $(elementId).addClass("hovered");
+        }
+        if (e.key == "ArrowUp") {
+            console.log(e.key);
+            selectedId -= 1;
+            elementId = "element".concat(selectedId);
+            previousElementId = "element".concat(selectedId + 1);
+            if ($(previousElementId).hasClass("hovered")) {
+                $(previousElementId).toggleClass("hovered");
+            }
+            $(elementId).toggleClass("hovered");
+        }
+        if (e.key == "ArrowRight") {
+            console.log(e.key); //tab
+        }
+
+
+    }
+
+    Date.prototype.toDateInputValue = (function() {
+        var local = new Date(this);
+        local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+        return local.toJSON().slice(0,10);
+    });
+
 
 </script>
 
@@ -249,6 +560,37 @@ a[data-toggle="collapse"] {
     }
 }
 
+#suggestList {
+    display: none;
+    padding-left: 0;
+    border-top: none;
+    left: 0px;
+    top: 10px;
+    right: 0px;
+    text-decoration: none;
+}
+
+#suggestList>li {
+    display: block;
+    border: 1px solid black;
+    padding: 2px;
+    border-radius: 50px;
+    font-size: 12px;
+}
+
+#suggestList>li:hover {
+    cursor: pointer;
+    background-color: lightgrey;
+}
+
+
+
+#ajaxLoader {
+    display: none;
+    position: absolute;
+    right: 30px;
+    top: 10px;
+}
 
 /*
     ADDITIONAL DEMO STYLE, NOT IMPORTANT TO MAKE THINGS WORK BUT TO MAKE IT A BIT NICER :)
@@ -317,7 +659,7 @@ ul ul a {
     background: #fdedcf;
 }
 
-#content>div:hover{
+#content>a>div:hover{
     cursor: pointer;
     transform: translateY(-5px);
 }
@@ -344,51 +686,86 @@ $(document).ready(function () {
         <ul class="list-unstyled components">
             <p>Paramètres de recherche</p>
 
-            <form>
+            <form name="action" id="rechercheForm">
                 <div class="form-row justify-content-center mb-2">
 
 
-                    <select class="form-control col-10 ">
-                        <option disabled selected>Sport</option>
-                        <option>Basket</option>
-                        <option>Foot</option>
-                        <option>Rugby</option>
+                    <select id="selectSport" class="form-control col-10 custom-rounded-corners mb-2" name="sports" required>
+                        <option value=""> - Choisir Sport - </option>
+                        <?php
+                        foreach ($all_sports as $sport) {
+                            echo "<option value=\"$sport[id]\">$sport[nom]</option>";
+                        }
+                        ?>
                     </select>
 
+                    <div class="col-9 mb-3">
+                        <label for="maLocalisation" class="checkbox-container m-r-45"
+                               style="color: #153455; font-size: 1.1rem;">Chercher un terrain proche de moi
+                            <input id="maLocalisation" type="checkbox" name="maLocalisation">
+                            <span class="checkmark"></span>
+                        </label>
+
+                    </div>
+                    <p class="col-1"> ou </p>
+
+
                 </div>
                 <div class="form-row justify-content-center mb-2">
-                    <div class="col-5">
-                        <select class="form-control" name="heureDebut">
-                            <option disabled selected>Heure de début</option>
-                            <option>13h</option>
-                            <option>14h</option>
-                            <option>15h</option>
-                            <option>16h</option>
-                        </select>
-                    </div>
-                    <div class="col-5">
-                        <select class="form-control" name="heureFin">
-                            <option disabled selected>Heure de fin</option>
-                            <option>14h</option>
-                            <option>15h</option>
-                            <option>16h</option>
-                            <option>17h</option>
-                        </select>
+
+                    <div class="col-10 mb-3">
+                        <img id="ajaxLoader" src="./images/ajaxLoader.gif">
+                        <input id="adresseInput" class="form-control custom-rounded-corners" type="text" name="adresse"
+                               placeholder="Adresse" required>
+                        <ul id="suggestList">
+                        </ul>
+                        <input type="text" name="lat" id="adresseLat" class="d-none">
+                        <input type="text" name="long" id="adresseLong" class="d-none">
                     </div>
                 </div>
+
+                <div class="form-row justify-content-center mb-2">
+                    <div class="col-12 mb-3">
+                        <div class="row mb-2 justify-content-around">
+                            <div class="col-5">
+                                <input class="form-control custom-rounded-corners" type="text" name="prixMi"
+                                       placeholder="Prix Minimal">
+                            </div>
+                            <div class="col-5">
+                                <input class="form-control custom-rounded-corners" type="text" name="prixMa"
+                                       placeholder="Prix Maximal">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row justify-content-center mb-2">
+
+                    <div class="col-10 mb-3">
+                        <input class="form-control custom-rounded-corners" type="text" name="distanceMax"
+                               placeholder="Rayon maximal">
+                    </div>
+
+                </div>
+
+
+
                 <div class="form-row justify-content-center">
-                    <input type="text" class="form-control col-10 mb-2" name="prix_min" placeholder="Prix Minimum">
-                    <input type="text" class="form-control col-10 mb-2" name="prix_max" placeholder="Prix Maximum">
-                    <input type="text" class="form-control col-10 mb-2" name="distance_max" placeholder="Périmetre maximum">
+
                     <div class="form-check col-9">
-                        <input id="terrainPublic" type="radio" class="form-check-input" name="terrainPublic" checked="checked">
+                        <input id="terrainPublic" type="checkbox" class="form-check-input" name="public" checked="checked">
                         <label for="terrainPublic" class="form-check-label text-center">Voulez-vous des terrains public?</label>
                     </div>
                     <div class="form-check col-9">
-                        <input id="terrainPrive" type="radio" class="form-check-input" name="terrainPrive" checked="checked">
+                        <input id="terrainPrive" type="checkbox" class="form-check-input" name="prive" checked="checked">
                         <label for="terrainPrive" class="form-check-label text-center">Voulez-vous des terrains privés?</label>
                     </div>
                 </div>
+
+                <div class="form-row justify-content-center">
+                    <input id="submitForm" type="submit" value="Nouvelle Recherche" class="custom-rounded-corners bg-custom-grey">
+                </div>
+
             </form>
 
         </ul>
@@ -405,43 +782,43 @@ $(document).ready(function () {
                 </button>
             </div>
         </nav>
-<!--        <div class="container-fluid" id="resultat1">-->
-<!--            <div class="row justify-content-center">-->
-<!--                <div class="col-12 row bg-custom-grey pt-4">-->
-<!--                    <div class="col-6">-->
-<!--                        <h2>Resultat 1:</h2>-->
-<!--                        <img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg">-->
-<!--                        <div class="position-absolute" style="bottom: 0"><h5>Contacter l'Admin</h5></div>-->
-<!--                    </div>-->
-<!--                    <div class="col-6">-->
-<!--                        <div class="text-center">-->
-<!--                            <img src="./images/terrains/terrain1.jpg" class="img-fluid">-->
-<!--                            <h5>Hoops Facory Lille</h5>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="container-fluid" id="resultat2">-->
-<!---->
-<!---->
-<!--            <div class="row justify-content-center">-->
-<!---->
-<!--                <div class="col-12 row bg-custom-grey pt-4">-->
-<!--                    <div class="col-6">-->
-<!--                        <h2>Resultat 2</h2>-->
-<!--                        <img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg">-->
-<!--                        <div class="position-absolute" style="bottom: 0"> <h5>Terrain Public</h5></div>-->
-<!--                    </div>-->
-<!--                    <div class="col-6">-->
-<!--                        <div class="text-center">-->
-<!--                            <img src="./images/terrains/terrain2.jpg" class="img-fluid">-->
-<!--                            <h5>Playground de la Porte Dorée</h5>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
+        <div class="container-fluid" id="resultat1">
+            <div class="row justify-content-center">
+                <div class="col-12 row bg-custom-grey pt-4">
+                    <div class="col-6">
+                        <h2>Resultat 1:</h2>
+                        <img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg">
+                        <div class="position-absolute" style="bottom: 0"><h5>Contacter l'Admin</h5></div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center">
+                            <img src="./images/terrains/terrain1.jpg" class="img-fluid">
+                            <h5>Hoops Facory Lille</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid" id="resultat2">
+
+
+            <div class="row justify-content-center">
+
+                <div class="col-12 row bg-custom-grey pt-4">
+                    <div class="col-6">
+                        <h2>Resultat 2</h2>
+                        <img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg"><img src="./images/Icon%20étoile.svg">
+                        <div class="position-absolute" style="bottom: 0"> <h5>Terrain Public</h5></div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center">
+                            <img src="./images/terrains/terrain2.jpg" class="img-fluid">
+                            <h5>Playground de la Porte Dorée</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

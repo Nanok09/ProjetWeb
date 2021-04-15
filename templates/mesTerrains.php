@@ -52,6 +52,15 @@ $(document).ready(function() {
     }
     $("#liste_terrains select").append($("<option>").html('+'))
 
+    var i;
+    for (i = 0; i < terrains.length; i++) {
+        $("#liste_terrains select").append(
+            $("<option>")
+            .html(terrains[i].nom)
+            .data(terrains[i])
+        );
+    }
+    $("#liste_terrains select").append($("<option>").html('Ajouter un nouveau terrain'))
 
     //On affiche l'édition ou la création en fonction du choix
     //de l'utilisateur.
@@ -64,52 +73,87 @@ $(document).ready(function() {
         print_place_edition(selected.data());
     }
 
-    $("#liste_terrains select").change(function() {
-        selected = $("#liste_terrains select option:selected");
-        if (selected.html() == '+') {
-            print_new_place_creation();
-        } else {
-            print_place_edition(selected.data());
-        }
-    })
+    var selected = $("#liste_terrains select option:selected");
+    //console.log(selected.data());
+    if (selected.html() == 'Ajouter un nouveau terrain') {
+        print_new_place_creation();
+    } else {
+        print_place_edition(selected.data());
+    }
+})
 
-    //On passe en mode édition lors du click sur un paragraphe
-    $(document).on("click", "p", function() {
-        var contenu = this.innerHTML;
-        if (this.id == "current_address") return;
-        console.log(contenu);
-        if (this.id == "description") {
-            $(this).replaceWith(
-                "<textarea name='description'>" + contenu + "</textarea>"
-            );
-        } else if (this.id == "capacite" || this.id == "prix") {
-            $(this).replaceWith(
-                "<input name='" + this.id + "' type='number' value=\"" + contenu + "\" />"
-            );
-        } else {
-            $(this).replaceWith(
-                "<input name='" + this.id + "' type='text' value=\"" + contenu + "\" />"
-            );
-        }
-    });
+//On passe en mode édition lors du click sur un paragraphe
+$(document).on("click", "p", function() {
+    var contenu = this.innerHTML;
+    if (this.id == "current_address") return;
+    console.log(contenu);
+    if (this.id == "description") {
+        $(this).replaceWith(
+            "<textarea name='description'>" + contenu + "</textarea>"
+        );
+    } else if (this.id == "capacite" || this.id == "prix") {
+        $(this).replaceWith(
+            "<input name='" + this.id + "' type='number' value=\"" + contenu + "\" />"
+        );
+    } else {
+        $(this).replaceWith(
+            "<input name='" + this.id + "' type='text' value=\"" + contenu + "\" />"
+        );
+    }
+});
 
-    $(document).on("keyup", "#adresse", function() {
-        var adress = $("#adresse")[0].value;
-        console.log(adress);
-        if (adress) {
-            get_coord(adress);
-        }
-    });
+$("#liste_terrains select").change(function() {
+    selected = $("#liste_terrains select option:selected");
+    if (selected.html() == 'Ajouter un nouveau terrain') {
+        print_new_place_creation();
+    } else {
+        print_place_edition(selected.data());
+    }
+})
+
+//On passe en mode édition lors du click sur un paragraphe
+$(document).on("click", "p", function() {
+    var contenu = this.innerHTML;
+    if (this.id == "current_address") return;
+    console.log(contenu);
+    if (this.id == "description") {
+        $(this).replaceWith(
+            "<textarea name='description'>" + contenu + "</textarea>"
+        );
+    } else if (this.id == "capacite" || this.id == "prix") {
+        $(this).replaceWith(
+            "<input name='" + this.id + "' type='number' value=\"" + contenu + "\" />"
+        );
+    } else {
+        $(this).replaceWith(
+            "<input name='" + this.id + "' type='text' value=\"" + contenu + "\" />"
+        );
+    }
+});
+
+$(document).on("keyup", "#adresse", function() {
+    var adress = $("#adresse")[0].value;
+    console.log(adress);
+    if (adress) {
+        get_coord(adress);
+    }
+});
 
 
-    //bouton gérer créneaux
-    $("#gerer_creneaux").attr('onclick', 'window.location.href=\'index.php?view=ajouterCreneau&id=' + selected
-        .data().id + '\';');
 
-    //création form photo
-    $("#ajout_photo").append("<input type='hidden' value='" + selected.data().id + "' name='id_place'/>");
-    $("#ajout_photo").append("<input type='file' name='fileToUpload'/></br>");
-    $("#ajout_photo").append("<input id='ajouter_photo' type='submit' name='action' value='ajouter photo'/>");
+//création form photo
+$("#ajout_photo").append(
+    "<input class='m-2' style='background-color: #153455; color: #fdedcf; text-align: center;' type='hidden' value='" +
+    selected.data().id + "' name='id_place'/>");
+$("#ajout_photo").append("<input class='m-2' type='file' name='fileToUpload'/></br>");
+$("#ajout_photo").append(
+    "<input class='m-2' style='background-color: #153455; color: #fdedcf; text-align: center;' id='ajouter_photo' type='submit' name='action' value='ajouter photo'/>"
+);
+
+//création form photo
+$("#ajout_photo").append("<input type='hidden' value='" + selected.data().id + "' name='id_place'/>");
+$("#ajout_photo").append("<input type='file' name='fileToUpload'/></br>");
+$("#ajout_photo").append("<input id='ajouter_photo' type='submit' name='action' value='ajouter photo'/>");
 
 
 });
@@ -128,65 +172,113 @@ function print_choix(coord) {
     $("#choice").css('display', 'inline');
 }
 
-//recherches coordonnée, requete à notre API
-function get_coord(adresse) {
-    //console.log(geolocation);
-    $.ajax({
-        type: "POST",
-        url: "libs/api.php",
-        data: {
-            'action': 'address_research',
-            'address': adresse
-        },
-        error: function() {
-            console.log("Error");
-        },
-        success: function(oRep) {
-            console.log("réponse requête :" + oRep);
-            print_choix(JSON.parse(oRep).data);
-        }
-    })
-}
-
 //Structure html de l'édition d'un terrain
 function print_place_edition(terrain) {
     $("#ajout_creneaux").css('display', 'block');
     $("#ajout_photo").css('display', 'block');
     $("#edition").empty();
     $("#creation_place").empty();
-    $("#edition").append($("<h5>").html("Photos : "));
+    // $("#edition").append($("<div class='container''>").append($("<div class='row justify-content-center''>").append($("<h5 class='body-color-blue'>").html("Photos : "))));
+    // $("#edition").append($("<div class='container''>").append($("<div class='row justify-content-center''>").append($("<div class='col-10 bg-custom-beige custom-rounded-corners m-5'>").append($("<h3 class='body-color-blue m-5 text-center'>").html("Photos")))));
+
+    $("#edition").append($("<h3 class='body-color-blue m-5 text-center'>").html("Photos"));
+
     $("#map").css('display', 'none');
     for (let i = 0; i < photos.length; i++) {
         if (photos[i].idLieu == terrain.id) {
             console.log(photos[i]);
-            $("#edition").append("<img style='width : 300px;' src=\"images/terrains/" + photos[i].nomFichier + "\"/>");
+
+            $("#edition").append("<img style='width : 300px;display: block;margin: auto;' src=\"images/terrains/" +
+                photos[i].nomFichier + "\"/>");
         }
     }
-    $("#edition").append($("<h3>").html("Infos Terrain : "));
-    $("#edition").append($("<h4>").html("Nom : "));
-    $("#edition").append($("<p id='nom' name='nom'>").html(terrain.nom));
-    $("#edition").append($("<h4>").html("Description : "));
+    $("#edition").append($("<h3 class='body-color-blue m-5 text-center'>").html(
+        "Informations à propos de mon terrain"));
+    $("#edition").append($("<p class='ml-5 mr-2 body-color-blue' style='display: inline-block'>").append($("<strong>")
+        .html("Nom")));
+    $("#edition").append($("<p class='body-color-blue' style='display: inline-block' id='nom' name='nom'>").html(terrain
+        .nom));
+    $("#edition").append($("<br/><p class='ml-5 mr-2 body-color-blue' style='display: inline-block'>").append($(
+        "<strong>").html("Description")));
     if (terrain.description == '') {
-        $("#edition").append($("<p id='description' name='description'>").html('Pas de description'));
+        $("#edition").append($(
+                "<p class='body-color-blue' style='display: inline-block' id='description' name='description'>")
+            .html('Pas de description'));
     } else {
-        $("#edition").append($("<p id='description' name='description'>").html(terrain.description));
+        $("#edition").append($(
+                "<p class='body-color-blue' style='display: inline-block' id='description' name='description'>")
+            .html(terrain.description));
     }
-    $("#edition").append($("<h4>").html("Adresse : (non modifiable)"));
-    $("#edition").append($("<p id='current_address'>").html(terrain.adresse));
-    $("#edition").append($("<h4>").html("Capacité : (nombre de personnes)"));
-    $("#edition").append($("<p id='capacite' name='capacite'>").html(terrain.capacite));
-    $("#edition").append($("<h4>").html("prix : (horaire)"));
-    $("#edition").append($("<p id='prix' name='prix' >").html(terrain.prix));
-    $("#edition").append($("<h4>").html("sport : "));
-    $("#edition").append($("<p id='sport' name='sport'>").html(terrain.sport));
+    $("#edition").append($("<br/><p class='ml-5 mr-2 body-color-blue' style='display: inline-block'>").append($(
+        "<strong>").html("Adresse (non modifiable)")));
+    $("#edition").append($("<p class='body-color-blue' style='display: inline-block' id='current_address'>").html(
+        terrain.adresse));
+    $("#edition").append($("<br/><p class='ml-5 mr-2 body-color-blue' style='display: inline-block'>").append($(
+        "<strong>").html("Capacité (nombre de personnes)")));
+    $("#edition").append($("<p class='body-color-blue' style='display: inline-block' id='capacite' name='capacite'>")
+        .html(terrain.capacite));
+    $("#edition").append($("<br/><p class='ml-5 mr-2 body-color-blue' style='display: inline-block'>").append($(
+        "<strong>").html("prix (horaire)")));
+    $("#edition").append($("<p class='body-color-blue' style='display: inline-block' id='prix' name='prix' >").html(
+        terrain.prix));
+    $("#edition").append($("<br/><p class='ml-5 mr-2 body-color-blue' style='display: inline-block'>").append($(
+        "<strong>").html("sport : ")));
+    $("#edition").append($("<p class='body-color-blue' style='display: inline-block' id='sport' name='sport'>").html(
+        terrain.sport));
     $("#edition").append("<input name='action' type='hidden' value='modif_place'>");
     $("#edition").append("<input name='id_place' type='hidden' value='" + terrain.id + "'>");
-    $("#edition").append("</br><input type='button' value='Enregistrer modifications' onClick='submit();'>");
-}
+    $("#edition").append("</br>");
+    // $("#edition").append("</br><input type='button' value='Enregistrer modifications' onClick='submit();'>");
+    $("#edition").append(
+        "</br><div class='row justify-content-center''><input id='submitForm' type='button' name='action' value='Enregistrer' class='btn col-3 mb-5 mt-3 custom-rounded-corners' style='background-color: #153455; color: #fdedcf;' onClick='submit();'></div>"
+    );
 
-function modif_infos() {
-
 }
+/*
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-10 bg-custom-beige custom-rounded-corners m-5">
+                <h3 class="body-color-blue m-5 text-center">Mes Photos :</h3>
+                <h3 class="body-color-blue m-5 text-center">Informations à propos de mon terrain</h3>
+                <p class="ml-5 mr-2 body-color-blue" style="display: inline-block"><strong>Nom</strong></p>
+                <p class="body-color-blue" style="display: inline-block">terrain 1 fjandsfna</p>
+                <br/>
+                <p class="ml-5 mr-2 body-color-blue" style="display: inline-block"><strong>Description</strong></p>
+                <p class="body-color-blue" style="display: inline-block">blablalba</p>
+                <br/>
+                <p class="ml-5 mr-2 body-color-blue" style="display: inline-block"><strong>Adresse</strong></p>
+                <p class="body-color-blue" style="display: inline-block">blablalba</p>
+                <br/>
+                <p class="ml-5 mr-2 body-color-blue" style="display: inline-block"><strong>Capacité</strong></p>
+                <p class="body-color-blue" style="display: inline-block">blablalba</p>
+                <br/>
+                <p class="ml-5 mr-2 body-color-blue" style="display: inline-block"><strong>Prix</strong></p>
+                <p class="body-color-blue" style="display: inline-block">blablalba</p>
+                <br/>
+                <p class="ml-5 mr-2 body-color-blue" style="display: inline-block"><strong>Sport</strong></p>
+                <p class="body-color-blue" style="display: inline-block">blablalba</p>
+                <br/>
+                <div class="row justify-content-center">
+                    <input id="submitForm" type="submit" name="action" value="Enregistrer les données" class="btn col-3 mb-5 mt-3 custom-rounded-corners"
+                           style="background-color: #153455; color: #fdedcf;">
+                </div>
+                <h3 class="body-color-blue m-5 text-center">Ajouter une photo</h3>
+                <div class="row justify-content-center">
+                    <input id="submitForm" type="submit" name="action" value="Choisir un fichier" class="btn col-3 mb-5 mt-3 custom-rounded-corners"
+                           style="background-color: #153455; color: #fdedcf;">
+                </div>
+                <div class="row justify-content-center">
+                    <input id="submitForm" type="submit" name="action" value="Ajouter photo" class="btn col-3 mb-5 mt-3 custom-rounded-corners"
+                           style="background-color: #153455; color: #fdedcf;">
+                </div>
+                <div class="row justify-content-center">
+                    <input id="submitForm" type="submit" name="action" value="Gérer mes créneaux" class="btn col-3 mb-5 mt-3 custom-rounded-corners"
+                           style="background-color: #153455; color: #fdedcf;">
+                </div>
+            </div>
+        </div>
+    </div>
+*/
 
 //Structure html de la création d'un terrain
 function print_new_place_creation() {
@@ -194,34 +286,55 @@ function print_new_place_creation() {
     $("#edition").empty();
     $("#ajout_creneaux").css('display', 'none');
     $("#ajout_photo").css('display', 'none');
-    $("#creation_place").append($("<h2>").html("Création d'un nouveau terrain"));
-    $("#creation_place").append($("<span>").html("Nom :"));
+    $("#creation_place").append($("<h2 class='body-color-blue m-5 text-center'>").html(
+        "Création d'un nouveau terrain"));
+    $("#creation_place").append($("<br/><p class='ml-5 mr-2 body-color-blue' style='display: inline-block'>").append($(
+        "<strong>").html("Nom :")));
     $("#creation_place").append(
-        "<input class='crea' id='nom' type='text' name='nom' placeholder='Nouveau Terrain'/></br>");
-    $("#creation_place").append($("<span>").html("Adresse :"));
+        "<input class='crea' style='width: 30%' id='nom' type='text' name='nom' placeholder='nom du nouveau terrain'/></br>"
+    );
+    $("#creation_place").append($("<br/><p class='ml-5 mr-2 body-color-blue' style='display: inline-block'>").append($(
+        "<strong>").html("Adresse :")));
     $("#creation_place").append(
-        "<input class='crea' id='adresse' type='text' placeholder='1500 Avenue Médicis, Paris'/></br>");
-    $("#creation_place").append("<select class='crea' id='choice' name='coord' style='display:none;'></select></br>");
-    $("#creation_place").append($("<span>").html("Sport :"));
-    $("#creation_place").append("<input class='crea' id='sport' type='text' name='sport' placeholder='tennis'/></br>");
-    $("#creation_place").append($("<span>").html("Prix (horaire):"));
-    $("#creation_place").append("<input class='crea' id='prix' type='number' name='prix' placeholder='50'/></br>");
-    $("#creation_place").append($("<span>").html("Capacité (nombre de personnes):"));
+        "<input class='crea' style='width: 50%' id='adresse' type='text' placeholder='1500 Avenue Médicis, Paris'/></br>"
+    );
+    // $("#creation_place").append("<select class='crea' id='choice' name='coord' style='display:none;'></select></br>");
+    $("#creation_place").append($("<br/><p class='ml-5 mr-2 body-color-blue' style='display: inline-block'>").append($(
+        "<strong>").html("Sport :")));
     $("#creation_place").append(
-        "<input class='crea' id='capacite' type='number' name='capacite' placeholder='5'/></br>");
-    $("#creation_place").append($("<span>").html("Type :"));
-    $("#creation_place").append("</br>");
-    $("#creation_place").append("<input id='publique' type='radio' name='type' value=0 checked/>" +
-        "<label for='publique'>Public</label>");
-    $("#creation_place").append("<input id='prive' type='radio' name='type' value=1 />" +
-        "<label for='prive'>Privé</label>");
+        "<input class='crea' id='sport' type='text' name='sport' placeholder='exemple : tennis'/></br>");
+    $("#creation_place").append($("<br/><p class='ml-5 mr-2 body-color-blue' style='display: inline-block'>").append($(
+        "<strong>").html("Prix (horaire) :")));
+    $("#creation_place").append(
+        "<input class='crea' id='prix' type='number' name='prix' placeholder='exemple : 5'/></br>");
+    $("#creation_place").append($("<br/><p class='ml-5 mr-2 body-color-blue' style='display: inline-block'>").append($(
+        "<strong>").html("Capacité (nombre de personnes) :")));
+    $("#creation_place").append(
+        "<input class='crea' id='capacite' type='number' name='capacite' placeholder='exemple : 5'/></br>");
+    $("#creation_place").append($("<br/><p class='ml-5 mr-2 body-color-blue' style='display: inline-block'>").append($(
+        "<strong>").html("Type :")));
+    $("#creation_place").append(
+        "<input id='publique' style='display: inline-block' type='radio' name='type' value=0 checked/>" +
+        "<label style='display: inline-block; padding-right: 5px;' class='body-color-blue' for='publique'>Public  </label>"
+    );
+    $("#creation_place").append("<input id='prive' style='display: inline-block' type='radio' name='type' value=1 />" +
+        "<label style='display: inline-block' class='body-color-blue' for='prive'>Privé</label>");
 
     $("#creation_place").append("</br>");
-    $("#creation_place").append($("<h5>").html("Description générale"));
-    $("#creation_place").append("<textarea id='description' class='crea' name='description'></textarea></br>");
-    $("#creation_place").append($("<span>").html("Photo de votre terrain :"));
-    $("#creation_place").append("<input id='fileToUpload' type='file' name='fileToUpload'/></br>");
-    $("#creation_place").append("<input id='creation' name='action' type='submit' value='Créer terrain'/>");
+    $("#creation_place").append($("<br/><p class='ml-5 mr-2 body-color-blue' style='display: inline-block'>").append($(
+        "<strong>").html("Description générale :")));
+    $("#creation_place").append(
+        "<br/><div class='row justify-content-center'><textarea cols='100' class='m-3' id='description' class='crea' name='description'></textarea></div></br>"
+    );
+    $("#creation_place").append($("<br/><h4 class='ml-5 mr-2 mb-3 body-color-blue text-center'>").append($("<strong>")
+        .html("Photo du terrain à importer")));
+    $("#creation_place").append(
+        "<div class='row justify-content-center'><input id='fileToUpload' type='file' name='fileToUpload'/></div></br>"
+    );
+    $("#creation_place").append(
+        "<div class='row justify-content-center''><input id='creation' name='action' type='submit' value='Créer terrain' class='btn col-3 mb-5 mt-3 custom-rounded-corners' style='background-color: #153455; color: #fdedcf;'/></div>"
+    );
+
 }
 
 function add_markers(coord) {
@@ -289,37 +402,247 @@ function add_markers(coord) {
 }
 </script>
 
-<div id="liste_terrains">
-    <h2>Mes Terrains</h2>
-    <select>
-    </select>
+<style>
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    min-height: 100vh;
+}
+
+#sidebar.active {
+    margin-left: -250px;
+}
+
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -250px;
+    }
+
+    #sidebar.active {
+        margin-left: 0;
+    }
+}
+
+
+/*
+        ADDITIONAL DEMO STYLE, NOT IMPORTANT TO MAKE THINGS WORK BUT TO MAKE IT A BIT NICER :)
+    */
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #dcdcdc;
+}
+
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #999;
+}
+
+a,
+a:hover,
+a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+#sidebar {
+    /* don't forget to add all the previously mentioned styles here too */
+    background: #fdedcf;
+    color: #000;
+    transition: all 0.3s;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: #fdedcf;
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+    border-bottom: 1px solid #47748b;
+}
+
+#sidebar ul p {
+    color: #000;
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    font-size: 1.1em;
+    display: block;
+}
+
+#sidebar ul li a:hover {
+    color: #7386D5;
+    background: #fff;
+}
+
+#sidebar ul li.active>a,
+a[aria-expanded="true"] {
+    color: #000;
+    background: #fdedcf;
+}
+
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #fdedcf;
+}
+
+#content>div:hover {
+    cursor: pointer;
+    transform: translateY(-5px);
+}
+</style>
+
+
+
+<script>
+$(document).ready(function() {
+
+    $('#sidebarCollapse').on('click', function() {
+        $('#sidebar').toggleClass('active');
+    });
+
+});
+</script>
+
+<div class="wrapper">
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3 class="text-center mt-5 body-color-blue">Mes Terrains</h3>
+        </div>
+        <div id="liste_terrains" class="text-center">
+            <select>
+            </select>
+        </div>
+    </nav>
+    <div id="content">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid">
+                <button type="button" id="sidebarCollapse" class="btn btn-info">
+                    <i class="fas fa-align-left"></i>
+                    <span>Voir les terrains</span>
+                </button>
+            </div>
+        </nav>
+
+
+        <div class="container-fluid">
+            <div class="row justify-content">
+
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-6 bg-custom-blue custom-rounded-corners m-5">
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <div class="m-5" id="map"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container-fluid">
+                    <div class="row justify-content-center">
+                        <div class="col-10 bg-custom-beige custom-rounded-corners m-5">
+                            <form id="edition" action="controleur.php" method="post">
+                            </form>
+
+                            <form id='creation_place' action='controleur.php' method="POST"
+                                enctype="multipart/form-data">
+                            </form>
+
+                            <?php
+                            if ($msg = valider('msg')) {
+                                echo "<span style='color:red'>$msg</span>";
+                            }
+
+                            ?>
+                            <div class="row justify-content-center">
+                                <div class="col-10 bg-custom-grey custom-rounded-corners m-5">
+                                    <div class="row justify-content-center">
+                                        <form class="mb-4" id="ajout_photo" action="controleur.php" method='post'
+                                            style="display:none;" enctype="multipart/form-data">
+                                            <h3 class="body-color-blue m-5 text-center">Ajouter une photo</h3>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <input class="btn col-3 my-5 custom-rounded-corners"
+                                    style="background-color: #153455; color: #fdedcf;" id="gerer_creneaux" type="button"
+                                    value="Gérer mes créneaux" /></br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--
+                <input id="gerer_creneaux" type="button" value="Gérer mes créneaux"/></br>
+
+
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-10 bg-custom-beige custom-rounded-corners m-5">
+                            <h3 class="body-color-blue m-5 text-center">Mes Photos :</h3>
+                            <h3 class="body-color-blue m-5 text-center">Informations à propos de mon terrain</h3>
+                            <p class="ml-5 mr-2 body-color-blue" style="display: inline-block"><strong>Nom</strong></p>
+                            <p class="body-color-blue" style="display: inline-block">terrain 1 fjandsfna</p>
+                            <br/>
+                            <p class="ml-5 mr-2 body-color-blue" style="display: inline-block"><strong>Description</strong></p>
+                            <p class="body-color-blue" style="display: inline-block">blablalba</p>
+                            <br/>
+                            <p class="ml-5 mr-2 body-color-blue" style="display: inline-block"><strong>Adresse</strong></p>
+                            <p class="body-color-blue" style="display: inline-block">blablalba</p>
+                            <br/>
+                            <p class="ml-5 mr-2 body-color-blue" style="display: inline-block"><strong>Capacité</strong></p>
+                            <p class="body-color-blue" style="display: inline-block">blablalba</p>
+                            <br/>
+                            <p class="ml-5 mr-2 body-color-blue" style="display: inline-block"><strong>Prix</strong></p>
+                            <p class="body-color-blue" style="display: inline-block">blablalba</p>
+                            <br/>
+                            <p class="ml-5 mr-2 body-color-blue" style="display: inline-block"><strong>Sport</strong></p>
+                            <p class="body-color-blue" style="display: inline-block">blablalba</p>
+                            <br/>
+                            <div class="row justify-content-center">
+                                <input id="submitForm" type="submit" name="action" value="Enregistrer les données" class="btn col-3 mb-5 mt-3 custom-rounded-corners"
+                                       style="background-color: #153455; color: #fdedcf;">
+                            </div>
+                            <h3 class="body-color-blue m-5 text-center">Ajouter une photo</h3>
+                            <div class="row justify-content-center">
+                                <input id="submitForm" type="submit" name="action" value="Choisir un fichier" class="btn col-3 mb-5 mt-3 custom-rounded-corners"
+                                       style="background-color: #153455; color: #fdedcf;">
+                            </div>
+                            <div class="row justify-content-center">
+                                <input id="submitForm" type="submit" name="action" value="Ajouter photo" class="btn col-3 mb-5 mt-3 custom-rounded-corners"
+                                       style="background-color: #153455; color: #fdedcf;">
+                            </div>
+                            <div class="row justify-content-center">
+                                <input id="submitForm" type="submit" name="action" value="Gérer mes créneaux" class="btn col-3 mb-5 mt-3 custom-rounded-corners"
+                                       style="background-color: #153455; color: #fdedcf;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                -->
+            </div>
+        </div>
+    </div>
 </div>
-
-<div id="map"></div>
-
-
-<form id="edition" action="controleur.php" method="post">
-</form>
-
-<form id='creation_place' action='controleur.php' method="POST" enctype="multipart/form-data">
-</form>
-
-<?php
-if ($msg = valider('msg')) {
-    echo "<span style='color:red'>$msg</span>";
-}
-
-?>
-
-<form id="ajout_photo" action="controleur.php" method='post' style="display:none;" enctype="multipart/form-data">
-    <h3>Ajouter une photo</h3>
-</form>
-
-<?php
-if ($msg = valider('msg3')) {
-    echo "<span style='color:red'>$msg</span>";
-}
-
-?>
-
-<input id="gerer_creneaux" type="button" value="Gérer mes créneaux" /></br>

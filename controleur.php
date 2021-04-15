@@ -108,6 +108,14 @@ if ($action = valider("action")) {
                 $qs = "?view=mesTerrains&msg=Veuillez au moins remplir le nom, l'adresse et le sport";
             }
             break;
+            //case "AjouterChat":
+            //if($id_auteur=valider('id_auteur') && $id_destinataire=valider('id_destinataire') && $msg=valider('msg'))
+            //send_message($id_auteur,$id_destinataire,$msg);
+            //$qs = "?view=chat&id=".$id_auteur;
+            // break;
+
+
+
 
             // Ajout photo //////////////////////////////////////////////////
 
@@ -171,9 +179,11 @@ if ($action = valider("action")) {
             $acceptPrive = valider("prive");
             $nBMax = valider("nbResultats");
 
-            $qs = "?view=resultats&sports=" . $sports . "&localisation=" . $localisation . "&adresse=" . $adresse .
-                "&horaireA=" . $horaireA . "&horaireD=" . $horaireD . "&prixMi=" . $prixMi . "&prixMa=" . $prixMa .
-                "&lat=" . $lat . "&long=" . $long . "&dMax=" . $distanceMax . "&dateRes=" . $dateReservation
+
+
+            $qs = "?view=resultats&sports=" . $sports . "&localisation=" . $localisation . "&adresse=" . urlencode($adresse) .
+                "&horaireA=" . urlencode($horaireA) . "&horaireD=" . urlencode($horaireD) . "&prixMi=" . $prixMi . "&prixMa=" . $prixMa .
+                "&lat=" . $lat . "&long=" . $long . "&dMax=" . $distanceMax . "&dateRes=" . urlencode($dateReservation)
                 . "&acceptPublic=" . $acceptPublic . "&acceptPrive=" . $acceptPrive . "&nBMax=" . $nBMax;
             break;
     }
