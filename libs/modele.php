@@ -100,6 +100,12 @@ function get_place_creator($place_id)
  * @param string prenom
  * @param
  */
+function update_user($id_user, $email, $nom, $prenom)
+{
+    $SQL = "UPDATE utilisateurs SET email=:email, nom=:nom, prenom=:prenom, timestamp=timestamp WHERE id =:id_user";
+    $params = array("id_user" => $id_user, "nom" => $nom, "prenom" => $prenom, "email" => $email);
+    return SQLUpdate($SQL, $params);
+}
 
 // ================== LIEUX ===================
 
@@ -416,7 +422,7 @@ function modify_comment($id_user, $id_comment, $message, $timestamp)
 // TODO: limiter le nb de commentaires récupérés ?
 function get_comments($id_place)
 {
-    $SQL = "SELECT u.nom nomUtilisateur, c.id, c.message, c.timestamp FROM commentaires as c INNER JOIN utilisateurs as u ON c.idUtilisateur=u.id";
+    $SQL = "SELECT u.pseudo nomUtilisateur, u.id idUtilisateur , c.id, c.message, c.timestamp FROM commentaires as c INNER JOIN utilisateurs as u ON c.idUtilisateur=u.id";
     $SQL .= " WHERE c.idLieu = :id_place ORDER BY c.timestamp DESC";
     $params = array("id_place" => $id_place);
     return parcoursRs(SQLSelect($SQL, $params));

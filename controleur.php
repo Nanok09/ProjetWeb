@@ -5,7 +5,7 @@ include_once "libs/libUtils.php";
 include_once "libs/libSQL.pdo.php";
 include_once "libs/libSecurisation.php";
 include_once "libs/modele.php";
-include_once "libs/upload_photo.php";
+include_once "libs/libUploadPhoto.php";
 
 tprint($_POST);
 
@@ -69,7 +69,7 @@ if ($action = valider("action")) {
             $qs = "?view=login-signIn";
             break;
 
-        // Création terrain //////////////////////////////////////////////////
+            // Création terrain //////////////////////////////////////////////////
 
         case 'Créer terrain':
             if (($nom = valider('nom')) &&
@@ -108,50 +108,50 @@ if ($action = valider("action")) {
                 $qs = "?view=mesTerrains&msg=Veuillez au moins remplir le nom, l'adresse et le sport";
             }
             break;
-        //case "AjouterChat":
+            //case "AjouterChat":
             //if($id_auteur=valider('id_auteur') && $id_destinataire=valider('id_destinataire') && $msg=valider('msg'))
-                //send_message($id_auteur,$id_destinataire,$msg);
+            //send_message($id_auteur,$id_destinataire,$msg);
             //$qs = "?view=chat&id=".$id_auteur;
-           // break;
-    
+            // break;
 
 
 
-        // Ajout photo //////////////////////////////////////////////////
+
+            // Ajout photo //////////////////////////////////////////////////
 
         case 'ajouter photo':
-            if ($id_place = valider('id_place')){
+            if ($id_place = valider('id_place')) {
                 $upload_done = upload($_FILES["fileToUpload"]);
-                echo $upload_done."</br>";
+                echo $upload_done . "</br>";
                 echo $id_place;
-                if ($upload_done){
+                if ($upload_done) {
                     add_photo_place(intval($id_place), $_FILES["fileToUpload"]["name"]);
-                    $qs="?view=mesTerrains";
-                }else{
-                    $qs="?view=mesTerrains&msg3=Erreur lors de l upload.";
+                    $qs = "?view=mesTerrains";
+                } else {
+                    $qs = "?view=mesTerrains&msg3=Erreur lors de l upload.";
                 }
             }
             break;
 
-        // Modifier infos terrains //////////////////////////////////////////////////
+            // Modifier infos terrains //////////////////////////////////////////////////
 
         case 'modif_place':
-            if ($id_place = valider('id_place')){
-                $user_id=valider('id_user', 'SESSION');
-                $modification=[];
-                if ($nom = valider('nom')){
+            if ($id_place = valider('id_place')) {
+                $user_id = valider('id_user', 'SESSION');
+                $modification = [];
+                if ($nom = valider('nom')) {
                     $modification['nom'] = $nom;
                 }
-                if ($description = valider('description')){
+                if ($description = valider('description')) {
                     $modification['description'] = $description;
                 }
-                if ($capacite = valider('capacite')){
+                if ($capacite = valider('capacite')) {
                     $modification['capacite'] = $capacite;
                 }
-                if ($prix = valider('prix')){
+                if ($prix = valider('prix')) {
                     $modification['prix'] = $prix;
                 }
-                if ($sport = valider('sport')){
+                if ($sport = valider('sport')) {
                     $modification['sport'] = $sport;
                 }
                 tprint($modification);
@@ -163,29 +163,28 @@ if ($action = valider("action")) {
         case "Recherche":
 
 
-            if($sports = valider("sports")){
-
+            if ($sports = valider("sports")) {
             }
-            $localisation=valider("maLocalisation");
-            $adresse=valider("adresse");
-            $horaireA=valider("heureFin");
-            $horaireD=valider("heureDebut");
-            $prixMi=valider("prixMi");
-            $prixMa=valider("prixMa");
-            $lat=valider("lat");
-            $long=valider("long");
-            $distanceMax=valider("distanceMax");
-            $dateReservation=valider("dateReservation");
-            $acceptPublic=valider("public");
-            $acceptPrive=valider("prive");
-            $nBMax=valider("nbResultats");
+            $localisation = valider("maLocalisation");
+            $adresse = valider("adresse");
+            $horaireA = valider("heureFin");
+            $horaireD = valider("heureDebut");
+            $prixMi = valider("prixMi");
+            $prixMa = valider("prixMa");
+            $lat = valider("lat");
+            $long = valider("long");
+            $distanceMax = valider("distanceMax");
+            $dateReservation = valider("dateReservation");
+            $acceptPublic = valider("public");
+            $acceptPrive = valider("prive");
+            $nBMax = valider("nbResultats");
 
 
 
-            $qs = "?view=resultats&sports=".$sports."&localisation=".$localisation."&adresse=".urlencode($adresse).
-                "&horaireA=".urlencode($horaireA)."&horaireD=".urlencode($horaireD)."&prixMi=".$prixMi."&prixMa=".$prixMa.
-                "&lat=".$lat."&long=".$long."&dMax=".$distanceMax."&dateRes=".urlencode($dateReservation)
-                ."&acceptPublic=".$acceptPublic."&acceptPrive=".$acceptPrive."&nBMax=".$nBMax;
+            $qs = "?view=resultats&sports=" . $sports . "&localisation=" . $localisation . "&adresse=" . urlencode($adresse) .
+                "&horaireA=" . urlencode($horaireA) . "&horaireD=" . urlencode($horaireD) . "&prixMi=" . $prixMi . "&prixMa=" . $prixMa .
+                "&lat=" . $lat . "&long=" . $long . "&dMax=" . $distanceMax . "&dateRes=" . urlencode($dateReservation)
+                . "&acceptPublic=" . $acceptPublic . "&acceptPrive=" . $acceptPrive . "&nBMax=" . $nBMax;
             break;
     }
 }

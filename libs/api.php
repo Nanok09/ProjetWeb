@@ -56,7 +56,8 @@ if ($action = valider("action")) {
             if (verif_connecte()) {
                 if (($id_user = valider("id_user", "SESSION")) &&
                     ($id_lieu = valider("id_place")) &&
-                    ($note = valider("note"))) {
+                    ($note = valider("note"))
+                ) {
                     if (is_valid_note($note)) {
                         add_note($id_user, $id_lieu, $note);
                         set_request_success();
@@ -67,21 +68,25 @@ if ($action = valider("action")) {
         case "delete_note":
             if (verif_connecte()) {
                 if (($id_user = valider("id_user", "SESSION")) &&
-                    ($id_lieu = valider("id_place"))) {
+                    ($id_lieu = valider("id_place"))
+                ) {
                     $nb_modified = delete_note($id_lieu, $id_user);
                     if ($nb_modified > 0) {
                         set_request_success();
                     }
-                }}
+                }
+            }
             break;
         case "add_comment":
             if (verif_connecte()) {
                 if (($id_user = valider("id_user", "SESSION")) &&
                     ($id_lieu = valider("id_place")) &&
-                    ($comment = valider("comment"))) {
+                    ($comment = valider("comment"))
+                ) {
                     $timestamp = date('Y-m-d H:i:s');
                     $data["data"] = array();
                     $data["data"]["timestamp"] = strtotime($timestamp);
+                    $data["data"]["pseudo"] = valider("pseudo", "SESSION");
                     $data["data"]["id_comment"] = add_comment($id_lieu, $id_user, $comment, $timestamp);
                     set_request_success();
                 }
@@ -91,7 +96,8 @@ if ($action = valider("action")) {
             if (verif_connecte()) {
                 if (($id_user = valider("id_user", "SESSION")) &&
                     ($id_comment = valider("id_comment")) &&
-                    ($comment = valider("comment"))) {
+                    ($comment = valider("comment"))
+                ) {
                     $data["data"] = array();
                     $timestamp = date('Y-m-d H:i:s');
                     $data["data"]["timestamp"] = strtotime($timestamp);
@@ -105,7 +111,8 @@ if ($action = valider("action")) {
         case "delete_comment":
             if (verif_connecte()) {
                 if (($id_user = valider("id_user", "SESSION")) &&
-                    ($id_comment = valider("id_comment"))) {
+                    ($id_comment = valider("id_comment"))
+                ) {
                     $nb_modified = delete_comment($id_user, $id_comment);
                     if ($nb_modified > 0) {
                         set_request_success();
@@ -120,8 +127,10 @@ if ($action = valider("action")) {
                     ($date = valider("date")) &&
                     ($time_start = valider("time_start")) &&
                     ($time_end = valider("time_end")) &&
-                    ($capacite = valider("capacite"))) {
-                    if (get_createur_lieu($id_place) == $id_user &&
+                    ($capacite = valider("capacite"))
+                ) {
+                    if (
+                        get_createur_lieu($id_place) == $id_user &&
                         is_valid_date($date) &&
                         is_valid_time($time_start) &&
                         is_valid_time($time_end) &&
@@ -141,8 +150,10 @@ if ($action = valider("action")) {
                     ($date = valider("date")) &&
                     ($time_start = valider("time_start")) &&
                     ($time_end = valider("time_end")) &&
-                    ($nb_personnes = valider("nb_personnes"))) {
-                    if (is_valid_date($date) &&
+                    ($nb_personnes = valider("nb_personnes"))
+                ) {
+                    if (
+                        is_valid_date($date) &&
                         is_valid_time($time_start) &&
                         is_valid_time($time_end) &&
                         (strtotime($time_start) < strtotime($time_end))
@@ -162,7 +173,8 @@ if ($action = valider("action")) {
         case "delete_reservation":
             if (verif_connecte()) {
                 if (($id_user = valider("id_user", "SESSION")) &&
-                    ($id_reservation = valider("id_reservation"))) {
+                    ($id_reservation = valider("id_reservation"))
+                ) {
                     $nb_modified = delete_reservation($id_user, $id_reservation);
                     if ($nb_modified > 0) {
                         set_request_success();
@@ -173,7 +185,8 @@ if ($action = valider("action")) {
         case "get_creneaux_place":
             if (($id_place = valider("id_place")) &&
                 ($start = valider("start")) &&
-                ($end = valider("end"))) {
+                ($end = valider("end"))
+            ) {
                 $date_start = date("Y-m-d", strtotime($start));
                 $date_end = date("Y-m-d", strtotime($end));
                 $creneaux = get_creneaux_lieu($id_place, $date_start, $date_end);
@@ -205,8 +218,10 @@ if ($action = valider("action")) {
             if (($id_place = valider("id_place")) &&
                 ($date = valider("date")) &&
                 ($time_start = valider("time_start")) &&
-                ($time_end = valider("time_end"))) {
-                if (is_valid_date($date) &&
+                ($time_end = valider("time_end"))
+            ) {
+                if (
+                    is_valid_date($date) &&
                     is_valid_time($time_start) &&
                     is_valid_time($time_end) &&
                     (strtotime($time_start) < strtotime($time_end))
@@ -246,7 +261,7 @@ if ($action = valider("action")) {
             if ($distance_max = valider("distance_max")) {
                 $arg_array['max_distance'] = $distance_max;
             }
-            if ($accept_public = valider("accept_public"))  {
+            if ($accept_public = valider("accept_public")) {
                 if ($accept_public === 'no') {
                     $arg_array['private_only'] = true;
                 }
@@ -275,41 +290,40 @@ if ($action = valider("action")) {
                 $arg_array['date'] = $date;
             }
             if (!isset($arg_array['debut']) || !isset($arg_array['fin'])) { // ajouter une condition de vérification des données temporelles et sinon laisser les valeurs par défaut
-                $arg_array['debut'] = strval($hour + 2+1) . ':00'; // mettre au fuseau horraire français et prendre la prochine heure
-                $arg_array['fin']= strval($hour + 2 + 2) . ':00';
+                $arg_array['debut'] = strval($hour + 2 + 1) . ':00'; // mettre au fuseau horraire français et prendre la prochine heure
+                $arg_array['fin'] = strval($hour + 2 + 2) . ':00';
             }
-            $results = get_places($arg_array['sport'],$arg_array['private_only'],$arg_array['public_only'],$arg_array['lat'],$arg_array['long'],$arg_array['price_min'],$arg_array['price_max'],$arg_array['max_distance'],$arg_array['max_results']);
-            $data['data']=array();
+            $results = get_places($arg_array['sport'], $arg_array['private_only'], $arg_array['public_only'], $arg_array['lat'], $arg_array['long'], $arg_array['price_min'], $arg_array['price_max'], $arg_array['max_distance'], $arg_array['max_results']);
+            $data['data'] = array();
             foreach ($results as $result) {
                 $place_data = array();
                 // modifier l'array obtenu pour être conforme à la doc 
                 $place_data['id'] = $result['id'];
-                $place_data['sport']=$result['sport'];
+                $place_data['sport'] = $result['sport'];
                 $place_data['private'] = $result['prive'];
                 $place_data['price'] = $result['prix'];
                 $place_data['name'] = $result['nom'];
-                $place_data['coordinates'] = array (
+                $place_data['coordinates'] = array(
                     'lat' => $result['latitude'],
                     'long' => $result['longitude']
                 );
                 $place_data['address'] = $result['adresse'];
-                $place_data['photos']=get_photos_place($result['id']);
+                $place_data['photos'] = get_photos_place($result['id']);
                 $place_data['note'] = get_note_place($result['id'])['mean'];
                 $place_data['distance_to_user'] = $result['distance_to_user'];
                 if ($result['prive'] == 0) {
-                    $place_data['dispo']=false;
+                    $place_data['dispo'] = false;
                 }
                 if ($result['prive'] == 1) {
                     $place_data['dispo'] = get_capacite_restante_creneau($place_data['id'], $arg_array['date'], $arg_array['debut'], $arg_array['fin']); // renseigner la capacité en temps réel 
                 }
-                $data['data'][]=$place_data;
-
+                $data['data'][] = $place_data;
             } // end foreach
             set_request_success();
             break;
         case 'get_place_info':
             $hour = (int) date('h');
-            if ($place_id = valider('terrain_id')){
+            if ($place_id = valider('terrain_id')) {
                 $arg_array = array(
                     'date' => date('Y-m-d')
                 );
@@ -323,26 +337,26 @@ if ($action = valider("action")) {
                     $arg_array['date'] = $date;
                 }
                 if (!isset($arg_array['debut']) || !isset($arg_array['fin'])) { // ajouter une condition de vérification des données temporelles et sinon laisser les valeurs par défaut
-                    $arg_array['debut'] = strval($hour + 2+1) . ':00'; // mettre au fuseau horraire français et prendre la prochine heure
-                    $arg_array['fin']= strval($hour + 2 + 2) . ':00';
+                    $arg_array['debut'] = strval($hour + 2 + 1) . ':00'; // mettre au fuseau horraire français et prendre la prochine heure
+                    $arg_array['fin'] = strval($hour + 2 + 2) . ':00';
                 }
-                $result= get_place_info($place_id);
+                $result = get_place_info($place_id);
                 $place_data = array();
                 $place_data['id'] = $result['id'];
-                $place_data['sport']=$result['sport'];
+                $place_data['sport'] = $result['sport'];
                 $place_data['creator'] = $result['createur'];
                 $place_data['private'] = $result['prive'];
                 $place_data['price'] = $result['prix'];
                 $place_data['name'] = $result['nom'];
-                $place_data['coordinates'] = array (
+                $place_data['coordinates'] = array(
                     'lat' => $result['latitude'],
                     'long' => $result['longitude']
                 );
                 $place_data['address'] = $result['adresse'];
-                $place_data['photos']=get_photos_place($result['id']);
+                $place_data['photos'] = get_photos_place($result['id']);
                 $place_data['note'] = get_note_place($result['id']);
                 if ($result['prive'] == 0) {
-                    $place_data['dispo']=false;
+                    $place_data['dispo'] = false;
                 }
                 if ($result['prive'] == 1) {
                     $place_data['dispo'] = get_capacite_restante_creneau($place_id, $arg_array['date'], $arg_array['debut'], $arg_array['fin']); // renseigner la capacité en temps réel 
@@ -376,66 +390,85 @@ if ($action = valider("action")) {
                 // appel à l'api mapbox
                 $arg_array['address'] = $address;
                 //var_dump($arg_array);
-                $data['data'] = address_research($arg_array['address'],$arg_array['proximity'],$arg_array['distance_max'],$arg_array['max_results']);
+                $data['data'] = address_research($arg_array['address'], $arg_array['proximity'], $arg_array['distance_max'], $arg_array['max_results']);
                 set_request_success();
             }
             break;
-            case 'send_message':
-                $arg_array=array();
-                if ($conversation_id = valider('conversation_id')) {
-                    $arg_array['conversation_id'] = $conversation_id;
-                }
-                if ($connected_user = valider('connected_user')) {
-                    $arg_array['connected_user'] = $connected_user;
-                }
-                if ($content = valider('content')) {
-                    $arg_array['content'] = $content;
-                }
-                if ($destinataire = valider('destinataire')) {
-                    $arg_array['destinataire'] = $destinataire;
-                }
-                if ($insert = add_message_to_conv($arg_array['conversation_id'],$arg_array['connected_user'],$arg_array['destinataire'],$arg_array['content'])){
-                    set_request_success();
-                }
-                break;
-            case 'display_conversation':
-                $arg_array=array();
-                if ($conversation_id = valider('conversation_id')) {
-                    $arg_array['conversation_id'] = $conversation_id;
-                }
-                if ($connected_user = valider('connected_user')) {
-                    $arg_array['connected_user'] = $connected_user;
-                }
-                if ($destinataire = valider('destinataire')) {
-                    $arg_array['destinataire'] = $destinataire;
-                }
-                $data['data'] = get_messages_in_conv($arg_array['conversation_id']);
+        case 'send_message':
+            $arg_array = array();
+            if ($conversation_id = valider('conversation_id')) {
+                $arg_array['conversation_id'] = $conversation_id;
+            }
+            if ($connected_user = valider('connected_user')) {
+                $arg_array['connected_user'] = $connected_user;
+            }
+            if ($content = valider('content')) {
+                $arg_array['content'] = $content;
+            }
+            if ($destinataire = valider('destinataire')) {
+                $arg_array['destinataire'] = $destinataire;
+            }
+            if ($insert = add_message_to_conv($arg_array['conversation_id'], $arg_array['connected_user'], $arg_array['destinataire'], $arg_array['content'])) {
                 set_request_success();
-                break;
+            }
+            break;
+        case 'display_conversation':
+            $arg_array = array();
+            if ($conversation_id = valider('conversation_id')) {
+                $arg_array['conversation_id'] = $conversation_id;
+            }
+            if ($connected_user = valider('connected_user')) {
+                $arg_array['connected_user'] = $connected_user;
+            }
+            if ($destinataire = valider('destinataire')) {
+                $arg_array['destinataire'] = $destinataire;
+            }
+            $data['data'] = get_messages_in_conv($arg_array['conversation_id']);
+            set_request_success();
+            break;
+        case 'update_user':
+            if (verif_connecte()) {
+                if (($id_user = valider("id_user", "SESSION")) &&
+                    ($email = valider("email")) &&
+                    ($nom = valider("nom")) &&
+                    ($prenom = valider("prenom"))
+                ) {
+                    $nb_modified = update_user($id_user, $email, $nom, $prenom);
+                    set_request_success(); //on renvoie un succès même si il y a 0 entrées modifiées (c'est le cas si on clique juste sur modifier sans rien changer)
+                }
+            }
     }
 }
 
 //============================= AJOUT DU RESPONSE HEADER CORRESPONDANT AU STATUS ET RENVOIS DE LA DONNE DEMANDEE===============
 
 switch ($data["status"]) {
-    case 200:header("HTTP/1.0 200 OK");
+    case 200:
+        header("HTTP/1.0 200 OK");
         break;
-    case 201:header("HTTP/1.0 201 Created");
+    case 201:
+        header("HTTP/1.0 201 Created");
         break;
-    case 202:header("HTTP/1.0 202 Accepted");
+    case 202:
+        header("HTTP/1.0 202 Accepted");
         break;
-    case 204:header("HTTP/1.0 204 No Content");
+    case 204:
+        header("HTTP/1.0 204 No Content");
         break;
-    case 400:header("HTTP/1.0 400 Bad Request");
+    case 400:
+        header("HTTP/1.0 400 Bad Request");
         break;
-    case 401:header("HTTP/1.0 401 Unauthorized");
+    case 401:
+        header("HTTP/1.0 401 Unauthorized");
         break; // peu utilse pour nous a priori
-    case 403:header("HTTP/1.0 403 Forbidden");
+    case 403:
+        header("HTTP/1.0 403 Forbidden");
         break; // peu utilse pour nous a priori
-    case 404:header("HTTP/1.0 404 Not Found");
+    case 404:
+        header("HTTP/1.0 404 Not Found");
         break;
-    default:header("HTTP/1.0 200 OK");
-
+    default:
+        header("HTTP/1.0 200 OK");
 }
 
 echo json_encode($data);

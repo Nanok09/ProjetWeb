@@ -14,8 +14,8 @@
     <!-- Font Awesome JS -->
     <script src="https://kit.fontawesome.com/10dad107ce.js" crossorigin="anonymous"></script>
 
-<!--    <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>-->
-    <script src="./js/jquery-3.5.1.min.js"></script>
+    <!--    <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>-->
+    <script src="./js/libs/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous">
     </script>
@@ -41,8 +41,8 @@
         <div class="collapse navbar-collapse justify-content-md-center" id="navbar">
             <ul class="navbar-nav">
                 <li class="nav-item active border-right border-dark">
-                    <a class="nav-link mx-2" href="index.php?view=accueil">Accueil<span
-                            class="sr-only">(current)</span></a>
+                    <a class="nav-link mx-2" href="index.php?view=accueil">Accueil
+                    </a>
                 </li>
                 <li class="nav-item border-right border-dark">
                     <a class="nav-link mx-2" href="index.php?view=recherche">Rechercher</a>
@@ -64,9 +64,9 @@
                     <div class="dropdown-menu" aria-labelledby="dropdown">
                         <?php
                         if (valider("is_connected", "SESSION")) {
-                            echo "<a id=\"deconnexion\" class=\"dropdown-item text-danger\" href=\"controleur.php?action=Logout\">Se Déconnecter</a>";
                             echo '<a class="dropdown-item" href="index.php?view=mon-compte">Mon Compte</a>';
                             echo '<a class="dropdown-item" href="index.php?view=chat">Mes discussions</a>';
+                            echo "<a id=\"deconnexion\" class=\"dropdown-item text-danger\" href=\"controleur.php?action=Logout\">Se Déconnecter</a>";
                         } else {
                             echo " <a class=\"dropdown-item\" href=\"index.php?view=login-signIn\">Inscription/Connexion</a>";
                         }

@@ -11,27 +11,6 @@ $user_info = get_user_info($idUser);
 $reservations = get_current_reservations($idUser);
 ?>
 
-<script>
-$(document).ready(function() {
-    $(document).on("click", "div.cancel-reservation", function() {
-        var id = $(this).data("id-reservation");
-        var that = this;
-        console.log(id);
-        $.post("libs/api.php", {
-            action: "delete_reservation",
-            id_reservation: id
-        }, function(res) {
-            if (!res.success) {
-                console.log("La réservation n'a pas pu être annulée");
-            } else {
-                console.log($(that));
-                console.log($(that).closest('.card'));
-                $(that).closest(".card").hide();
-            }
-        }, "json");
-    });
-});
-</script>
 <h1 class="text-center font-custom-blue">Mon Compte</h1>
 <div class="container">
     <div class="row justify-content-center">
@@ -66,9 +45,12 @@ $(document).ready(function() {
                     </form>
                     <h2 class="mt-4">Mes réservations en cours</h2>
 
+                    <?php
+                    if (count($reservations) == 0) {
+                        echo "<div>Aucune réservation en cours</div>";
+                    }
+                    foreach ($reservations as $reservation) { ?>
                     <div class="row">
-                        <?php foreach ($reservations as $reservation) { ?>
-
                         <div class="p-2 col-12 col-sm-6 col-lg-4">
                             <div class="card p-0 m-2 d-inline-block font-custom-blue bg-custom-light ">
                                 <img class="card-img-top w-100"
@@ -101,5 +83,5 @@ $(document).ready(function() {
             </div>
         </div>
     </div>
-
 </div>
+<script src="js/compte.js"></script>
