@@ -86,6 +86,7 @@ if ($action = valider("action")) {
                     $timestamp = date('Y-m-d H:i:s');
                     $data["data"] = array();
                     $data["data"]["timestamp"] = strtotime($timestamp);
+                    $data["data"]["pseudo"] = valider("pseudo", "SESSION");
                     $data["data"]["id_comment"] = add_comment($id_lieu, $id_user, $comment, $timestamp);
                     set_request_success();
                 }

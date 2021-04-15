@@ -18,9 +18,9 @@
                         </ul>
                     </div>
                     <div class="col-xl-2 col-md-4 col-sm-4 col-12">
-                        <h6 class="mb-3 mb-lg-4 mt-sm-0 mt-5" style="color: #fdedcf"><b>ADDRESSE</b></h6>
-                        <p class="mb-1">AVENUE PAUL LANGEVIN</p>
-                        <p>RESIDENCE LEONARD DE VINCI</p>
+                        <h6 class="mb-3 mb-lg-4 mt-sm-0 mt-5" style="color: #fdedcf"><b>Adresse</b></h6>
+                        <p class="mb-1">Avenue Paul Langevin</p>
+                        <p>Résidence Léonard de Vinci</p>
                     </div>
                 </div>
                 <div class="row ">
@@ -33,14 +33,10 @@
                             Sport'bnb All Rights Reserved.</small>
                     </div>
                     <div class="col-xl-2 col-md-4 col-sm-4 col-auto order-1 align-self-end ">
-                        <h6 class="mt-55 mt-2 bold-text" style="color: #fdedcf"><b>NOUS CONTACTER</b></h6><small>
+                        <h6 class="mt-55 mt-2 bold-text" style="color: #fdedcf"><b>Nous contacter</b></h6><small>
                             <span><i class="fa fa-envelope" aria-hidden="true"></i></span> contact@sportbnb.com</small>
                     </div>
-                    <div class="col-xl-2 col-md-4 col-sm-4 col-auto order-2 align-self-end mt-3 ">
-                        <h6 class="bold-text" style="color: #fdedcf"><b>FAIRE UN DON</b></h6><small><span><i
-                                    class="fa fa-envelope" aria-hidden="true"></i></span><a href="#"
-                                style="color: white">www.faireundon.fr</a></small>
-                    </div>
+
                 </div>
             </div>
         </div>

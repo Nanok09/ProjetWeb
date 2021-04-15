@@ -39,6 +39,17 @@ body {
 .bold {
   font-weight: bold;
 }
+hr {
+  height: 1px;
+  background-color: #123455;
+}
+
+.noteContainer .star {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background: url("../images/Icon%20étoile.svg");
+}
 
 /* ======== HEADER ============ */
 ul.navbar-nav a:hover {
@@ -56,5 +67,4 @@ ul.navbar-nav a:hover {
   border-top: 5px solid black;
   left: 10%;
 }
-
-
+/* ============ FOOTER ========== */
