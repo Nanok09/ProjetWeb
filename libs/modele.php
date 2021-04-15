@@ -544,13 +544,19 @@ function add_message_to_conv($id_conv,$id_auteur,$id_destinataire,$msg) {
  * @param int id_user
  */
 
-function findUserName($id_user) {
+function find_user_name($id_user) {
 
     $SQL = "SELECT nom,prenom FROM utilisateurs WHERE id= ?";
     $param = array($id_user);
     return parcoursRs(SQLSelect($SQL,$param));
 }
 
+function get_last_msg_info($id_conv) {
+    $SQL = "SELECT message,timestamp,auteur,destinataire FROM messageschat WHERE id_conv=?";
+    $param= array($id_conv);
+    $result=parcoursRs(SQLSelect($SQL,$param));
+    return end($result);
+}
 
 /**
  * Récupère les messages reçus par id_user après l'id du dernier message reçu

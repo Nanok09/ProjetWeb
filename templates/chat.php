@@ -1,10 +1,15 @@
 <?php
-include_once("./libs/modele.php");
+include_once "libs/libUtils.php";
+include_once "libs/libSQL.pdo.php";
+include_once "libs/libSecurisation.php";
+include_once "libs/modele.php";
+include_once "libs/upload_photo.php";
 
-$id_user = $_SESSION['id_user'];
-$listDestinataires = listerDestinataires($id_user);
-$users = get_users();
 
+$connected_user=valider('id_user','SESSION');
+$list_id_conversation = get_conversations_user( $connected_user);   
+//var_dump($list_id_conversation);
+//var_dump($connected_user);
 ?>
 
 
@@ -74,116 +79,28 @@ $users = get_users();
             <div class="bg-white">
 
                 <div class="bg-gray px-4 py-2 bg-light">
-                    <p class="h5 mb-0 py-1" style="color: #153455">RECENT</p>
+                    <p class="h5 mb-0 py-1" style="color: #153455">MES DISCUSSIONS</p>
                 </div>
 
                 <div class="messages-box" >
-                    <div class="list-group rounded-0" >
-                    <?php
+                    <div id ='message_list' class="list-group rounded-0" >
 
-                        $id_destinataireDefault = $listDestinataires[0]['id_user'];
-
-
-                        foreach ($listDestinataires as $idDestinataire) {
-                            $user_info = get_user_info($idDestinataire);
-                            echo('
-                                <a class="list-group-item list-group-item-action rounded-0" style="color: #FFF7ED; background-color: #35516E">
-                                    <div class="media"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
-                                        <div class="media-body ml-4">
-                                            <div class="d-flex align-items-center justify-content-between mb-1">
-                                                <h6 class="mb-0" style="color: #FFF7ED">' . $user_info['nom'] . ' ' . $user_info['prenom'] . '</h6><small class="small font-weight-bold">Date du dernier message</small>
-                                            </div>
-                                            <p class="font-italic mb-0 text-small" style="color: #FFF7ED">Dernier message affiché</p>
-                                        </div>
-                                    </div>
-                                </a>
-                        ');
+                    <?php foreach ($list_id_conversation as $id_conv_array) {
+                        $id_conv = (int) $id_conv_array['id'];
+                        //var_dump($id_conv);
+                        $last_msg_info = get_last_msg_info($id_conv);
+                        //var_dump($last_msg_info);
+                        if ($last_msg_info['auteur'] == $connected_user) {
+                        $destinataire_id= (int) $last_msg_info['destinataire'] ;
+                        } else {
+                        $destinataire_id = (int) $last_msg_info['auteur'];
                         }
-
-                    //On sauvegarde l'id de l'interlocuteur
-                    if(!$id_destinataire = valider('id')) {
-                        $id_destinataire = $id_destinataireDefault;
-                    }
-
+                        //var_dump($destinataire_id);
+                        $destinataire_info = find_user_name($destinataire_id);
+                        //var_dump($destinataire_info);
+                        display_conv($last_msg_info,$destinataire_info[0]);
+                    }  
                     ?>
-
-                        <a href="#" class="list-group-item list-group-item-action list-group-item-light rounded-0">
-                            <div class="media"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
-                                <div class="media-body ml-4">
-                                    <div class="d-flex align-items-center justify-content-between mb-1">
-                                        <h6 class="mb-0">Jason Doe</h6><small class="small font-weight-bold" style="color: #35516E">14 Dec</small>
-                                    </div>
-                                    <p class="font-italic mb-0 text-small">Lorem ipsum dolor sit amet, consectetur. incididunt ut labore.</p>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" class="list-group-item list-group-item-action list-group-item-light rounded-0">
-                            <div class="media"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
-                                <div class="media-body ml-4">
-                                    <div class="d-flex align-items-center justify-content-between mb-1">
-                                        <h6 class="mb-0">Jason Doe</h6><small class="small font-weight-bold" style="color: #35516E">9 Nov</small>
-                                    </div>
-                                    <p class="font-italic mb-0 text-small">consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" class="list-group-item list-group-item-action list-group-item-light rounded-0">
-                            <div class="media"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
-                                <div class="media-body ml-4">
-                                    <div class="d-flex align-items-center justify-content-between mb-1">
-                                        <h6 class="mb-0">Jason Doe</h6><small class="small font-weight-bold" style="color: #35516E">18 Oct</small>
-                                    </div>
-                                    <p class="font-italic mb-0 text-small">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" class="list-group-item list-group-item-action list-group-item-light rounded-0">
-                            <div class="media"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
-                                <div class="media-body ml-4">
-                                    <div class="d-flex align-items-center justify-content-between mb-1">
-                                        <h6 class="mb-0">Jason Doe</h6><small class="small font-weight-bold" style="color: #35516E">17 Oct</small>
-                                    </div>
-                                    <p class="font-italic mb-0 text-small">consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" class="list-group-item list-group-item-action list-group-item-light rounded-0">
-                            <div class="media"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
-                                <div class="media-body ml-4">
-                                    <div class="d-flex align-items-center justify-content-between mb-1">
-                                        <h6 class="mb-0">Jason Doe</h6><small class="small font-weight-bold" style="color: #35516E">2 Sep</small>
-                                    </div>
-                                    <p class="font-italic mb-0 text-small">Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" class="list-group-item list-group-item-action list-group-item-light rounded-0">
-                            <div class="media"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
-                                <div class="media-body ml-4">
-                                    <div class="d-flex align-items-center justify-content-between mb-1">
-                                        <h6 class="mb-0">Jason Doe</h6><small class="small font-weight-bold" style="color: #35516E">30 Aug</small>
-                                    </div>
-                                    <p class="font-italic mb-0 text-small">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" class="list-group-item list-group-item-action list-group-item-light rounded-0">
-                            <div class="media"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
-                                <div class="media-body ml-4">
-                                    <div class="d-flex align-items-center justify-content-between mb-3">
-                                        <h6 class="mb-0">Jason Doe</h6><small class="small font-weight-bold" style="color: #35516E">21 Aug</small>
-                                    </div>
-                                    <p class="font-italic mb-0 text-small">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
-                                </div>
-                            </div>
-                        </a>
-
                     </div>
                 </div>
             </div>
@@ -192,37 +109,24 @@ $users = get_users();
         <div class="col-7 px-0">
             <div class="px-4 py-5 chat-box" style="background-color: #FFF7ED">
                 <!-- Sender Message-->
-                <?php
-                $conversation = listerConvChat($_SESSION['id_user'],$id_destinataire);
-                foreach ($conversation as $message) {
-                    if (!$message['isMedecin']) {
-                        echo ('
                 <div class="media w-50 mb-3"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
                     <div class="media-body ml-3">
                         <div class="bg-light rounded py-2 px-3 mb-2">
-                            <p class="text-small mb-0 ">'.$message['msg'].'</p>
+                            <p class="text-small mb-0 ">Message échangé numéro 1</p>
                         </div>
-                        <p class="small text-muted">'.$message['date'].'</p>
+                        <p class="small text-muted">12:00 PM | Aug 13</p>
                     </div>
                 </div>
-                ');
-                }else {
-                    echo ('
 
                 <!-- Reciever Message-->
                 <div class="media w-50 ml-auto mb-3">
                     <div class="media-body">
                         <div class=" rounded py-2 px-3 mb-2" style="background-color: #35516E">
-                            <p class="text-small-light mb-0">'.$message['msg'].'</p>
+                            <p class="text-small-light mb-0">Message échangé numéro 2</p>
                         </div>
-                        <p class="small text-muted">'.$message['date'].'</p>
+                        <p class="small text-muted">12:00 PM | Aug 13</p>
                     </div>
                 </div>
-                ');
-                    }
-
-                }
-                ?>
 
                 <!-- Sender Message-->
                 <div class="media w-50 mb-3"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
@@ -279,5 +183,21 @@ $users = get_users();
         </div>
     </div>
 </div>
+<script>
+    function start_function(){
+        console.log('Le document est chargé');
+        // appel api pour récupérer la liste des conversations
+
+        // mettre les conversations aux bons endroits avec les données de l'api 
+
+
+        
+    }
+    $(document).ready(start_function);
+
+
+
+
+</script>
 </body>
 </html>
