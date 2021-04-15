@@ -23,5 +23,5 @@ echo 'echo <h2> Version décodée : </h2>';
 var_dump(urldecode($coded));
 date('d-m-Y h:i:s')
 */
-$last_msg_info = get_last_msg_info(1);
+$last_msg_info = get_messages_in_conv(1);
 var_dump($last_msg_info);

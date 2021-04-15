@@ -138,8 +138,8 @@ die("");
 }
  */
 
- function display_conv($message_info,$destinataire_info,$id_conv){
-    echo "<a data-idConv =".$id_conv."class='list-group-item list-group-item-action rounded-0' style='color: #FFF7ED; background-color: #35516E'>\n";
+ function display_conv($message_info,$destinataire_info,$id_conv,$destinataire_id,$connected_user){
+    echo "<a data-idConv=".$id_conv." data-idDestinataire=".$destinataire_id." data-connectedUser=".$connected_user." class='list-group-item list-group-item-action rounded-0' style='color: #FFF7ED; background-color: #35516E'>\n";
     echo "<div class='media'><img src='https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg' alt='user' width='50' class='rounded-circle'>\n";
     echo "<div class='media-body ml-4'>\n";
     echo "<div class='d-flex align-items-center justify-content-between mb-1'>\n";
