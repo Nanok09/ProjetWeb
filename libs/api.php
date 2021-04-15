@@ -410,6 +410,7 @@ if ($action = valider("action")) {
                     $arg_array['destinataire'] = $destinataire;
                 }
                 $data['data'] = get_messages_in_conv($arg_array['conversation_id']);
+                set_request_success();
                 break;
     }
 }

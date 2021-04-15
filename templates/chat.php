@@ -16,6 +16,9 @@ $list_id_conversation = get_conversations_user( $connected_user);
 
 
 <style>
+    .hidden{
+        display:none;
+    }
     body {
 
         min-height: 100vh;
@@ -107,64 +110,27 @@ $list_id_conversation = get_conversations_user( $connected_user);
         </div>
         <!-- Chat Box-->
         <div class="col-7 px-0">
-            <div class="px-4 py-5 chat-box" style="background-color: #FFF7ED">
+            <div id ='messages_box'class="px-4 py-5 chat-box" style="background-color: #FFF7ED">
+                 <!-- Reciever Message-->
+                <div id='reciever_template' class=''> 
+                    <div  class="media w-50 ml-auto mb-3">
+                        <div class="media-body">
+                            <div class=" rounded py-2 px-3 mb-2" style="background-color: #35516E">
+                                <p id='reciever_content' class="text-small-light mb-0">Message échangé numéro 2</p>
+                            </div>
+                            <p id='reciever_timestamp' class="small text-muted">12:00 PM | Aug 13</p>
+                        </div>
+                    </div>
+                </div>
                 <!-- Sender Message-->
-                <div class="media w-50 mb-3"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
-                    <div class="media-body ml-3">
-                        <div class="bg-light rounded py-2 px-3 mb-2">
-                            <p class="text-small mb-0 ">Message échangé numéro 1</p>
+                <div id="sender_template" class=''>
+                    <div class="media w-50 mb-3"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
+                        <div class="media-body ml-3">
+                            <div class="bg-light rounded py-2 px-3 mb-2">
+                                <p id='sender_content' class="text-small mb-0 ">Message échangé numéro 1</p>
+                            </div>
+                            <p id= 'sender_timestamp' class="small text-muted">12:00 PM | Aug 13</p>
                         </div>
-                        <p class="small text-muted">12:00 PM | Aug 13</p>
-                    </div>
-                </div>
-
-                <!-- Reciever Message-->
-                <div class="media w-50 ml-auto mb-3">
-                    <div class="media-body">
-                        <div class=" rounded py-2 px-3 mb-2" style="background-color: #35516E">
-                            <p class="text-small-light mb-0">Message échangé numéro 2</p>
-                        </div>
-                        <p class="small text-muted">12:00 PM | Aug 13</p>
-                    </div>
-                </div>
-
-                <!-- Sender Message-->
-                <div class="media w-50 mb-3"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
-                    <div class="media-body ml-3">
-                        <div class="bg-light rounded py-2 px-3 mb-2">
-                            <p class="text-small mb-0">Message échangé numéro 3</p>
-                        </div>
-                        <p class="small text-muted">12:00 PM | Aug 13</p>
-                    </div>
-                </div>
-
-                <!-- Reciever Message-->
-                <div class="media w-50 ml-auto mb-3">
-                    <div class="media-body">
-                        <div class=" rounded py-2 px-3 mb-2" style="background-color: #35516E">
-                            <p class="text-small-light mb-0">Message échangé numéro 4</p>
-                        </div>
-                        <p class="small text-muted">12:00 PM | Aug 13</p>
-                    </div>
-                </div>
-
-                <!-- Sender Message-->
-                <div class="media w-50 mb-3"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
-                    <div class="media-body ml-3">
-                        <div class="bg-light rounded py-2 px-3 mb-2">
-                            <p class="text-small mb-0">Message échangé numéro 5</p>
-                        </div>
-                        <p class="small text-muted">12:00 PM | Aug 13</p>
-                    </div>
-                </div>
-
-                <!-- Reciever Message-->
-                <div class="media w-50 ml-auto mb-3">
-                    <div class="media-body">
-                        <div class=" rounded py-2 px-3 mb-2" style="background-color: #35516E">
-                            <p class="text-small-light mb-0 ">Message échangé numéro 6</p>
-                        </div>
-                        <p class="small text-muted">12:00 PM | Aug 13</p>
                     </div>
                 </div>
 
@@ -184,8 +150,44 @@ $list_id_conversation = get_conversations_user( $connected_user);
     </div>
 </div>
 <script>
+
+    function display_messages(conversation_id,connected_user,destinataire){
+        // faire la requête à l'api
+        $.ajax({
+		type: "POST",
+		url: "libs/api.php",
+		headers: {"debug-data":true},
+		data: {"action": "display_conversation","conversation_id":conversation_id,"connected_user":connected_user, "destinataire": destinataire},
+		success: function(oRep){
+            //console.log(oRep.data);
+            for (var i in oRep.data){
+                //console.log(oRep.data[i]);
+                if (oRep.data[i].auteur == connected_user){
+                    console.log("c'est un message de type receiver");
+                    let clone = $('#reciever_template').clone();
+                    clone.text(oRep.data[i].message);
+                    clone.text(oRep.data[i].timestamp);
+                    clone.attr('id','message'+i);
+                    console.log(clone);
+                    console.log(clone.innerhtml());
+                    $("#message_box").append(clone.html());
+
+                }
+                if (oRep.data[i].destinataire == connected_user) {
+                    console.log("c'est un message sender");
+                    $('#sender_content').text(oRep.data[i].message);
+                    $('#sender_timestamp').text(oRep.data[i].timestamp);
+                    $("#message_box").append($('#sender_template').html());
+                }
+            }
+	    },
+	    dataType: "json"
+	        });
+    }
     function start_function(){
         console.log('Le document est chargé');
+        
+        //display_messages(1,"4","5");
         // appel api pour récupérer la liste des conversations
 
         // mettre les conversations aux bons endroits avec les données de l'api 
@@ -193,6 +195,9 @@ $list_id_conversation = get_conversations_user( $connected_user);
 
         
     }
+
+    //TODO ajouter la fonctionnalité d'envoie d'un message 
+    //TODO ajouter une interaction pour changer de discussion 
     $(document).ready(start_function);
 
 
