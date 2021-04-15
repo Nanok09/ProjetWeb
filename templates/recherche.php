@@ -1,13 +1,7 @@
 <?php
-//TODO: Suggestions
-//1) Quand tu commences a tapper et jusqu'a ce que tu finisses on fait des appel a l'API tous les x secondes
-//2) On récuperes la liste de suggestions et on affiche les 10 premiers.
-//3) Quand on clique sur une suggestion cela remplit automatiquement la barre de recherche avec les suggestions
+include_once "libs/modele.php";
 
-//abandon
-//4) Quand on descend avec la touche en bas cela sélectionne la suggestion qui complete le mot. Si on appuie sur ENTREe ca remplit automatiquement la barre de
-//recherche avec la suggestion et ca ferme les suggestions
-//5) Quand on appuie sur TAB cela remplie automatiquement la barre de recherche avec la premiere réponse
+$sports = get_all_sports();
 
 ?>
 <style>
@@ -327,9 +321,11 @@ Date.prototype.toDateInputValue = (function() {
                             sport</label>
                         <select id="selectSport" class="form-control custom-rounded-corners" name="sports" required>
                             <option value=""> - Choisir Sport - </option>
-                            <option>Basket</option>
-                            <option>Foot</option>
-                            <option>Musculation</option>
+                            <?php
+                            foreach ($sports as $sport) {
+                                echo "<option value=\"$sport[id]\">$sport[nom]</option>";
+                            }
+                            ?>
                         </select>
                     </div>
                 </div>

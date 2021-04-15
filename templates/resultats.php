@@ -1,6 +1,8 @@
 <?php
 include_once ("./libs/libUtils.php");
+include_once "libs/modele.php";
 
+$all_sports = get_all_sports();
 
 $sports = valider("sports");
 $localisation= valider("localisation");
@@ -690,9 +692,11 @@ $(document).ready(function () {
 
                     <select id="selectSport" class="form-control col-10 custom-rounded-corners mb-2" name="sports" required>
                         <option value=""> - Choisir Sport - </option>
-                        <option>Basket</option>
-                        <option>Foot</option>
-                        <option>Musculation</option>
+                        <?php
+                        foreach ($all_sports as $sport) {
+                            echo "<option value=\"$sport[id]\">$sport[nom]</option>";
+                        }
+                        ?>
                     </select>
 
                     <div class="col-9 mb-3">
