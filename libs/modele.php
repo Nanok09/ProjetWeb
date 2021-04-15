@@ -335,6 +335,20 @@ function get_places_created_by($id_user)
     $params = array($id_user);
     return parcoursRs(SQLSelect($SQL, $params));
 }
+/**
+ * Récupérer les lieux (id, nom) au-dessus d'une certaine note pour un utilisateur donné
+ * @param float note_min
+ * @param int id_user
+ */
+function get_place_rated_higher_than_by_user($id_user, $note_min)
+{
+    $SQL = "SELECT id, nom FROM lieux l INNER JOIN notes n";
+    $SQL .="             ON l.id = n.idLieu";
+    $SQL .="             WHERE n.idUtilisateur = :id_user";
+    $SQL .="             AND n.note >= :note_min";
+    $params = array("id_user" => $id_user, "note_min" => $note_min);
+    return parcoursRs(SQLSelect($SQL, $params));
+}
 
 //// ================= NOTES =========================
 /**

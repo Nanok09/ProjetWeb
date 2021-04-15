@@ -9,7 +9,11 @@ if (basename($_SERVER["PHP_SELF"]) != "index.php") {
     die("");
 }
 
+$id_user = $_SESSION['id_user'];
+$note_min = 3;
+
 $sports = get_all_sports();
+$terrains = get_place_rated_higher_than_by_user($id_user, $note_min);
 
 //TODO: mettre le style et script dans des fichiers spécifiques
 ?>
@@ -531,42 +535,60 @@ function addKeyBoardEvent(e) {
 <!-- Terrains bien notés -->
 <div class="container-fluid bg-custom-grey">
 
-    <h1> Ce que vous avez aimé: </h1>
+    <h1> Terrains bien notés: </h1>
     <div id="terrains" class="carousel slide" data-interval="false">
+
         <div class="carousel-inner">
-            <div class="carousel-item active">
-                <div class="row justify-content-around pt-3">
-                    <div class="col-8 col-md-4 mb-2 text-center">
-                        <img src="./images/terrains/terrain1.jpg" class="d-block m-auto sportLogos2">
-                        <h5>Hoops factory Lille</h5>
-                    </div>
-                    <div class="col-8 col-md-4 mb-2 text-center">
-                        <img src="./images/terrains/terrain2.jpg" class="d-block m-auto sportLogos2">
-                        <h5>Playground de la Porte Dorée</h5>
-                    </div>
-                    <div class="col-8 col-md-4 mb-2 text-center">
-                        <img src="./images/terrains/terrain3.jpg" class="d-block m-auto sportLogos2">
-                        <h5>Terrain de tennis du Triolo</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <div class="row justify-content-around pt-3">
-                    <div class="col-8 col-md-3 col-lg-2 col-xl-1 mb-2 text-center">
-                        <img src="./images/terrains/terrain4.jpg" class="d-block m-auto sportLogos2">
-                        <h5>Stade Hunebelle - Clamart</h5>
-                    </div>
-                    <div class="col-8 col-md-3 col-lg-2 col-xl-1 mb-2 text-center">
-                        <img src="./images/terrains/terrain5.png" class="d-block m-auto sportLogos2">
-                        <h5>Parc Street Workout - Fontenay-Aux-Roses</h5>
-                    </div>
-                    <div class="col-8 col-md-3 col-lg-2 col-xl-1 mb-2 text-center">
-                        <img src="./images/terrains/terrain6.jpg" class="d-block m-auto sportLogos2">
-                        <h5>Salle de Musculation - Villeneuve d'Ascq</h5>
-                    </div>
-                </div>
-            </div>
+            <?php
+            $terrain_groups = array_chunk($terrains, 3); //séparer en arrays de 3 terrains
+            $i = 0;
+            foreach ($terrain_groups as $group) {
+                echo '<div class="carousel-item' . ($i == 0 ? ' active' : '') . '"><div class="row justify-content-around pt-3">' . '<div class="col-8 col-md-4 mb-2 text-center">';
+                foreach ($group as $terrain) {
+                    echo "<img src=\"./images/terrains/terrain".$terrain['id'].".jpg\"
+                        class=\"d-block m-auto sportLogos2\" alt=\"image terrain\">";
+                    echo "<h5>".$terrain['nom']."</h5>";
+                }
+                echo "</div></div></div>";
+                $i += 1;
+            }
+            ?>
         </div>
+//        <div class="carousel-inner">
+//            <div class="carousel-item active">
+//                <div class="row justify-content-around pt-3">
+//                    <div class="col-8 col-md-4 mb-2 text-center">
+//                        <img src="./images/terrains/terrain1.jpg" class="d-block m-auto sportLogos2">
+//                        <h5>Hoops factory Lille</h5>
+//                    </div>
+//                    <div class="col-8 col-md-4 mb-2 text-center">
+//                        <img src="./images/terrains/terrain2.jpg" class="d-block m-auto sportLogos2">
+//                        <h5>Playground de la Porte Dorée</h5>
+//                    </div>
+//                    <div class="col-8 col-md-4 mb-2 text-center">
+//                        <img src="./images/terrains/terrain3.jpg" class="d-block m-auto sportLogos2">
+//                        <h5>Terrain de tennis du Triolo</h5>
+//                    </div>
+//                </div>
+//            </div>
+//            <div class="carousel-item">
+//                <div class="row justify-content-around pt-3">
+//                    <div class="col-8 col-md-3 col-lg-2 col-xl-1 mb-2 text-center">
+//                        <img src="./images/terrains/terrain4.jpg" class="d-block m-auto sportLogos2">
+//                        <h5>Stade Hunebelle - Clamart</h5>
+//                    </div>
+//                    <div class="col-8 col-md-3 col-lg-2 col-xl-1 mb-2 text-center">
+//                        <img src="./images/terrains/terrain5.png" class="d-block m-auto sportLogos2">
+//                        <h5>Parc Street Workout - Fontenay-Aux-Roses</h5>
+//                    </div>
+//                    <div class="col-8 col-md-3 col-lg-2 col-xl-1 mb-2 text-center">
+//                        <img src="./images/terrains/terrain6.jpg" class="d-block m-auto sportLogos2">
+//                        <h5>Salle de Musculation - Villeneuve d'Ascq</h5>
+//                    </div>
+//                </div>
+//            </div>
+//        </div>
+
         <!--Controles-->
         <a class="carousel-control-prev primary carouselControls" href="#terrains" role="button" data-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>

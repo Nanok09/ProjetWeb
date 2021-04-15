@@ -47,9 +47,6 @@
                 <li class="nav-item border-right border-dark">
                     <a class="nav-link mx-2" href="index.php?view=recherche">Rechercher</a>
                 </li>
-                <li class="nav-item border-right border-dark">
-                    <a class="nav-link mx-2" href="index.php?view=louer">Louer</a>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link mx-2" href="index.php?view=mesTerrains">Mes Terrains</a>
                 </li>
