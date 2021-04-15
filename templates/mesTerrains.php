@@ -163,7 +163,8 @@ $photos = get_photos();
         for (let i = 0; i < photos.length; i++) {
             if (photos[i].idLieu == terrain.id) {
                 console.log(photos[i]);
-                $("#edition").append("<img style='width : 300px;' src=\"images/terrains/" + photos[i].nomFichier + "\"/>");
+
+                $("#edition").append("<img style='width : 300px;display: block;margin: auto;' src=\"images/terrains/" + photos[i].nomFichier + "\"/>");
             }
         }
         $("#edition").append($("<h3 class='body-color-blue m-5 text-center'>").html("Informations à propos de mon terrain"));
