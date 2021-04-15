@@ -498,9 +498,9 @@ function get_photos()
  */
 
 function get_messages_in_conv($conv_id){
-    $SQL = "SELECT auteur,messages FROM messageschat WHERE conv_id=?";
+    $SQL = "SELECT auteur,destinataire,message,timestamp FROM messageschat WHERE id_conv=?";
     $param = array($conv_id);
-    return parcoursRs(SQLGetChamp($SQL,$param));
+    return parcoursRs(SQLSelect($SQL,$param));
 }
 
 
@@ -532,17 +532,17 @@ function add_message_to_conv($id_conv,$id_auteur,$id_destinataire,$msg) {
     $SQL = "SELECT id,membre_1,membre_2 FROM conversations WHERE id=?";
     $param = array($id_conv);
     if ($result = parcoursRs(SQLSelect($SQL,$param))) {
-        var_dump($result);
+        //var_dump($result);
         if ($result[0]['membre_1']==$id_auteur || $result[0]['membre_2']==$id_auteur) {
             if ($result[0]['membre_1'] == $id_destinataire || $result[0]['membre_2'] == $id_destinataire) {
-                echo 'on est dans la partie insert into';
+                //echo 'on est dans la partie insert into';
                 $SQL = "INSERT INTO messageschat (auteur,destinataire,message,timestamp,id_conv) VALUES ( :auteur , :destinataire , :message ,CURRENT_TIMESTAMP,:id_conv)";
                 $param= array('auteur' => $id_auteur , 'destinataire' => $id_destinataire, 'message' => $msg, 'id_conv' => $id_conv);
                 return SQLInsert($SQL,$param);
             }
         }
     }
-    trigger_error("This conversation does not exist or you the peaple id in it are not those which where given",E_USER_WARNING);
+    return false;
 }
 
 /**
@@ -550,13 +550,19 @@ function add_message_to_conv($id_conv,$id_auteur,$id_destinataire,$msg) {
  * @param int id_user
  */
 
-function findUserName($id_user) {
+function find_user_name($id_user) {
 
     $SQL = "SELECT nom,prenom FROM utilisateurs WHERE id= ?";
     $param = array($id_user);
     return parcoursRs(SQLSelect($SQL,$param));
 }
 
+function get_last_msg_info($id_conv) {
+    $SQL = "SELECT message,timestamp,auteur,destinataire FROM messageschat WHERE id_conv=?";
+    $param= array($id_conv);
+    $result=parcoursRs(SQLSelect($SQL,$param));
+    return end($result);
+}
 
 /**
  * Récupère les messages reçus par id_user après l'id du dernier message reçu

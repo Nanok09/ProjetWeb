@@ -394,6 +394,38 @@ if ($action = valider("action")) {
                 set_request_success();
             }
             break;
+        case 'send_message':
+            $arg_array = array();
+            if ($conversation_id = valider('conversation_id')) {
+                $arg_array['conversation_id'] = $conversation_id;
+            }
+            if ($connected_user = valider('connected_user')) {
+                $arg_array['connected_user'] = $connected_user;
+            }
+            if ($content = valider('content')) {
+                $arg_array['content'] = $content;
+            }
+            if ($destinataire = valider('destinataire')) {
+                $arg_array['destinataire'] = $destinataire;
+            }
+            if ($insert = add_message_to_conv($arg_array['conversation_id'], $arg_array['connected_user'], $arg_array['destinataire'], $arg_array['content'])) {
+                set_request_success();
+            }
+            break;
+        case 'display_conversation':
+            $arg_array = array();
+            if ($conversation_id = valider('conversation_id')) {
+                $arg_array['conversation_id'] = $conversation_id;
+            }
+            if ($connected_user = valider('connected_user')) {
+                $arg_array['connected_user'] = $connected_user;
+            }
+            if ($destinataire = valider('destinataire')) {
+                $arg_array['destinataire'] = $destinataire;
+            }
+            $data['data'] = get_messages_in_conv($arg_array['conversation_id']);
+            set_request_success();
+            break;
         case 'update_user':
             if (verif_connecte()) {
                 if (($id_user = valider("id_user", "SESSION")) &&

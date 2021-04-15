@@ -6,6 +6,15 @@ include_once "libs/libSecurisation.php";
 include_once "libs/modele.php";
 
 
+$id_place = valider('id');
+$photos = get_photos_place($id_place);
+$note = get_note_place($id_place);
+$terrain = get_place_info($id_place);
+$createur_id = get_createur_lieu($id_place);
+$createur = get_user_info($createur_id);
+//var_dump($id_place);
+
+
 
 ?>
 <div class="container">
