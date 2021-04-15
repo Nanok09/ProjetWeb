@@ -59,6 +59,11 @@ $(document).ready(function() {
     //de l'utilisateur.
 
     var selected = $("#liste_terrains select option:selected");
+
+    //bouton gérer créneaux
+    console.log("selected : "+selected.data().id);
+    $("#gerer_creneaux").attr('onclick', 'window.location.href=\'index.php?view=ajouterCreneau&id=' +
+        selected.data().id + '\';');
     //console.log(selected.data());
     if (selected.html() == 'Ajouter un nouveau terrain') {
         print_new_place_creation();
@@ -68,6 +73,8 @@ $(document).ready(function() {
 
     $("#liste_terrains select").change(function() {
         selected = $("#liste_terrains select option:selected");
+        $("#gerer_creneaux").attr('onclick', 'window.location.href=\'index.php?view=ajouterCreneau&id=' +
+            selected.data().id + '\';');
         if (selected.html() == 'Ajouter un nouveau terrain') {
             print_new_place_creation();
         } else {
@@ -104,9 +111,7 @@ $(document).ready(function() {
     });
 
 
-    //bouton gérer créneaux
-    $("#gerer_creneaux").attr('onclick', 'window.location.href=\'index.php?view=ajouterCreneau&id=' + selected
-        .data().id + '\';');
+
 
     //création form photo
     $("#ajout_photo").append(
