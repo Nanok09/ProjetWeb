@@ -105,7 +105,7 @@ $(document).ready(function() {
 
 
     //bouton gérer créneaux
-    $("#gerer_creneaux").attr('onclick', 'window.location.href=\'index.php?view=ajouter_creneau&id=' + selected
+    $("#gerer_creneaux").attr('onclick', 'window.location.href=\'index.php?view=ajouterCreneau&id=' + selected
         .data().id + '\';');
 
     //création form photo
