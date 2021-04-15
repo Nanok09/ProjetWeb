@@ -5,6 +5,7 @@ include_once "libs/libSecurisation.php";
 include_once "libs/modele.php";
 include_once "libs/upload_photo.php";
 
+$connected_user=valider('id_user','SESSION');
 
 $connected_user=valider('id_user','SESSION');
 $list_id_conversation = get_conversations_user( $connected_user);   

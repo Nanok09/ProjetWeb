@@ -13,6 +13,8 @@ $note=get_note_place($id_place);
 $terrain=get_place_info($id_place);
 $createur_id=get_createur_lieu($id_place);
 $createur = get_user_info($createur_id);
+//var_dump($id_place);
+
 
 
 ?>
@@ -30,6 +32,10 @@ $createur = get_user_info($createur_id);
         $(document).on("click","#louer",function(){
             document.location.href="\'index.php?view=reserver&id=<?php echo $id_place; ?>";
         });
+        $(document).on("click","#submitForm",function(){
+            document.location.href="index.php?view=chat"; 
+        });
+
     });
 </script>
 
@@ -80,10 +86,11 @@ $createur = get_user_info($createur_id);
             <input id="louer" type="button" value="Louer" class="btn col-12 my-3 custom-rounded-corners" style="background-color: #153455; color: #fdedcf;">
             <p class="mt-2 ml-2 body-color-blue">
                 <?php
+                //var_dump($createur);
                 echo "gérant du terrain : ".$createur['pseudo'];
                 ?>
             </p>
-            <input id="submitForm" type="submit" name="action" value="Discuter avec le gérant" class="btn col-12 mb-5 mt-3 custom-rounded-corners"
+                <input id="submitForm" type="submit" name="action" value="Discuter avec le gérant" class="btn col-12 mb-5 mt-3 custom-rounded-corners"
                    style="background-color: #153455; color: #fdedcf;">
         </div>
 
